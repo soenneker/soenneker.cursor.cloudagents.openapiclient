@@ -59,11 +59,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 500 status code</exception>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsGetResponse?> GetAsAgentsGetResponseAsync(Action<RequestConfiguration<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsRequestBuilder.AgentsRequestBuilderGetQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsGetResponse?> GetAsync(Action<RequestConfiguration<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsRequestBuilder.AgentsRequestBuilderGetQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #nullable restore
 #else
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsGetResponse> GetAsAgentsGetResponseAsync(Action<RequestConfiguration<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsRequestBuilder.AgentsRequestBuilderGetQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsGetResponse> GetAsync(Action<RequestConfiguration<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsRequestBuilder.AgentsRequestBuilderGetQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #endif
             var requestInfo = ToGetRequestInformation(requestConfiguration);
@@ -76,38 +76,6 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents
                 { "500", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
             };
             return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsGetResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsGetResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
-        }
-        /// <summary>
-        /// List all cloud agents for the authenticated user
-        /// </summary>
-        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsResponse"/></returns>
-        /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
-        /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 400 status code</exception>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 401 status code</exception>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 403 status code</exception>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 429 status code</exception>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 500 status code</exception>
-        [Obsolete("This method is obsolete. Use GetAsAgentsGetResponseAsync instead.")]
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsResponse?> GetAsync(Action<RequestConfiguration<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsRequestBuilder.AgentsRequestBuilderGetQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
-        {
-#nullable restore
-#else
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsResponse> GetAsync(Action<RequestConfiguration<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsRequestBuilder.AgentsRequestBuilderGetQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
-        {
-#endif
-            var requestInfo = ToGetRequestInformation(requestConfiguration);
-            var errorMapping = new Dictionary<string, ParsableFactory<IParsable>>
-            {
-                { "400", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-                { "401", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-                { "403", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-                { "429", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-                { "500", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-            };
-            return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
         /// Start a new cloud agent to work on your repository
@@ -123,11 +91,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 500 status code</exception>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsPostResponse?> PostAsAgentsPostResponseAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsPostResponse?> PostAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #nullable restore
 #else
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsPostResponse> PostAsAgentsPostResponseAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsPostResponse> PostAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #endif
             if(ReferenceEquals(body, null)) throw new ArgumentNullException(nameof(body));
@@ -141,40 +109,6 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents
                 { "500", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
             };
             return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsPostResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsPostResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
-        }
-        /// <summary>
-        /// Start a new cloud agent to work on your repository
-        /// </summary>
-        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsResponse"/></returns>
-        /// <param name="body">The request body</param>
-        /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
-        /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 400 status code</exception>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 401 status code</exception>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 403 status code</exception>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 429 status code</exception>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 500 status code</exception>
-        [Obsolete("This method is obsolete. Use PostAsAgentsPostResponseAsync instead.")]
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsResponse?> PostAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
-        {
-#nullable restore
-#else
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsResponse> PostAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
-        {
-#endif
-            if(ReferenceEquals(body, null)) throw new ArgumentNullException(nameof(body));
-            var requestInfo = ToPostRequestInformation(body, requestConfiguration);
-            var errorMapping = new Dictionary<string, ParsableFactory<IParsable>>
-            {
-                { "400", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-                { "401", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-                { "403", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-                { "429", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-                { "500", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-            };
-            return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
         /// List all cloud agents for the authenticated user
@@ -255,22 +189,6 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents
             [QueryParameter("prUrl")]
             public string PrUrl { get; set; }
 #endif
-        }
-        /// <summary>
-        /// Configuration for the request such as headers, query parameters, and middleware options.
-        /// </summary>
-        [Obsolete("This class is deprecated. Please use the generic RequestConfiguration class generated by the generator.")]
-        [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class AgentsRequestBuilderGetRequestConfiguration : RequestConfiguration<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.AgentsRequestBuilder.AgentsRequestBuilderGetQueryParameters>
-        {
-        }
-        /// <summary>
-        /// Configuration for the request such as headers, query parameters, and middleware options.
-        /// </summary>
-        [Obsolete("This class is deprecated. Please use the generic RequestConfiguration class generated by the generator.")]
-        [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class AgentsRequestBuilderPostRequestConfiguration : RequestConfiguration<DefaultQueryParameters>
-        {
         }
     }
 }

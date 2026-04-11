@@ -49,11 +49,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 500 status code</exception>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupPostResponse?> PostAsFollowupPostResponseAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupPostRequestBody body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupPostResponse?> PostAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupPostRequestBody body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #nullable restore
 #else
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupPostResponse> PostAsFollowupPostResponseAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupPostRequestBody body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupPostResponse> PostAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupPostRequestBody body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #endif
             if(ReferenceEquals(body, null)) throw new ArgumentNullException(nameof(body));
@@ -69,44 +69,6 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup
                 { "500", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
             };
             return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupPostResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupPostResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
-        }
-        /// <summary>
-        /// Add a followup instruction to an existing cloud agent
-        /// </summary>
-        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupResponse"/></returns>
-        /// <param name="body">The request body</param>
-        /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
-        /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 400 status code</exception>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 401 status code</exception>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 403 status code</exception>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 404 status code</exception>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 409 status code</exception>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 429 status code</exception>
-        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 500 status code</exception>
-        [Obsolete("This method is obsolete. Use PostAsFollowupPostResponseAsync instead.")]
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupResponse?> PostAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupPostRequestBody body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
-        {
-#nullable restore
-#else
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupResponse> PostAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupPostRequestBody body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
-        {
-#endif
-            if(ReferenceEquals(body, null)) throw new ArgumentNullException(nameof(body));
-            var requestInfo = ToPostRequestInformation(body, requestConfiguration);
-            var errorMapping = new Dictionary<string, ParsableFactory<IParsable>>
-            {
-                { "400", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-                { "401", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-                { "403", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-                { "404", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-                { "409", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-                { "429", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-                { "500", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
-            };
-            return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
         /// Add a followup instruction to an existing cloud agent
@@ -138,14 +100,6 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupRequestBuilder WithUrl(string rawUrl)
         {
             return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.Agents.Item.Followup.FollowupRequestBuilder(rawUrl, RequestAdapter);
-        }
-        /// <summary>
-        /// Configuration for the request such as headers, query parameters, and middleware options.
-        /// </summary>
-        [Obsolete("This class is deprecated. Please use the generic RequestConfiguration class generated by the generator.")]
-        [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class FollowupRequestBuilderPostRequestConfiguration : RequestConfiguration<DefaultQueryParameters>
-        {
         }
     }
 }
