@@ -14,9 +14,9 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Height must be a positive integer</summary>
+        /// <summary>Height in pixels</summary>
         public int? Height { get; set; }
-        /// <summary>Width must be a positive integer</summary>
+        /// <summary>Width in pixels</summary>
         public int? Width { get; set; }
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension"/> and sets the default values.

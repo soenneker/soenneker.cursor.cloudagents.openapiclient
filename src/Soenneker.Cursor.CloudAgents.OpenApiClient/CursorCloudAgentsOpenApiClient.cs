@@ -6,7 +6,7 @@ using Microsoft.Kiota.Serialization.Form;
 using Microsoft.Kiota.Serialization.Json;
 using Microsoft.Kiota.Serialization.Multipart;
 using Microsoft.Kiota.Serialization.Text;
-using Soenneker.Cursor.CloudAgents.OpenApiClient.V0;
+using Soenneker.Cursor.CloudAgents.OpenApiClient.V1;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -19,10 +19,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class CursorCloudAgentsOpenApiClient : BaseRequestBuilder
     {
-        /// <summary>The v0 property</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.V0RequestBuilder V0
+        /// <summary>The v1 property</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.V1RequestBuilder V1
         {
-            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V0.V0RequestBuilder(PathParameters, RequestAdapter);
+            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.V1RequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.CursorCloudAgentsOpenApiClient"/> and sets the default values.

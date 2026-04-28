@@ -14,13 +14,25 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Set to an explicit model ID for launch requests, or use &quot;default&quot; to use the configured default model. When omitted, Cursor resolves your user default model, then your team default model, then a system default.</summary>
+        /// <summary>Whether Cursor should open a pull request when the run completes.</summary>
+        public bool? AutoCreatePR { get; set; }
+        /// <summary>Whether to create a new branch (true) or push to an existing head branch (false). Only applies when `repos[0].prUrl` is provided.</summary>
+        public bool? AutoGenerateBranch { get; set; }
+        /// <summary>Custom branch name for the agent to create.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? Model { get; set; }
+        public string? BranchName { get; set; }
 #nullable restore
 #else
-        public string Model { get; set; }
+        public string BranchName { get; set; }
+#endif
+        /// <summary>The model property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef? Model { get; set; }
+#nullable restore
+#else
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef Model { get; set; }
 #endif
         /// <summary>The prompt property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -30,30 +42,16 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt Prompt { get; set; }
 #endif
-        /// <summary>The source property</summary>
+        /// <summary>Repository configuration. v1 currently supports one entry.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_source? Source { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>? Repos { get; set; }
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_source Source { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig> Repos { get; set; }
 #endif
-        /// <summary>The target property</summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_target? Target { get; set; }
-#nullable restore
-#else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_target Target { get; set; }
-#endif
-        /// <summary>The webhook property</summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_webhook? Webhook { get; set; }
-#nullable restore
-#else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_webhook Webhook { get; set; }
-#endif
+        /// <summary>Whether to skip requesting the user as a reviewer when Cursor opens a PR. Only applies when `autoCreatePR` is true.</summary>
+        public bool? SkipReviewerRequest { get; set; }
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest"/> and sets the default values.
         /// </summary>
@@ -79,11 +77,13 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
-                { "model", n => { Model = n.GetStringValue(); } },
+                { "autoCreatePR", n => { AutoCreatePR = n.GetBoolValue(); } },
+                { "autoGenerateBranch", n => { AutoGenerateBranch = n.GetBoolValue(); } },
+                { "branchName", n => { BranchName = n.GetStringValue(); } },
+                { "model", n => { Model = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef.CreateFromDiscriminatorValue); } },
                 { "prompt", n => { Prompt = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt.CreateFromDiscriminatorValue); } },
-                { "source", n => { Source = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_source>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_source.CreateFromDiscriminatorValue); } },
-                { "target", n => { Target = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_target>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_target.CreateFromDiscriminatorValue); } },
-                { "webhook", n => { Webhook = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_webhook>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_webhook.CreateFromDiscriminatorValue); } },
+                { "repos", n => { Repos = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig.CreateFromDiscriminatorValue)?.AsList(); } },
+                { "skipReviewerRequest", n => { SkipReviewerRequest = n.GetBoolValue(); } },
             };
         }
         /// <summary>
@@ -93,11 +93,13 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-            writer.WriteStringValue("model", Model);
+            writer.WriteBoolValue("autoCreatePR", AutoCreatePR);
+            writer.WriteBoolValue("autoGenerateBranch", AutoGenerateBranch);
+            writer.WriteStringValue("branchName", BranchName);
+            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>("model", Model);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt>("prompt", Prompt);
-            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_source>("source", Source);
-            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_target>("target", Target);
-            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_webhook>("webhook", Webhook);
+            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>("repos", Repos);
+            writer.WriteBoolValue("skipReviewerRequest", SkipReviewerRequest);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

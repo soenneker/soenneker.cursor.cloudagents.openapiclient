@@ -9,43 +9,49 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
-    public partial class Image : IAdditionalDataHolder, IParsable
+    public partial class Run : IAdditionalDataHolder, IParsable
     #pragma warning restore CS1591
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Base64 encoded image data (max 15 MB)</summary>
+        /// <summary>ID of the agent this run belongs to.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? Data { get; set; }
+        public string? AgentId { get; set; }
 #nullable restore
 #else
-        public string Data { get; set; }
+        public string AgentId { get; set; }
 #endif
-        /// <summary>The dimension property</summary>
+        /// <summary>The createdAt property</summary>
+        public DateTimeOffset? CreatedAt { get; set; }
+        /// <summary>Unique run identifier.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension? Dimension { get; set; }
+        public string? Id { get; set; }
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension Dimension { get; set; }
+        public string Id { get; set; }
 #endif
+        /// <summary>Current run status.</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run_status? Status { get; set; }
+        /// <summary>The updatedAt property</summary>
+        public DateTimeOffset? UpdatedAt { get; set; }
         /// <summary>
-        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Image"/> and sets the default values.
+        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run"/> and sets the default values.
         /// </summary>
-        public Image()
+        public Run()
         {
             AdditionalData = new Dictionary<string, object>();
         }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Image"/></returns>
+        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Image CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Image();
+            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run();
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -55,8 +61,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
-                { "data", n => { Data = n.GetStringValue(); } },
-                { "dimension", n => { Dimension = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension.CreateFromDiscriminatorValue); } },
+                { "agentId", n => { AgentId = n.GetStringValue(); } },
+                { "createdAt", n => { CreatedAt = n.GetDateTimeOffsetValue(); } },
+                { "id", n => { Id = n.GetStringValue(); } },
+                { "status", n => { Status = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run_status>(); } },
+                { "updatedAt", n => { UpdatedAt = n.GetDateTimeOffsetValue(); } },
             };
         }
         /// <summary>
@@ -66,8 +75,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-            writer.WriteStringValue("data", Data);
-            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension>("dimension", Dimension);
+            writer.WriteStringValue("agentId", AgentId);
+            writer.WriteDateTimeOffsetValue("createdAt", CreatedAt);
+            writer.WriteStringValue("id", Id);
+            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run_status>("status", Status);
+            writer.WriteDateTimeOffsetValue("updatedAt", UpdatedAt);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

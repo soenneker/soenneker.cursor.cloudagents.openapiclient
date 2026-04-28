@@ -14,7 +14,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Optional array of base64 encoded images (max 5)</summary>
+        /// <summary>Optional base64-encoded images. Maximum 5 images, 15 MB each.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Image>? Images { get; set; }
@@ -22,7 +22,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Image> Images { get; set; }
 #endif
-        /// <summary>The task or instructions for the agent to execute</summary>
+        /// <summary>Task instruction for the agent.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public string? Text { get; set; }

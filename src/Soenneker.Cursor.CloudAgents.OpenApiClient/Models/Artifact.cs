@@ -12,19 +12,19 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     public partial class Artifact : IAdditionalDataHolder, IParsable
     #pragma warning restore CS1591
     {
-        /// <summary>Absolute artifact path in the cloud agent environment</summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public string? AbsolutePath { get; set; }
-#nullable restore
-#else
-        public string AbsolutePath { get; set; }
-#endif
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Artifact file size in bytes</summary>
+        /// <summary>Artifact path relative to the workspace&apos;s `artifacts/` directory.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? Path { get; set; }
+#nullable restore
+#else
+        public string Path { get; set; }
+#endif
+        /// <summary>File size in bytes.</summary>
         public int? SizeBytes { get; set; }
-        /// <summary>Last modified timestamp for the artifact</summary>
+        /// <summary>Last modified timestamp.</summary>
         public DateTimeOffset? UpdatedAt { get; set; }
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Artifact"/> and sets the default values.
@@ -51,7 +51,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
-                { "absolutePath", n => { AbsolutePath = n.GetStringValue(); } },
+                { "path", n => { Path = n.GetStringValue(); } },
                 { "sizeBytes", n => { SizeBytes = n.GetIntValue(); } },
                 { "updatedAt", n => { UpdatedAt = n.GetDateTimeOffsetValue(); } },
             };
@@ -63,7 +63,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-            writer.WriteStringValue("absolutePath", AbsolutePath);
+            writer.WriteStringValue("path", Path);
             writer.WriteIntValue("sizeBytes", SizeBytes);
             writer.WriteDateTimeOffsetValue("updatedAt", UpdatedAt);
             writer.WriteAdditionalData(AdditionalData);

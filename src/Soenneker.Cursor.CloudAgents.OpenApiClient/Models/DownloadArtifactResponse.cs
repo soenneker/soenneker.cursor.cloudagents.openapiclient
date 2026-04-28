@@ -9,43 +9,37 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
-    public partial class Image : IAdditionalDataHolder, IParsable
+    public partial class DownloadArtifactResponse : IAdditionalDataHolder, IParsable
     #pragma warning restore CS1591
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Base64 encoded image data (max 15 MB)</summary>
+        /// <summary>When the presigned URL expires.</summary>
+        public DateTimeOffset? ExpiresAt { get; set; }
+        /// <summary>Temporary 15-minute presigned S3 URL for downloading the artifact.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? Data { get; set; }
+        public string? Url { get; set; }
 #nullable restore
 #else
-        public string Data { get; set; }
-#endif
-        /// <summary>The dimension property</summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension? Dimension { get; set; }
-#nullable restore
-#else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension Dimension { get; set; }
+        public string Url { get; set; }
 #endif
         /// <summary>
-        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Image"/> and sets the default values.
+        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.DownloadArtifactResponse"/> and sets the default values.
         /// </summary>
-        public Image()
+        public DownloadArtifactResponse()
         {
             AdditionalData = new Dictionary<string, object>();
         }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Image"/></returns>
+        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.DownloadArtifactResponse"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Image CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.DownloadArtifactResponse CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Image();
+            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.DownloadArtifactResponse();
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -55,8 +49,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
-                { "data", n => { Data = n.GetStringValue(); } },
-                { "dimension", n => { Dimension = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension.CreateFromDiscriminatorValue); } },
+                { "expiresAt", n => { ExpiresAt = n.GetDateTimeOffsetValue(); } },
+                { "url", n => { Url = n.GetStringValue(); } },
             };
         }
         /// <summary>
@@ -66,8 +60,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-            writer.WriteStringValue("data", Data);
-            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension>("dimension", Dimension);
+            writer.WriteDateTimeOffsetValue("expiresAt", ExpiresAt);
+            writer.WriteStringValue("url", Url);
             writer.WriteAdditionalData(AdditionalData);
         }
     }
