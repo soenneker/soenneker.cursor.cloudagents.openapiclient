@@ -9,12 +9,12 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
-    public partial class ModelRef : IAdditionalDataHolder, IParsable
+    public partial class ModelRef_params : IAdditionalDataHolder, IParsable
     #pragma warning restore CS1591
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Explicit model ID returned by GET /v1/models. Omit `model` from the request to use the configured default.</summary>
+        /// <summary>The id property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public string? Id { get; set; }
@@ -22,30 +22,30 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public string Id { get; set; }
 #endif
-        /// <summary>Per-model parameters such as reasoning effort or max mode. Use only parameters supported by the selected model.</summary>
+        /// <summary>The value property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef_params>? Params { get; set; }
+        public string? Value { get; set; }
 #nullable restore
 #else
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef_params> Params { get; set; }
+        public string Value { get; set; }
 #endif
         /// <summary>
-        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef"/> and sets the default values.
+        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef_params"/> and sets the default values.
         /// </summary>
-        public ModelRef()
+        public ModelRef_params()
         {
             AdditionalData = new Dictionary<string, object>();
         }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef"/></returns>
+        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef_params"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef_params CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef();
+            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef_params();
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -56,7 +56,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             return new Dictionary<string, Action<IParseNode>>
             {
                 { "id", n => { Id = n.GetStringValue(); } },
-                { "params", n => { Params = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef_params>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef_params.CreateFromDiscriminatorValue)?.AsList(); } },
+                { "value", n => { Value = n.GetStringValue(); } },
             };
         }
         /// <summary>
@@ -67,7 +67,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteStringValue("id", Id);
-            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef_params>("params", Params);
+            writer.WriteStringValue("value", Value);
             writer.WriteAdditionalData(AdditionalData);
         }
     }
