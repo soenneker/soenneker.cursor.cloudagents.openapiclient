@@ -6,6 +6,7 @@ using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Me;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.ModelsRequests;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Repositories;
+using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.SubTokens;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -37,6 +38,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Repositories.RepositoriesRequestBuilder Repositories
         {
             get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Repositories.RepositoriesRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The subTokens property</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.SubTokens.SubTokensRequestBuilder SubTokens
+        {
+            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.SubTokens.SubTokensRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.V1RequestBuilder"/> and sets the default values.
