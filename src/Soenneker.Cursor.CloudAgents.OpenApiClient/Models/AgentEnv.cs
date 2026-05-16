@@ -14,14 +14,16 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Execution environment type.</summary>
+        /// <summary>Named Cursor-hosted environment, self-hosted pool, or self-hosted machine name.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? Type { get; set; }
+        public string? Name { get; set; }
 #nullable restore
 #else
-        public string Type { get; set; }
+        public string Name { get; set; }
 #endif
+        /// <summary>Execution environment type. `cloud` uses Cursor-hosted VMs; `pool` and `machine` route to self-hosted workers.</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv_type? Type { get; set; }
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv"/> and sets the default values.
         /// </summary>
@@ -47,7 +49,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
-                { "type", n => { Type = n.GetStringValue(); } },
+                { "name", n => { Name = n.GetStringValue(); } },
+                { "type", n => { Type = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv_type>(); } },
             };
         }
         /// <summary>
@@ -57,7 +60,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-            writer.WriteStringValue("type", Type);
+            writer.WriteStringValue("name", Name);
+            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv_type>("type", Type);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

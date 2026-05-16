@@ -26,6 +26,14 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public string BranchName { get; set; }
 #endif
+        /// <summary>The env property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv? Env { get; set; }
+#nullable restore
+#else
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv Env { get; set; }
+#endif
         /// <summary>Session-scoped environment variables for the cloud agent. Values are encrypted at rest, injected into the agent&apos;s shell, and deleted with the agent. Names must be non-empty, 1024 bytes or less, and cannot start with `CURSOR_`. Values must be non-empty and 4096 bytes or less.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -50,7 +58,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt Prompt { get; set; }
 #endif
-        /// <summary>Repository configuration. v1 currently supports one entry.</summary>
+        /// <summary>Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` to start a no-repo agent.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>? Repos { get; set; }
@@ -88,6 +96,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
                 { "autoCreatePR", n => { AutoCreatePR = n.GetBoolValue(); } },
                 { "autoGenerateBranch", n => { AutoGenerateBranch = n.GetBoolValue(); } },
                 { "branchName", n => { BranchName = n.GetStringValue(); } },
+                { "env", n => { Env = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv.CreateFromDiscriminatorValue); } },
                 { "envVars", n => { EnvVars = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars.CreateFromDiscriminatorValue); } },
                 { "model", n => { Model = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef.CreateFromDiscriminatorValue); } },
                 { "prompt", n => { Prompt = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt.CreateFromDiscriminatorValue); } },
@@ -105,6 +114,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteBoolValue("autoCreatePR", AutoCreatePR);
             writer.WriteBoolValue("autoGenerateBranch", AutoGenerateBranch);
             writer.WriteStringValue("branchName", BranchName);
+            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv>("env", Env);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars>("envVars", EnvVars);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>("model", Model);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt>("prompt", Prompt);

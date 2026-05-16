@@ -24,7 +24,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public string BranchName { get; set; }
 #endif
-        /// <summary>Repository configuration. v1 currently supports one entry.</summary>
+        /// <summary>Repository configuration. Empty for no-repo agents.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>? Repos { get; set; }
