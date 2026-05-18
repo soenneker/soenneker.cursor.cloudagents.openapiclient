@@ -42,6 +42,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars EnvVars { get; set; }
 #endif
+        /// <summary>Initial conversation mode for the agent&apos;s first run.</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode? Mode { get; set; }
         /// <summary>The model property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -74,6 +76,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public CreateAgentRequest()
         {
             AdditionalData = new Dictionary<string, object>();
+            Mode = global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode.Agent;
         }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
@@ -98,6 +101,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
                 { "branchName", n => { BranchName = n.GetStringValue(); } },
                 { "env", n => { Env = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv.CreateFromDiscriminatorValue); } },
                 { "envVars", n => { EnvVars = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars.CreateFromDiscriminatorValue); } },
+                { "mode", n => { Mode = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode>(); } },
                 { "model", n => { Model = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef.CreateFromDiscriminatorValue); } },
                 { "prompt", n => { Prompt = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt.CreateFromDiscriminatorValue); } },
                 { "repos", n => { Repos = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig.CreateFromDiscriminatorValue)?.AsList(); } },
@@ -116,6 +120,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteStringValue("branchName", BranchName);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv>("env", Env);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars>("envVars", EnvVars);
+            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode>("mode", Mode);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>("model", Model);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt>("prompt", Prompt);
             writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>("repos", Repos);
