@@ -34,7 +34,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Runs.Item.St
         {
         }
         /// <summary>
-        /// Stream Server-Sent Events for one run. Event types include`status`, `assistant`, `thinking`, `tool_call`, `heartbeat`,`result`, `error`, and `done`. Reconnect with the`Last-Event-ID` header to resume after a disconnect; the eventID must belong to the requested run. Responses include the`X-Cursor-Stream-Retention-Seconds` header. After theretention window the endpoint may return `410 stream_expired`.
+        /// Stream Server-Sent Events for one run. Event types include`status`, `assistant`, `thinking`, `tool_call`, `heartbeat`,`result`, `error`, and `done`. Reconnect with the`Last-Event-ID` header to resume after a disconnect; the eventID must belong to the requested run. Responses include the`X-Cursor-Stream-Retention-Seconds` header. After theretention window the endpoint may return `410 stream_expired`.`tool_call` event data uses the `RunStreamToolCallData` schema.
         /// </summary>
         /// <returns>A <see cref="Stream"/></returns>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
@@ -69,7 +69,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Runs.Item.St
             return await RequestAdapter.SendPrimitiveAsync<Stream>(requestInfo, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
-        /// Stream Server-Sent Events for one run. Event types include`status`, `assistant`, `thinking`, `tool_call`, `heartbeat`,`result`, `error`, and `done`. Reconnect with the`Last-Event-ID` header to resume after a disconnect; the eventID must belong to the requested run. Responses include the`X-Cursor-Stream-Retention-Seconds` header. After theretention window the endpoint may return `410 stream_expired`.
+        /// Stream Server-Sent Events for one run. Event types include`status`, `assistant`, `thinking`, `tool_call`, `heartbeat`,`result`, `error`, and `done`. Reconnect with the`Last-Event-ID` header to resume after a disconnect; the eventID must belong to the requested run. Responses include the`X-Cursor-Stream-Retention-Seconds` header. After theretention window the endpoint may return `410 stream_expired`.`tool_call` event data uses the `RunStreamToolCallData` schema.
         /// </summary>
         /// <returns>A <see cref="RequestInformation"/></returns>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>

@@ -118,6 +118,102 @@ components:
           description: Named Cursor-hosted environment, self-hosted pool, or self-hosted machine name.
           example: 'Release workspace'
 
+    McpAuth:
+      type: object
+      additionalProperties: false
+      required:
+        - CLIENT_ID
+      properties:
+        CLIENT_ID:
+          type: string
+          minLength: 1
+          description: OAuth client ID for the MCP server.
+          example: 'client-id'
+        CLIENT_SECRET:
+          type: string
+          description: OAuth client secret for the MCP server.
+          example: 'client-secret'
+        scopes:
+          type: array
+          description: OAuth scopes to request for the MCP server.
+          items:
+            type: string
+            minLength: 1
+          example: ['file_content:read']
+
+    StdioMcpServer:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+        - command
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: MCP server name exposed to the agent.
+          example: 'github'
+        type:
+          type: string
+          enum: ['stdio']
+          description: Stdio MCP server. Defaults to `stdio` when `command` is provided.
+          example: 'stdio'
+        command:
+          type: string
+          minLength: 1
+          description: Command to start inside the cloud agent VM.
+          example: 'npx'
+        args:
+          type: array
+          description: Command arguments.
+          items:
+            type: string
+          example: ['-y', '@modelcontextprotocol/server-github']
+        env:
+          type: object
+          description: Environment variables passed to the stdio MCP server inside the VM.
+          additionalProperties:
+            type: string
+          example:
+            GITHUB_TOKEN: 'ghp_...'
+
+    RemoteMcpServer:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+        - url
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: MCP server name exposed to the agent.
+          example: 'linear'
+        type:
+          type: string
+          enum: ['http', 'sse']
+          description: Remote MCP transport. Defaults to `http` when `url` is provided.
+          example: 'http'
+        url:
+          type: string
+          format: uri
+          description: HTTP or HTTPS URL for the remote MCP server. Userinfo in the URL is not allowed.
+          example: 'https://mcp.linear.app/sse'
+        headers:
+          type: object
+          description: Headers Cursor sends with every request to the remote MCP server.
+          additionalProperties:
+            type: string
+          example:
+            Authorization: 'Bearer lin_api_...'
+        auth:
+          $ref: '#/components/schemas/McpAuth'
+
+    McpServer:
+      oneOf:
+        - $ref: '#/components/schemas/StdioMcpServer'
+        - $ref: '#/components/schemas/RemoteMcpServer'
+
     AgentSummary:
       type: object
       required:
@@ -216,6 +312,90 @@ components:
           type: string
           format: date-time
 
+    RunStreamToolCallTruncation:
+      type: object
+      additionalProperties: false
+      properties:
+        args:
+          type: boolean
+          description: Present and true when the tool arguments were too large to include in the stream.
+          example: true
+        result:
+          type: boolean
+          description: Present and true when the tool result was too large to include in the stream.
+          example: true
+
+    JsonValue:
+      description: Any JSON value.
+      nullable: true
+      oneOf:
+        - type: string
+        - type: number
+        - type: boolean
+        - type: object
+          additionalProperties: true
+        - type: array
+          items: {}
+
+    RunStreamToolCallData:
+      type: object
+      additionalProperties: false
+      required:
+        - callId
+        - name
+        - status
+      properties:
+        callId:
+          type: string
+          minLength: 1
+          description: Stable identifier for one tool invocation across updates.
+          example: 'call-1'
+        name:
+          type: string
+          minLength: 1
+          description: Public tool name, such as `read_file`, `run_terminal_cmd`, or `mcp`.
+          example: 'read_file'
+        status:
+          type: string
+          enum: ['running', 'completed']
+          description: Tool invocation lifecycle status.
+          example: 'completed'
+        args:
+          allOf:
+            - $ref: '#/components/schemas/JsonValue'
+          description: Tool-specific JSON arguments, when available.
+          example:
+            path: 'README.md'
+        result:
+          allOf:
+            - $ref: '#/components/schemas/JsonValue'
+          description: Tool-specific JSON result, when available.
+          example:
+            success:
+              content: '# Project'
+              totalLines: 1
+              fileSize: 9
+              path: 'README.md'
+        truncated:
+          $ref: '#/components/schemas/RunStreamToolCallTruncation'
+
+    RunStreamToolCallEvent:
+      type: object
+      additionalProperties: false
+      required:
+        - event
+        - data
+      properties:
+        event:
+          type: string
+          enum: ['tool_call']
+        id:
+          type: string
+          description: SSE event id used with the `Last-Event-ID` resume header.
+          example: '1713033006000-0'
+        data:
+          $ref: '#/components/schemas/RunStreamToolCallData'
+
     CreateAgentRequest:
       type: object
       required:
@@ -272,6 +452,12 @@ components:
             type: string
             minLength: 1
             maxLength: 4096
+        mcpServers:
+          type: array
+          maxItems: 50
+          description: Inline MCP server definitions available to the initial run. Remote servers support `headers` or OAuth `auth`; stdio servers run inside the cloud agent VM and can receive `env`. Server names must be unique.
+          items:
+            $ref: '#/components/schemas/McpServer'
         mode:
           allOf:
             - $ref: '#/components/schemas/AgentMode'
@@ -299,6 +485,12 @@ components:
               items:
                 $ref: '#/components/schemas/Image'
               description: Optional base64-encoded images. Maximum 5 images, 15 MB each.
+        mcpServers:
+          type: array
+          maxItems: 50
+          description: Inline MCP server definitions for this follow-up run. When provided, these definitions replace any create-time inline MCP servers for this run.
+          items:
+            $ref: '#/components/schemas/McpServer'
         mode:
           $ref: '#/components/schemas/AgentMode'
 
@@ -863,6 +1055,7 @@ paths:
         ID must belong to the requested run. Responses include the
         `X-Cursor-Stream-Retention-Seconds` header. After the
         retention window the endpoint may return `410 stream_expired`.
+        `tool_call` event data uses the `RunStreamToolCallData` schema.
       operationId: streamRun
       parameters:
         - $ref: '#/components/parameters/AgentId'
@@ -885,6 +1078,17 @@ paths:
             text/event-stream:
               schema:
                 type: string
+              examples:
+                toolCall:
+                  summary: Tool call events
+                  value: |
+                    id: 1713033005000-0
+                    event: tool_call
+                    data: {"callId":"call-1","name":"read_file","status":"running","args":{"path":"README.md"}}
+
+                    id: 1713033006000-0
+                    event: tool_call
+                    data: {"callId":"call-1","name":"read_file","status":"completed","args":{"path":"README.md"},"result":{"success":{"content":"# Project","totalLines":1,"fileSize":9,"path":"README.md"}}}
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':

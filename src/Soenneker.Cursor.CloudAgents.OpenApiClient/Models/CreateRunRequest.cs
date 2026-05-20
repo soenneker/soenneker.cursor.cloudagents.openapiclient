@@ -14,6 +14,14 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
+        /// <summary>Inline MCP server definitions for this follow-up run. When provided, these definitions replace any create-time inline MCP servers for this run.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>? McpServers { get; set; }
+#nullable restore
+#else
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer> McpServers { get; set; }
+#endif
         /// <summary>Conversation mode. `plan` explores and drafts a plan before coding; `agent` implements changes directly. On follow-up runs, omit to keep the conversation&apos;s current mode; set explicitly to switch modes for that run.</summary>
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode? Mode { get; set; }
         /// <summary>The prompt property</summary>
@@ -49,6 +57,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
+                { "mcpServers", n => { McpServers = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "mode", n => { Mode = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode>(); } },
                 { "prompt", n => { Prompt = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateRunRequest_prompt>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateRunRequest_prompt.CreateFromDiscriminatorValue); } },
             };
@@ -60,6 +69,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
+            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>("mcpServers", McpServers);
             writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode>("mode", Mode);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateRunRequest_prompt>("prompt", Prompt);
             writer.WriteAdditionalData(AdditionalData);

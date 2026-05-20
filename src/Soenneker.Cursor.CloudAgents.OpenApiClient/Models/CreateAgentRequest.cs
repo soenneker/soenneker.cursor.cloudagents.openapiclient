@@ -42,6 +42,14 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars EnvVars { get; set; }
 #endif
+        /// <summary>Inline MCP server definitions available to the initial run. Remote servers support `headers` or OAuth `auth`; stdio servers run inside the cloud agent VM and can receive `env`. Server names must be unique.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>? McpServers { get; set; }
+#nullable restore
+#else
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer> McpServers { get; set; }
+#endif
         /// <summary>Initial conversation mode for the agent&apos;s first run.</summary>
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode? Mode { get; set; }
         /// <summary>The model property</summary>
@@ -101,6 +109,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
                 { "branchName", n => { BranchName = n.GetStringValue(); } },
                 { "env", n => { Env = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv.CreateFromDiscriminatorValue); } },
                 { "envVars", n => { EnvVars = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars.CreateFromDiscriminatorValue); } },
+                { "mcpServers", n => { McpServers = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "mode", n => { Mode = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode>(); } },
                 { "model", n => { Model = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef.CreateFromDiscriminatorValue); } },
                 { "prompt", n => { Prompt = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt.CreateFromDiscriminatorValue); } },
@@ -120,6 +129,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteStringValue("branchName", BranchName);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv>("env", Env);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars>("envVars", EnvVars);
+            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>("mcpServers", McpServers);
             writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode>("mode", Mode);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>("model", Model);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt>("prompt", Prompt);
