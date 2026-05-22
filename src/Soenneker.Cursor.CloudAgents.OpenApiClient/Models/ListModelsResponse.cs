@@ -14,13 +14,13 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Recommended set of explicit model IDs you can pass to the `model.id` field on POST /v1/agents.</summary>
+        /// <summary>Recommended models. Use `id` (and optionally `params`) when creating an agent.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<string>? Items { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelListItem>? Items { get; set; }
 #nullable restore
 #else
-        public List<string> Items { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelListItem> Items { get; set; }
 #endif
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListModelsResponse"/> and sets the default values.
@@ -47,7 +47,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
-                { "items", n => { Items = n.GetCollectionOfPrimitiveValues<string>()?.AsList(); } },
+                { "items", n => { Items = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelListItem>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelListItem.CreateFromDiscriminatorValue)?.AsList(); } },
             };
         }
         /// <summary>
@@ -57,7 +57,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-            writer.WriteCollectionOfPrimitiveValues<string>("items", Items);
+            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelListItem>("items", Items);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

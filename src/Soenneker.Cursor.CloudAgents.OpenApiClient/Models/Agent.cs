@@ -14,15 +14,13 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     {
         /// <summary>Whether Cursor opens a pull request when the run completes.</summary>
         public bool? AutoCreatePR { get; set; }
-        /// <summary>Whether the branch was auto-generated.</summary>
-        public bool? AutoGenerateBranch { get; set; }
-        /// <summary>Branch the agent works on.</summary>
+        /// <summary>Custom subagents defined at create time. Omitted when none were provided.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? BranchName { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent>? CustomSubagents { get; set; }
 #nullable restore
 #else
-        public string BranchName { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent> CustomSubagents { get; set; }
 #endif
         /// <summary>Repository configuration. Empty for no-repo agents.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -34,6 +32,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #endif
         /// <summary>Whether to skip requesting the user as a reviewer when Cursor opens a PR.</summary>
         public bool? SkipReviewerRequest { get; set; }
+        /// <summary>When `false` (the default), Cursor pushes commits to a new auto-generated branch. When `true`, commits land on the existing head branch.</summary>
+        public bool? WorkOnCurrentBranch { get; set; }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
@@ -53,10 +53,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             return new Dictionary<string, Action<IParseNode>>(base.GetFieldDeserializers())
             {
                 { "autoCreatePR", n => { AutoCreatePR = n.GetBoolValue(); } },
-                { "autoGenerateBranch", n => { AutoGenerateBranch = n.GetBoolValue(); } },
-                { "branchName", n => { BranchName = n.GetStringValue(); } },
+                { "customSubagents", n => { CustomSubagents = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "repos", n => { Repos = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "skipReviewerRequest", n => { SkipReviewerRequest = n.GetBoolValue(); } },
+                { "workOnCurrentBranch", n => { WorkOnCurrentBranch = n.GetBoolValue(); } },
             };
         }
         /// <summary>
@@ -68,10 +68,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             base.Serialize(writer);
             writer.WriteBoolValue("autoCreatePR", AutoCreatePR);
-            writer.WriteBoolValue("autoGenerateBranch", AutoGenerateBranch);
-            writer.WriteStringValue("branchName", BranchName);
+            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent>("customSubagents", CustomSubagents);
             writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>("repos", Repos);
             writer.WriteBoolValue("skipReviewerRequest", SkipReviewerRequest);
+            writer.WriteBoolValue("workOnCurrentBranch", WorkOnCurrentBranch);
         }
     }
 }

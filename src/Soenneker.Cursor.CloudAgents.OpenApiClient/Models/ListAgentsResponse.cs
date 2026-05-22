@@ -22,7 +22,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentSummary> Items { get; set; }
 #endif
-        /// <summary>Cursor for fetching the next page of results, or null when there are no more.</summary>
+        /// <summary>Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public string? NextCursor { get; set; }

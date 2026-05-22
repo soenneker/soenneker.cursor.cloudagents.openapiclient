@@ -7,14 +7,15 @@ using System.IO;
 using System;
 namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
+    /// <summary>
+    /// An image input. Provide exactly one of `data` or `url`. When`data` is provided, `mimeType` is required. When `url` isprovided, Cursor fetches the image and `mimeType` must beomitted.
+    /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    #pragma warning disable CS1591
     public partial class Image : IAdditionalDataHolder, IParsable
-    #pragma warning restore CS1591
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Base64 encoded image data (max 15 MB)</summary>
+        /// <summary>Base64 encoded image bytes (max 15 MB). Mutually exclusive with `url`.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public string? Data { get; set; }
@@ -29,6 +30,22 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #nullable restore
 #else
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension Dimension { get; set; }
+#endif
+        /// <summary>MIME type of the image bytes. Required when `data` is provided; must be omitted when `url` is provided. Supported types are `image/png`, `image/jpeg`, `image/gif`, and `image/webp`.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? MimeType { get; set; }
+#nullable restore
+#else
+        public string MimeType { get; set; }
+#endif
+        /// <summary>HTTP or HTTPS URL Cursor fetches. Mutually exclusive with `data`.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? Url { get; set; }
+#nullable restore
+#else
+        public string Url { get; set; }
 #endif
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Image"/> and sets the default values.
@@ -57,6 +74,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             {
                 { "data", n => { Data = n.GetStringValue(); } },
                 { "dimension", n => { Dimension = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension.CreateFromDiscriminatorValue); } },
+                { "mimeType", n => { MimeType = n.GetStringValue(); } },
+                { "url", n => { Url = n.GetStringValue(); } },
             };
         }
         /// <summary>
@@ -68,6 +87,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteStringValue("data", Data);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension>("dimension", Dimension);
+            writer.WriteStringValue("mimeType", MimeType);
+            writer.WriteStringValue("url", Url);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

@@ -40,7 +40,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public string LatestRunId { get; set; }
 #endif
-        /// <summary>Auto-derived agent name.</summary>
+        /// <summary>Display name. Auto-derived from the prompt when not supplied at create time. Omitted when no name has been set.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public string? Name { get; set; }

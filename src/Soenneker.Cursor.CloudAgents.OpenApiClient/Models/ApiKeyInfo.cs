@@ -14,7 +14,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>The apiKeyName property</summary>
+        /// <summary>Display name of the API key.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public string? ApiKeyName { get; set; }
@@ -22,15 +22,33 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public string ApiKeyName { get; set; }
 #endif
-        /// <summary>The createdAt property</summary>
+        /// <summary>When the API key was created.</summary>
         public DateTimeOffset? CreatedAt { get; set; }
-        /// <summary>The userEmail property</summary>
+        /// <summary>Email of the API key&apos;s owner. Omitted for service-account / team API keys.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public string? UserEmail { get; set; }
 #nullable restore
 #else
         public string UserEmail { get; set; }
+#endif
+        /// <summary>First name of the API key&apos;s owner, when populated.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? UserFirstName { get; set; }
+#nullable restore
+#else
+        public string UserFirstName { get; set; }
+#endif
+        /// <summary>Numeric Cursor user ID of the API key&apos;s owner. Omitted for service-account / team API keys, which aren&apos;t tied to a specific user.</summary>
+        public int? UserId { get; set; }
+        /// <summary>Last name of the API key&apos;s owner, when populated.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? UserLastName { get; set; }
+#nullable restore
+#else
+        public string UserLastName { get; set; }
 #endif
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ApiKeyInfo"/> and sets the default values.
@@ -60,6 +78,9 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
                 { "apiKeyName", n => { ApiKeyName = n.GetStringValue(); } },
                 { "createdAt", n => { CreatedAt = n.GetDateTimeOffsetValue(); } },
                 { "userEmail", n => { UserEmail = n.GetStringValue(); } },
+                { "userFirstName", n => { UserFirstName = n.GetStringValue(); } },
+                { "userId", n => { UserId = n.GetIntValue(); } },
+                { "userLastName", n => { UserLastName = n.GetStringValue(); } },
             };
         }
         /// <summary>
@@ -72,6 +93,9 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteStringValue("apiKeyName", ApiKeyName);
             writer.WriteDateTimeOffsetValue("createdAt", CreatedAt);
             writer.WriteStringValue("userEmail", UserEmail);
+            writer.WriteStringValue("userFirstName", UserFirstName);
+            writer.WriteIntValue("userId", UserId);
+            writer.WriteStringValue("userLastName", UserLastName);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

@@ -24,6 +24,16 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #endif
         /// <summary>The createdAt property</summary>
         public DateTimeOffset? CreatedAt { get; set; }
+        /// <summary>Wall-clock duration of the run in milliseconds. Populated once the run reaches a terminal status (`FINISHED`, `ERROR`, `CANCELLED`, `EXPIRED`).</summary>
+        public int? DurationMs { get; set; }
+        /// <summary>The agent&apos;s pushed branches and PRs. Populated once the agent has pushed at least one branch. Per-agent state, not per-run.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunGit? Git { get; set; }
+#nullable restore
+#else
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunGit Git { get; set; }
+#endif
         /// <summary>Unique run identifier.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -31,6 +41,14 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #nullable restore
 #else
         public string Id { get; set; }
+#endif
+        /// <summary>Final assistant reply text. Populated once the run terminates.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? Result { get; set; }
+#nullable restore
+#else
+        public string Result { get; set; }
 #endif
         /// <summary>Current run status.</summary>
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run_status? Status { get; set; }
@@ -63,7 +81,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             {
                 { "agentId", n => { AgentId = n.GetStringValue(); } },
                 { "createdAt", n => { CreatedAt = n.GetDateTimeOffsetValue(); } },
+                { "durationMs", n => { DurationMs = n.GetIntValue(); } },
+                { "git", n => { Git = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunGit>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunGit.CreateFromDiscriminatorValue); } },
                 { "id", n => { Id = n.GetStringValue(); } },
+                { "result", n => { Result = n.GetStringValue(); } },
                 { "status", n => { Status = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run_status>(); } },
                 { "updatedAt", n => { UpdatedAt = n.GetDateTimeOffsetValue(); } },
             };
@@ -77,7 +98,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteStringValue("agentId", AgentId);
             writer.WriteDateTimeOffsetValue("createdAt", CreatedAt);
+            writer.WriteIntValue("durationMs", DurationMs);
+            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunGit>("git", Git);
             writer.WriteStringValue("id", Id);
+            writer.WriteStringValue("result", Result);
             writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run_status>("status", Status);
             writer.WriteDateTimeOffsetValue("updatedAt", UpdatedAt);
             writer.WriteAdditionalData(AdditionalData);

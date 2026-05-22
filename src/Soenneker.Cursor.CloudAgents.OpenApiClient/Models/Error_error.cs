@@ -14,13 +14,21 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Machine-readable error code. Possible values include`unauthorized`, `api_key_not_found`, `plan_required`,`role_forbidden`, `feature_unavailable`,`validation_error`, `missing_body`, `agent_not_found`,`run_not_found`, `agent_busy`, `agent_archived`,`run_not_cancellable`, `rate_limit_exceeded`,`stream_expired`, `stream_unavailable`,`invalid_last_event_id`, `upstream_error`, and`internal_error`.</summary>
+        /// <summary>Machine-readable error code. Possible values include`unauthorized`, `api_key_not_found`, `plan_required`,`role_forbidden`, `feature_unavailable`,`integration_not_connected`, `validation_error`,`missing_body`, `invalid_model`, `invalid_branch_name`,`repository_required`, `repository_access`,`pr_resolution_failed`, `artifact_not_found`,`service_account_required`, `agent_not_found`,`run_not_found`, `agent_busy`, `agent_archived`,`agent_id_conflict`, `run_not_cancellable`,`rate_limit_exceeded`, `usage_limit_exceeded`,`stream_expired`, `stream_unavailable`,`invalid_last_event_id`, `client_cancelled`,`not_implemented`, `upstream_error`, and`internal_error`.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public string? Code { get; set; }
 #nullable restore
 #else
         public string Code { get; set; }
+#endif
+        /// <summary>Optional follow-up link. Populated for codes like `integration_not_connected`.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? HelpUrl { get; set; }
+#nullable restore
+#else
+        public string HelpUrl { get; set; }
 #endif
         /// <summary>Human-readable error message.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -29,6 +37,14 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #nullable restore
 #else
         public string Message { get; set; }
+#endif
+        /// <summary>Optional provider identifier. Populated for codes like `integration_not_connected`.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? Provider { get; set; }
+#nullable restore
+#else
+        public string Provider { get; set; }
 #endif
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error_error"/> and sets the default values.
@@ -56,7 +72,9 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             return new Dictionary<string, Action<IParseNode>>
             {
                 { "code", n => { Code = n.GetStringValue(); } },
+                { "helpUrl", n => { HelpUrl = n.GetStringValue(); } },
                 { "message", n => { Message = n.GetStringValue(); } },
+                { "provider", n => { Provider = n.GetStringValue(); } },
             };
         }
         /// <summary>
@@ -67,7 +85,9 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteStringValue("code", Code);
+            writer.WriteStringValue("helpUrl", HelpUrl);
             writer.WriteStringValue("message", Message);
+            writer.WriteStringValue("provider", Provider);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

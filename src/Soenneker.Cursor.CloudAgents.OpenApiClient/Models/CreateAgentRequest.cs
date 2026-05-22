@@ -14,17 +14,23 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Whether Cursor should open a pull request when the run completes.</summary>
-        public bool? AutoCreatePR { get; set; }
-        /// <summary>Whether to create a new branch (true) or push to an existing head branch (false). Only applies when `repos[0].prUrl` is provided.</summary>
-        public bool? AutoGenerateBranch { get; set; }
-        /// <summary>Custom branch name for the agent to create.</summary>
+        /// <summary>Optional client-supplied agent identifier in `bc-&lt;uuid&gt;` form. Re-POSTing the same `agentId` returns `409 agent_id_conflict` instead of creating a duplicate. Cannot be combined with `envVars`; omit `agentId` so the server mints one when you need session secrets.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? BranchName { get; set; }
+        public string? AgentId { get; set; }
 #nullable restore
 #else
-        public string BranchName { get; set; }
+        public string AgentId { get; set; }
+#endif
+        /// <summary>Whether Cursor should open a pull request when the run completes.</summary>
+        public bool? AutoCreatePR { get; set; }
+        /// <summary>Custom subagents the main agent can delegate to. Names must be unique and not collide with built-ins.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent>? CustomSubagents { get; set; }
+#nullable restore
+#else
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent> CustomSubagents { get; set; }
 #endif
         /// <summary>The env property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -34,7 +40,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv Env { get; set; }
 #endif
-        /// <summary>Session-scoped environment variables for the cloud agent. Values are encrypted at rest, injected into the agent&apos;s shell, and deleted with the agent. Names must be non-empty, 1024 bytes or less, and cannot start with `CURSOR_`. Values must be non-empty and 4096 bytes or less.</summary>
+        /// <summary>Session-scoped environment variables for the cloud agent.Values are encrypted at rest, injected into the agent&apos;sshell, and deleted with the agent. Names must be non-empty,255 bytes or less, and cannot start with `CURSOR_`. Valuesmust be non-empty and 4096 bytes or less. Cannot becombined with a client-supplied `agentId`.Beta: `envVars` is rolling out. If it isn&apos;t enabled foryour account yet, the field is silently ignored on createrather than failing the request — verify the values arepresent on a first run before relying on them inproduction.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars? EnvVars { get; set; }
@@ -60,6 +66,14 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef Model { get; set; }
 #endif
+        /// <summary>Display name for the agent. Auto-derived from the prompt when omitted.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? Name { get; set; }
+#nullable restore
+#else
+        public string Name { get; set; }
+#endif
         /// <summary>The prompt property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -68,7 +82,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt Prompt { get; set; }
 #endif
-        /// <summary>Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` to start a no-repo agent.</summary>
+        /// <summary>Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` (or pass `repos: []`) to start a no-repo agent.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>? Repos { get; set; }
@@ -78,6 +92,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #endif
         /// <summary>Whether to skip requesting the user as a reviewer when Cursor opens a PR. Only applies when `autoCreatePR` is true.</summary>
         public bool? SkipReviewerRequest { get; set; }
+        /// <summary>When `false` (the default), Cursor pushes commits to a newauto-generated branch (`cursor/...`) based on`repos[0].startingRef` (or the PR base ref when `prUrl`is set). When `true`, Cursor pushes directly to thatstarting ref — for a non-PR create, that&apos;s the branch youpassed in `startingRef`; for a `prUrl` create, that&apos;s thePR&apos;s head branch.</summary>
+        public bool? WorkOnCurrentBranch { get; set; }
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest"/> and sets the default values.
         /// </summary>
@@ -104,17 +120,19 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
+                { "agentId", n => { AgentId = n.GetStringValue(); } },
                 { "autoCreatePR", n => { AutoCreatePR = n.GetBoolValue(); } },
-                { "autoGenerateBranch", n => { AutoGenerateBranch = n.GetBoolValue(); } },
-                { "branchName", n => { BranchName = n.GetStringValue(); } },
+                { "customSubagents", n => { CustomSubagents = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "env", n => { Env = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv.CreateFromDiscriminatorValue); } },
                 { "envVars", n => { EnvVars = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars.CreateFromDiscriminatorValue); } },
                 { "mcpServers", n => { McpServers = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "mode", n => { Mode = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode>(); } },
                 { "model", n => { Model = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef.CreateFromDiscriminatorValue); } },
+                { "name", n => { Name = n.GetStringValue(); } },
                 { "prompt", n => { Prompt = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt.CreateFromDiscriminatorValue); } },
                 { "repos", n => { Repos = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "skipReviewerRequest", n => { SkipReviewerRequest = n.GetBoolValue(); } },
+                { "workOnCurrentBranch", n => { WorkOnCurrentBranch = n.GetBoolValue(); } },
             };
         }
         /// <summary>
@@ -124,17 +142,19 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
+            writer.WriteStringValue("agentId", AgentId);
             writer.WriteBoolValue("autoCreatePR", AutoCreatePR);
-            writer.WriteBoolValue("autoGenerateBranch", AutoGenerateBranch);
-            writer.WriteStringValue("branchName", BranchName);
+            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent>("customSubagents", CustomSubagents);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv>("env", Env);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars>("envVars", EnvVars);
             writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>("mcpServers", McpServers);
             writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode>("mode", Mode);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>("model", Model);
+            writer.WriteStringValue("name", Name);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt>("prompt", Prompt);
             writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>("repos", Repos);
             writer.WriteBoolValue("skipReviewerRequest", SkipReviewerRequest);
+            writer.WriteBoolValue("workOnCurrentBranch", WorkOnCurrentBranch);
             writer.WriteAdditionalData(AdditionalData);
         }
     }
