@@ -22,7 +22,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public string PrUrl { get; set; }
 #endif
-        /// <summary>Branch, tag, or commit hash to use as the starting point. Ignored when `prUrl` is provided.</summary>
+        /// <summary>Branch name or commit SHA to use as the starting point. Ignored when `prUrl` is provided.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public string? StartingRef { get; set; }
