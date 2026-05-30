@@ -40,7 +40,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv Env { get; set; }
 #endif
-        /// <summary>Session-scoped environment variables for the cloud agent.Values are encrypted at rest, injected into the agent&apos;sshell, and deleted with the agent. Names must be non-empty,255 bytes or less, and cannot start with `CURSOR_`. Valuesmust be non-empty and 4096 bytes or less. Cannot becombined with a client-supplied `agentId`.Beta: `envVars` is rolling out. If it isn&apos;t enabled foryour account yet, the field is silently ignored on createrather than failing the request — verify the values arepresent on a first run before relying on them inproduction.</summary>
+        /// <summary>&quot;Session-scoped environment variables for the cloud agent.Values are encrypted at rest, injected into the agent&apos;sshell, and deleted with the agent. Names must be non-empty,255 bytes or less, and cannot start with `CURSOR_`. Valuesmust be non-empty and 4096 bytes or less. Cannot becombined with a client-supplied `agentId`.Beta: `envVars` is rolling out. If it isn&apos;t enabled foryour account yet, the field is silently ignored on createrather than failing the request — verify the values arepresent on a first run before relying on them inproduction.&quot;</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars? EnvVars { get; set; }
@@ -56,7 +56,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer> McpServers { get; set; }
 #endif
-        /// <summary>Initial conversation mode for the agent&apos;s first run.</summary>
+        /// <summary>Conversation mode. `plan` explores and drafts a plan before coding; `agent` implements changes directly. On follow-up runs, omit to keep the conversation&apos;s current mode; set explicitly to switch modes for that run.</summary>
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode? Mode { get; set; }
         /// <summary>The model property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -77,12 +77,12 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         /// <summary>The prompt property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt? Prompt { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestPrompt? Prompt { get; set; }
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt Prompt { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestPrompt Prompt { get; set; }
 #endif
-        /// <summary>Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` (or pass `repos: []`) to start a no-repo agent.</summary>
+        /// <summary>&quot;Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` (or pass `repos: []`) to start a no-repo agent.&quot;</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>? Repos { get; set; }
@@ -100,7 +100,6 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public CreateAgentRequest()
         {
             AdditionalData = new Dictionary<string, object>();
-            Mode = global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode.Agent;
         }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
@@ -129,7 +128,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
                 { "mode", n => { Mode = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode>(); } },
                 { "model", n => { Model = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef.CreateFromDiscriminatorValue); } },
                 { "name", n => { Name = n.GetStringValue(); } },
-                { "prompt", n => { Prompt = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt.CreateFromDiscriminatorValue); } },
+                { "prompt", n => { Prompt = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestPrompt>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestPrompt.CreateFromDiscriminatorValue); } },
                 { "repos", n => { Repos = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "skipReviewerRequest", n => { SkipReviewerRequest = n.GetBoolValue(); } },
                 { "workOnCurrentBranch", n => { WorkOnCurrentBranch = n.GetBoolValue(); } },
@@ -151,7 +150,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode>("mode", Mode);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>("model", Model);
             writer.WriteStringValue("name", Name);
-            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_prompt>("prompt", Prompt);
+            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestPrompt>("prompt", Prompt);
             writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>("repos", Repos);
             writer.WriteBoolValue("skipReviewerRequest", SkipReviewerRequest);
             writer.WriteBoolValue("workOnCurrentBranch", WorkOnCurrentBranch);

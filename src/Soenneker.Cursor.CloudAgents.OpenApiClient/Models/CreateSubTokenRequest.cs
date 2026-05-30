@@ -25,6 +25,14 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #endif
         /// <summary>Active team member&apos;s numeric Cursor user ID. Mutually exclusive with `forUserEmail`.</summary>
         public int? ForUserId { get; set; }
+        /// <summary>Union discriminator</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? Type { get; set; }
+#nullable restore
+#else
+        public string Type { get; set; }
+#endif
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateSubTokenRequest"/> and sets the default values.
         /// </summary>
@@ -52,6 +60,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             {
                 { "forUserEmail", n => { ForUserEmail = n.GetStringValue(); } },
                 { "forUserId", n => { ForUserId = n.GetIntValue(); } },
+                { "type", n => { Type = n.GetStringValue(); } },
             };
         }
         /// <summary>
@@ -63,6 +72,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteStringValue("forUserEmail", ForUserEmail);
             writer.WriteIntValue("forUserId", ForUserId);
+            writer.WriteStringValue("type", Type);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

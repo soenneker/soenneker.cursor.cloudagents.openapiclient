@@ -1,0 +1,2432 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Cursor Cloud Agents API",
+    "description": "\"Programmatically create and manage Cursor Cloud Agents that work\nautonomously on your repositories. v1 separates a durable agent\nfrom one or more runs: each prompt submission creates a run on the\nagent. Streaming and cancellation are scoped to the active run.\n\"",
+    "contact": {
+      "email": "background-agent-feedback@cursor.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.cursor.com",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/v1/agents": {
+      "post": {
+        "summary": "Create an agent",
+        "description": "Create a Cloud Agent and immediately enqueue its initial run.\nThe response contains both the durable `agent` and the initial\n`run`.\n",
+        "operationId": "createAgent",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAgentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Agent created and initial run enqueued.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAgentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "get": {
+        "summary": "List agents",
+        "description": "List agents for the authenticated user, newest first.",
+        "operationId": "listAgents",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of agents to return.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pagination cursor from the previous response.",
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          {
+            "name": "prUrl",
+            "in": "query",
+            "description": "Filter agents by GitHub pull request URL.",
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "includeArchived",
+            "in": "query",
+            "description": "Whether to include archived agents.",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agents retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAgentsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/agents/{id}": {
+      "get": {
+        "summary": "Get an agent",
+        "description": "Retrieve durable metadata for an agent. Execution status lives on runs.",
+        "operationId": "getAgent",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AgentId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Agent"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an agent permanently",
+        "description": "Permanently delete an agent. This action is irreversible. Use POST /v1/agents/{id}/archive for reversible removal.",
+        "operationId": "deleteAgent",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AgentId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/agents/{id}/runs": {
+      "post": {
+        "summary": "Create a run",
+        "description": "Send a follow-up prompt to an existing active agent. The new\nrun uses the agent's current conversation and workspace state.\nOnly one run can be active per agent at a time.\n",
+        "operationId": "createRun",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AgentId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Run created and enqueued.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateRunResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "get": {
+        "summary": "List runs",
+        "description": "List runs for an agent, newest first.",
+        "operationId": "listRuns",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AgentId"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pagination cursor from the previous response.",
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Runs retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListRunsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/agents/{id}/runs/{runId}": {
+      "get": {
+        "summary": "Get a run",
+        "description": "Retrieve status and timestamps for a specific run.",
+        "operationId": "getRun",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AgentId"
+          },
+          {
+            "$ref": "#/components/parameters/RunId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Run retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Run"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/agents/{id}/runs/{runId}/stream": {
+      "get": {
+        "summary": "Stream a run",
+        "description": "Stream Server-Sent Events for one run. Event types are\n`status`, `assistant`, `thinking`, `tool_call`,\n`interaction_update`, `heartbeat`, `result`, `error`, and\n`done`.\n\n- `status` carries `{ runId, status }`. It has no `id` line\n  and is replayed at the top of every reconnect.\n- `result` carries `{ runId, status, text?, durationMs?,\n  git? }`; `text` is the final assistant reply, `durationMs`\n  the wall-clock duration, and `git` mirrors `Run.git`.\n- `interaction_update` carries the richer SDK-shape update\n  used by the TypeScript SDK and is emitted alongside the\n  simplified events that share the same event id. Use this if\n  you want the full SDK stream; otherwise handle the simplified\n  events and ignore it.\n\nReconnect with the `Last-Event-ID` header to resume after a\ndisconnect; the event ID must belong to the requested run\notherwise the endpoint returns `400 invalid_last_event_id`.\nResponses include the `X-Cursor-Stream-Retention-Seconds`\nheader; after the retention window the endpoint may return\n`410 stream_expired`. `tool_call` event data uses the\n`RunStreamToolCallData` schema.\n",
+        "operationId": "streamRun",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AgentId"
+          },
+          {
+            "$ref": "#/components/parameters/RunId"
+          },
+          {
+            "name": "Last-Event-ID",
+            "in": "header",
+            "description": "Resume from a previously received event ID for this run.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SSE stream of run events.",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "toolCall": {
+                    "summary": "Tool call events",
+                    "value": "id: 1713033005000-0\nevent: tool_call\ndata: {\"callId\":\"call-1\",\"name\":\"read_file\",\"status\":\"running\",\"args\":{\"path\":\"README.md\"}}\n\nid: 1713033006000-0\nevent: tool_call\ndata: {\"callId\":\"call-1\",\"name\":\"read_file\",\"status\":\"completed\",\"args\":{\"path\":\"README.md\"},\"result\":{\"success\":{\"content\":\"# Project\",\"totalLines\":1,\"fileSize\":9,\"path\":\"README.md\"}}}\n"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/agents/{id}/runs/{runId}/cancel": {
+      "post": {
+        "summary": "Cancel a run",
+        "description": "Cancel the active run for an agent. Cancellation is terminal —\nthe run transitions to `CANCELLED`. Cancelling a run that is\nalready terminal or was never active returns\n`409 run_not_cancellable`. To continue the conversation,\ncreate a new run on the same agent.\n",
+        "operationId": "cancelRun",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AgentId"
+          },
+          {
+            "$ref": "#/components/parameters/RunId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Run cancelled successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/agents/{id}/archive": {
+      "post": {
+        "summary": "Archive an agent",
+        "description": "Archive an agent. Archived agents remain readable but cannot accept new runs until unarchived.",
+        "operationId": "archiveAgent",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AgentId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent archived successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/agents/{id}/unarchive": {
+      "post": {
+        "summary": "Unarchive an agent",
+        "description": "Unarchive an agent so it can accept new runs again.",
+        "operationId": "unarchiveAgent",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AgentId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent unarchived successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/agents/{id}/artifacts": {
+      "get": {
+        "summary": "List artifacts",
+        "description": "List artifacts produced by an agent. Each artifact's `path` is\nrelative to the workspace's `artifacts/` directory. Pass that\n`path` to GET /v1/agents/{id}/artifacts/download to obtain a\npresigned download URL.\n",
+        "operationId": "listArtifacts",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AgentId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artifacts retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListArtifactsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/agents/{id}/artifacts/download": {
+      "get": {
+        "summary": "Download an artifact",
+        "description": "Retrieve a temporary 15-minute presigned S3 URL for an\nartifact. The `path` query parameter must be a relative path\nunder `artifacts/` returned by GET /v1/agents/{id}/artifacts.\n",
+        "operationId": "downloadArtifact",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AgentId"
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "description": "Relative artifact path under `artifacts/`.",
+            "required": true,
+            "schema": {
+              "minLength": 1,
+              "type": "string",
+              "example": "artifacts/screenshot.png"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Presigned URL retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadArtifactResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/me": {
+      "get": {
+        "summary": "API key info",
+        "description": "Retrieve information about the API key being used for authentication.",
+        "operationId": "getApiKeyInfo",
+        "responses": {
+          "200": {
+            "description": "API key info retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKeyInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/models": {
+      "get": {
+        "summary": "List models",
+        "description": "Returns a recommended set of explicit model IDs you can pass\nto the `model.id` field on POST /v1/agents. To use the\nconfigured default model, omit the `model` field from the\nrequest body entirely.\n",
+        "operationId": "listModels",
+        "responses": {
+          "200": {
+            "description": "Models retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListModelsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/repositories": {
+      "get": {
+        "summary": "List GitHub repositories",
+        "description": "List GitHub repositories accessible to the authenticated user\nthrough Cursor's GitHub App installation. This endpoint has\nvery strict rate limits (1 request per user per minute, 30\nper user per hour) and can take tens of seconds to respond\nfor users with access to many repositories. Cache responses\naggressively and handle this information not being available\ngracefully.\n",
+        "operationId": "listRepositories",
+        "responses": {
+          "200": {
+            "description": "Repositories retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListRepositoriesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/sub-tokens": {
+      "post": {
+        "summary": "Create A User-Scoped Worker Token",
+        "description": "Create a one-hour user-scoped token for a My Machines worker to run as an\nactive team member. Requires an agent-scoped team service account\nAPI key. User-scoped tokens can't mint other user-scoped tokens.\n",
+        "operationId": "createSubToken",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSubTokenRequest"
+              },
+              "examples": {
+                "byEmail": {
+                  "summary": "Identify the user by email",
+                  "value": {
+                    "forUserEmail": "alice@company.com"
+                  }
+                },
+                "byUserId": {
+                  "summary": "Identify the user by Cursor user ID",
+                  "value": {
+                    "forUserId": 42
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User-scoped token created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSubTokenResponse"
+                },
+                "example": {
+                  "accessToken": "eyJ...",
+                  "expiresAt": "2026-04-24T19:00:00.000Z",
+                  "userId": 42,
+                  "teamId": 456
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ImageDimension": {
+        "required": [
+          "width",
+          "height"
+        ],
+        "type": "object",
+        "properties": {
+          "width": {
+            "minimum": 1,
+            "type": "integer",
+            "description": "Width in pixels"
+          },
+          "height": {
+            "minimum": 1,
+            "type": "integer",
+            "description": "Height in pixels"
+          }
+        }
+      },
+      "Image": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "oneOf": [
+          {
+            "required": [
+              "data",
+              "mimeType"
+            ],
+            "type": "object",
+            "not": {
+              "required": [
+                "url"
+              ]
+            }
+          },
+          {
+            "required": [
+              "url"
+            ],
+            "type": "object",
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "data"
+                  ]
+                },
+                {
+                  "required": [
+                    "mimeType"
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "properties": {
+          "data": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Base64 encoded image bytes (max 15 MB). Mutually exclusive with `url`.",
+            "example": "iVBORw0KGgoAAAANSUhEUgAA..."
+          },
+          "url": {
+            "type": "string",
+            "description": "HTTP or HTTPS URL Cursor fetches. Mutually exclusive with `data`.",
+            "format": "uri",
+            "example": "https://example.com/screenshot.png"
+          },
+          "mimeType": {
+            "minLength": 1,
+            "type": "string",
+            "description": "MIME type of the image bytes. Required when `data` is provided; must be omitted when `url` is provided. Supported types are `image/png`, `image/jpeg`, `image/gif`, and `image/webp`.",
+            "example": "image/png"
+          },
+          "dimension": {
+            "$ref": "#/components/schemas/ImageDimension"
+          },
+          "type": {
+            "type": "string",
+            "description": "Union discriminator"
+          }
+        },
+        "description": "An image input. Provide exactly one of `data` or `url`. When\n`data` is provided, `mimeType` is required. When `url` is\nprovided, Cursor fetches the image and `mimeType` must be\nomitted.\n",
+        "discriminator": {
+          "propertyName": "type"
+        }
+      },
+      "ModelRef": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Explicit model ID returned by GET /v1/models. Omit `model` from the request to use the configured default.",
+            "example": "composer-2"
+          },
+          "params": {
+            "type": "array",
+            "items": {
+              "required": [
+                "id",
+                "value"
+              ],
+              "type": "object",
+              "properties": {
+                "id": {
+                  "minLength": 1,
+                  "type": "string",
+                  "example": "thinking"
+                },
+                "value": {
+                  "minLength": 1,
+                  "type": "string",
+                  "example": "high"
+                }
+              }
+            },
+            "description": "Per-model parameters such as reasoning effort or max mode. Use only parameters supported by the selected model."
+          }
+        }
+      },
+      "RepoConfig": {
+        "required": [
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "url": {
+            "minLength": 1,
+            "type": "string",
+            "description": "GitHub repository URL. Required on every repo entry, including when `prUrl` is provided.",
+            "example": "https://github.com/your-org/your-repo"
+          },
+          "startingRef": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Branch name or commit SHA to use as the starting point. Ignored when `prUrl` is provided.",
+            "example": "main"
+          },
+          "prUrl": {
+            "type": "string",
+            "description": "GitHub pull request URL. When provided, the agent works on this PR's repository and branches; `startingRef` is ignored. `url` must still be set on the same entry.",
+            "format": "uri",
+            "example": "https://github.com/your-org/your-repo/pull/123"
+          }
+        }
+      },
+      "AgentEnv": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": [
+              "cloud",
+              "pool",
+              "machine"
+            ],
+            "type": "string",
+            "additionalProperties": false,
+            "description": "Execution environment type. `cloud` uses Cursor-hosted VMs; `pool` and `machine` route to self-hosted workers.",
+            "example": "cloud"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Named Cursor-hosted environment, self-hosted pool, or self-hosted machine name.",
+            "example": "Release workspace"
+          }
+        }
+      },
+      "McpAuth": {
+        "required": [
+          "CLIENT_ID"
+        ],
+        "type": "object",
+        "properties": {
+          "CLIENT_ID": {
+            "minLength": 1,
+            "type": "string",
+            "description": "OAuth client ID for the MCP server.",
+            "example": "client-id"
+          },
+          "CLIENT_SECRET": {
+            "type": "string",
+            "description": "OAuth client secret for the MCP server.",
+            "example": "client-secret"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "description": "OAuth scopes to request for the MCP server."
+          }
+        },
+        "additionalProperties": false
+      },
+      "StdioMcpServer": {
+        "required": [
+          "name",
+          "command"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "MCP server name exposed to the agent.",
+            "example": "github"
+          },
+          "type": {
+            "enum": [
+              "stdio"
+            ],
+            "type": "string",
+            "additionalProperties": false,
+            "description": "Stdio MCP server. Defaults to `stdio` when `command` is provided.",
+            "example": "stdio"
+          },
+          "command": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Command to start inside the cloud agent VM.",
+            "example": "npx"
+          },
+          "args": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Command arguments."
+          },
+          "env": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Environment variables passed to the stdio MCP server inside the VM."
+          }
+        },
+        "additionalProperties": false
+      },
+      "RemoteMcpServer": {
+        "required": [
+          "name",
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "MCP server name exposed to the agent.",
+            "example": "linear"
+          },
+          "type": {
+            "enum": [
+              "http",
+              "sse"
+            ],
+            "type": "string",
+            "additionalProperties": false,
+            "description": "Remote MCP transport. Defaults to `http` when `url` is provided.",
+            "example": "http"
+          },
+          "url": {
+            "type": "string",
+            "description": "HTTP or HTTPS URL for the remote MCP server. Userinfo in the URL is not allowed.",
+            "format": "uri",
+            "example": "https://mcp.linear.app/sse"
+          },
+          "headers": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Headers Cursor sends with every request to the remote MCP server."
+          },
+          "auth": {
+            "$ref": "#/components/schemas/McpAuth"
+          }
+        },
+        "additionalProperties": false
+      },
+      "McpServer": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/StdioMcpServer"
+          },
+          {
+            "$ref": "#/components/schemas/RemoteMcpServer"
+          }
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Union discriminator"
+          }
+        },
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "StdioMcpServer": "#/components/schemas/StdioMcpServer",
+            "RemoteMcpServer": "#/components/schemas/RemoteMcpServer"
+          }
+        }
+      },
+      "AgentSummary": {
+        "required": [
+          "id",
+          "status",
+          "env",
+          "url",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique agent identifier.",
+            "example": "bc-00000000-0000-0000-0000-000000000001"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name. Auto-derived from the prompt when not supplied at create time. Omitted when no name has been set.",
+            "example": "Add README with setup instructions"
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "ARCHIVED"
+            ],
+            "type": "string",
+            "additionalProperties": false,
+            "description": "Agent lifecycle state. Execution status lives on runs."
+          },
+          "env": {
+            "$ref": "#/components/schemas/AgentEnv"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL to view the agent in Cursor Web.",
+            "format": "uri",
+            "example": "https://cursor.com/agents/bc-00000000-0000-0000-0000-000000000001"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the agent was created.",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "When the agent was last updated.",
+            "format": "date-time"
+          },
+          "latestRunId": {
+            "type": "string",
+            "description": "ID of the most recent run on this agent, if any.",
+            "example": "run-00000000-0000-0000-0000-000000000001"
+          }
+        }
+      },
+      "Agent": {
+        "required": [
+          "id",
+          "status",
+          "env",
+          "url",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique agent identifier.",
+            "example": "bc-00000000-0000-0000-0000-000000000001"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name. Auto-derived from the prompt when not supplied at create time. Omitted when no name has been set.",
+            "example": "Add README with setup instructions"
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "ARCHIVED"
+            ],
+            "type": "string",
+            "additionalProperties": false,
+            "description": "Agent lifecycle state. Execution status lives on runs."
+          },
+          "env": {
+            "$ref": "#/components/schemas/AgentEnv"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL to view the agent in Cursor Web.",
+            "format": "uri",
+            "example": "https://cursor.com/agents/bc-00000000-0000-0000-0000-000000000001"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the agent was created.",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "When the agent was last updated.",
+            "format": "date-time"
+          },
+          "latestRunId": {
+            "type": "string",
+            "description": "ID of the most recent run on this agent, if any.",
+            "example": "run-00000000-0000-0000-0000-000000000001"
+          },
+          "repos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RepoConfig"
+            },
+            "description": "Repository configuration. Empty for no-repo agents."
+          },
+          "workOnCurrentBranch": {
+            "type": "boolean",
+            "description": "When `false` (the default), Cursor pushes commits to a new auto-generated branch. When `true`, commits land on the existing head branch.",
+            "example": false
+          },
+          "autoCreatePR": {
+            "type": "boolean",
+            "description": "Whether Cursor opens a pull request when the run completes.",
+            "example": true
+          },
+          "skipReviewerRequest": {
+            "type": "boolean",
+            "description": "Whether to skip requesting the user as a reviewer when Cursor opens a PR."
+          },
+          "customSubagents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomSubagent"
+            },
+            "description": "Custom subagents defined at create time. Omitted when none were provided."
+          }
+        }
+      },
+      "RunGitBranch": {
+        "required": [
+          "repoUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "repoUrl": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Repository URL the agent pushed to. Returned without the scheme (for example, `github.com/your-org/your-repo`).",
+            "example": "github.com/your-org/your-repo"
+          },
+          "branch": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Branch name the agent pushed.",
+            "example": "cursor/add-readme-a1b2"
+          },
+          "prUrl": {
+            "type": "string",
+            "description": "Pull request URL, when Cursor opened a PR.",
+            "format": "uri",
+            "example": "https://github.com/your-org/your-repo/pull/123"
+          }
+        }
+      },
+      "RunGit": {
+        "required": [
+          "branches"
+        ],
+        "type": "object",
+        "properties": {
+          "branches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RunGitBranch"
+            },
+            "description": "Branches the agent has pushed. Stacked agents return one entry per branch."
+          }
+        },
+        "description": "The agent's current pushed branches and pull requests. This is\nper-agent state — every run on the same agent returns the same\n`git` snapshot rather than only that run's contributions. Use\nthe agent's `latestRunId` or the SSE stream to attribute work\nto a specific run.\n"
+      },
+      "Run": {
+        "required": [
+          "id",
+          "agentId",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique run identifier.",
+            "example": "run-00000000-0000-0000-0000-000000000001"
+          },
+          "agentId": {
+            "type": "string",
+            "description": "ID of the agent this run belongs to.",
+            "example": "bc-00000000-0000-0000-0000-000000000001"
+          },
+          "status": {
+            "enum": [
+              "CREATING",
+              "RUNNING",
+              "FINISHED",
+              "ERROR",
+              "CANCELLED",
+              "EXPIRED"
+            ],
+            "type": "string",
+            "additionalProperties": false,
+            "description": "Current run status."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "durationMs": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Wall-clock duration of the run in milliseconds. Populated once the run reaches a terminal status (`FINISHED`, `ERROR`, `CANCELLED`, `EXPIRED`).",
+            "example": 12357
+          },
+          "result": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Final assistant reply text. Populated once the run terminates.",
+            "example": "Added README.md with installation instructions."
+          },
+          "git": {
+            "required": [
+              "branches"
+            ],
+            "type": "object",
+            "properties": {
+              "branches": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/RunGitBranch"
+                },
+                "description": "Branches the agent has pushed. Stacked agents return one entry per branch."
+              }
+            },
+            "description": "The agent's pushed branches and PRs. Populated once the agent has pushed at least one branch. Per-agent state, not per-run."
+          }
+        }
+      },
+      "RunStreamToolCallTruncation": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "boolean",
+            "description": "Present and true when the tool arguments were too large to include in the stream.",
+            "example": true
+          },
+          "result": {
+            "type": "boolean",
+            "description": "Present and true when the tool result was too large to include in the stream.",
+            "example": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "JsonValue": {
+        "required": [
+          "type"
+        ],
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/JsonValue_Branch1"
+          },
+          {
+            "$ref": "#/components/schemas/JsonValue_Branch2"
+          },
+          {
+            "$ref": "#/components/schemas/JsonValue_Branch3"
+          },
+          {
+            "type": "object"
+          },
+          {
+            "$ref": "#/components/schemas/JsonValue_Branch5"
+          }
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Union discriminator"
+          }
+        },
+        "description": "Any JSON value.",
+        "nullable": true,
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "JsonValue_1": "#/components/schemas/JsonValue_Branch1",
+            "JsonValue_2": "#/components/schemas/JsonValue_Branch2",
+            "JsonValue_3": "#/components/schemas/JsonValue_Branch3",
+            "JsonValue_5": "#/components/schemas/JsonValue_Branch5"
+          }
+        }
+      },
+      "RunStreamToolCallData": {
+        "required": [
+          "callId",
+          "name",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "callId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Stable identifier for one tool invocation across updates.",
+            "example": "call-1"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Public tool name, such as `read_file`, `run_terminal_cmd`, or `mcp`.",
+            "example": "read_file"
+          },
+          "status": {
+            "enum": [
+              "running",
+              "completed"
+            ],
+            "type": "string",
+            "additionalProperties": false,
+            "description": "Tool invocation lifecycle status.",
+            "example": "completed"
+          },
+          "args": {
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonValue"
+              }
+            ],
+            "description": "Tool-specific JSON arguments, when available.",
+            "example": {
+              "path": "README.md"
+            }
+          },
+          "result": {
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JsonValue"
+              }
+            ],
+            "description": "Tool-specific JSON result, when available.",
+            "example": {
+              "success": {
+                "content": "# Project",
+                "totalLines": 1,
+                "fileSize": 9,
+                "path": "README.md"
+              }
+            }
+          },
+          "truncated": {
+            "$ref": "#/components/schemas/RunStreamToolCallTruncation"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RunStreamToolCallEvent": {
+        "required": [
+          "event",
+          "data"
+        ],
+        "type": "object",
+        "properties": {
+          "event": {
+            "enum": [
+              "tool_call"
+            ],
+            "type": "string",
+            "additionalProperties": false
+          },
+          "id": {
+            "type": "string",
+            "description": "Opaque SSE event id passed back via `Last-Event-ID` to resume the stream. Do not parse — the format is implementation-defined.",
+            "example": "1713033006000-0"
+          },
+          "data": {
+            "$ref": "#/components/schemas/RunStreamToolCallData"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomSubagent": {
+        "required": [
+          "name",
+          "description",
+          "prompt"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "description": "Subagent name. Must be unique within `customSubagents` and cannot collide with built-ins (for example, `explore`, `shell`, `debug`, `computerUse`, `cursorGuide`).",
+            "example": "frontend-reviewer"
+          },
+          "description": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "type": "string",
+            "description": "Short summary used by the main agent to decide when to delegate."
+          },
+          "prompt": {
+            "maxLength": 8192,
+            "minLength": 1,
+            "type": "string",
+            "description": "System prompt the subagent receives when invoked."
+          },
+          "model": {
+            "type": "object",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UnionBranch"
+              },
+              {
+                "$ref": "#/components/schemas/ModelRef"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateAgentRequest": {
+        "required": [
+          "prompt"
+        ],
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "$ref": "#/components/schemas/CreateAgentRequestPrompt"
+          },
+          "model": {
+            "$ref": "#/components/schemas/ModelRef"
+          },
+          "name": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "description": "Display name for the agent. Auto-derived from the prompt when omitted.",
+            "example": "Add README with setup instructions"
+          },
+          "agentId": {
+            "minLength": 1,
+            "pattern": "^bc-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            "type": "string",
+            "description": "Optional client-supplied agent identifier in `bc-<uuid>` form. Re-POSTing the same `agentId` returns `409 agent_id_conflict` instead of creating a duplicate. Cannot be combined with `envVars`; omit `agentId` so the server mints one when you need session secrets.",
+            "example": "bc-00000000-0000-0000-0000-000000000001"
+          },
+          "env": {
+            "$ref": "#/components/schemas/AgentEnv"
+          },
+          "repos": {
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RepoConfig"
+            },
+            "description": "\"Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` (or pass `repos: []`) to start a no-repo agent.\""
+          },
+          "workOnCurrentBranch": {
+            "type": "boolean",
+            "description": "When `false` (the default), Cursor pushes commits to a new\nauto-generated branch (`cursor/...`) based on\n`repos[0].startingRef` (or the PR base ref when `prUrl`\nis set). When `true`, Cursor pushes directly to that\nstarting ref — for a non-PR create, that's the branch you\npassed in `startingRef`; for a `prUrl` create, that's the\nPR's head branch.\n",
+            "default": false
+          },
+          "autoCreatePR": {
+            "type": "boolean",
+            "description": "Whether Cursor should open a pull request when the run completes.",
+            "default": false
+          },
+          "skipReviewerRequest": {
+            "type": "boolean",
+            "description": "Whether to skip requesting the user as a reviewer when Cursor opens a PR. Only applies when `autoCreatePR` is true.",
+            "default": false
+          },
+          "envVars": {
+            "type": "object",
+            "additionalProperties": {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            "description": "\"Session-scoped environment variables for the cloud agent.\nValues are encrypted at rest, injected into the agent's\nshell, and deleted with the agent. Names must be non-empty,\n255 bytes or less, and cannot start with `CURSOR_`. Values\nmust be non-empty and 4096 bytes or less. Cannot be\ncombined with a client-supplied `agentId`.\n\nBeta: `envVars` is rolling out. If it isn't enabled for\nyour account yet, the field is silently ignored on create\nrather than failing the request — verify the values are\npresent on a first run before relying on them in\nproduction.\n\""
+          },
+          "mcpServers": {
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/McpServer"
+            },
+            "description": "Inline MCP server definitions available to the initial run. Remote servers support `headers` or OAuth `auth`; stdio servers run inside the cloud agent VM and can receive `env`. Server names must be unique."
+          },
+          "customSubagents": {
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomSubagent"
+            },
+            "description": "Custom subagents the main agent can delegate to. Names must be unique and not collide with built-ins."
+          },
+          "mode": {
+            "$ref": "#/components/schemas/AgentMode"
+          }
+        }
+      },
+      "CreateRunRequest": {
+        "required": [
+          "prompt"
+        ],
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "$ref": "#/components/schemas/CreateRunRequestPrompt"
+          },
+          "mcpServers": {
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/McpServer"
+            },
+            "description": "Inline MCP server definitions for this follow-up run. When provided, these definitions replace any create-time inline MCP servers for this run."
+          },
+          "mode": {
+            "$ref": "#/components/schemas/AgentMode"
+          }
+        }
+      },
+      "AgentMode": {
+        "enum": [
+          "agent",
+          "plan"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "Conversation mode. `plan` explores and drafts a plan before coding; `agent` implements changes directly. On follow-up runs, omit to keep the conversation's current mode; set explicitly to switch modes for that run.\n"
+      },
+      "CreateAgentResponse": {
+        "required": [
+          "agent",
+          "run"
+        ],
+        "type": "object",
+        "properties": {
+          "agent": {
+            "$ref": "#/components/schemas/Agent"
+          },
+          "run": {
+            "$ref": "#/components/schemas/Run"
+          }
+        }
+      },
+      "CreateRunResponse": {
+        "required": [
+          "run"
+        ],
+        "type": "object",
+        "properties": {
+          "run": {
+            "$ref": "#/components/schemas/Run"
+          }
+        }
+      },
+      "ListAgentsResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentSummary"
+            },
+            "description": "Agents, newest first."
+          },
+          "nextCursor": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages.",
+            "example": "bc-00000000-0000-0000-0000-000000000002"
+          }
+        }
+      },
+      "ListRunsResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Run"
+            },
+            "description": "Runs for this agent, newest first."
+          },
+          "nextCursor": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages."
+          }
+        }
+      },
+      "IdResponse": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identifier of the affected resource."
+          }
+        }
+      },
+      "Artifact": {
+        "required": [
+          "path",
+          "sizeBytes",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "path": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Artifact path relative to the workspace's `artifacts/` directory.",
+            "example": "artifacts/screenshot.png"
+          },
+          "sizeBytes": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "File size in bytes.",
+            "example": 12345
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Last modified timestamp.",
+            "format": "date-time"
+          }
+        }
+      },
+      "ListArtifactsResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Artifact"
+            },
+            "description": "Artifacts produced by the agent. Returns at most 100 artifacts."
+          }
+        }
+      },
+      "DownloadArtifactResponse": {
+        "required": [
+          "url",
+          "expiresAt"
+        ],
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Temporary 15-minute presigned S3 URL for downloading the artifact.",
+            "format": "uri",
+            "example": "https://cloud-agent-artifacts.s3.us-east-1.amazonaws.com/..."
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "When the presigned URL expires.",
+            "format": "date-time"
+          }
+        }
+      },
+      "ApiKeyInfo": {
+        "required": [
+          "apiKeyName",
+          "createdAt"
+        ],
+        "type": "object",
+        "properties": {
+          "apiKeyName": {
+            "type": "string",
+            "description": "Display name of the API key.",
+            "example": "Production API Key"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the API key was created.",
+            "format": "date-time"
+          },
+          "userId": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Numeric Cursor user ID of the API key's owner. Omitted for service-account / team API keys, which aren't tied to a specific user.",
+            "example": 42
+          },
+          "userEmail": {
+            "type": "string",
+            "description": "Email of the API key's owner. Omitted for service-account / team API keys.",
+            "format": "email",
+            "example": "developer@example.com"
+          },
+          "userFirstName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "First name of the API key's owner, when populated.",
+            "example": "Alex"
+          },
+          "userLastName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Last name of the API key's owner, when populated.",
+            "example": "Rivera"
+          }
+        }
+      },
+      "ModelParameterValueDefinition": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Permitted value for the parameter.",
+            "example": true
+          },
+          "displayName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Human-readable label for the value.",
+            "example": "Fast"
+          }
+        }
+      },
+      "ModelParameterDefinition": {
+        "required": [
+          "id",
+          "values"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Parameter identifier. Pass as `model.params[].id`.",
+            "example": "fast"
+          },
+          "displayName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Human-readable label for the parameter.",
+            "example": "Fast"
+          },
+          "values": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModelParameterValueDefinition"
+            },
+            "description": "Permitted values for this parameter."
+          }
+        }
+      },
+      "ModelVariant": {
+        "required": [
+          "params",
+          "displayName"
+        ],
+        "type": "object",
+        "properties": {
+          "params": {
+            "type": "array",
+            "items": {
+              "required": [
+                "id",
+                "value"
+              ],
+              "type": "object",
+              "properties": {
+                "id": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "value": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Concrete parameter values that, combined with the parent model `id`, form a valid model selection. May be empty."
+          },
+          "displayName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Human-readable label for this variant."
+          },
+          "description": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "isDefault": {
+            "type": "boolean",
+            "description": "True for the variant Cursor selects when the user picks this model without explicit `params`."
+          }
+        }
+      },
+      "ModelListItem": {
+        "required": [
+          "id",
+          "displayName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Pass this value as `model.id` when creating an agent.",
+            "example": "composer-2"
+          },
+          "displayName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Human-readable model name.",
+            "example": "Composer 2"
+          },
+          "description": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "aliases": {
+            "type": "array",
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "description": "Alternate IDs that resolve to the same model."
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModelParameterDefinition"
+            },
+            "description": "Per-model parameter definitions, when the model accepts parameters. Use these to populate `model.params`."
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModelVariant"
+            },
+            "description": "Concrete `id`+`params` combinations the model accepts."
+          }
+        }
+      },
+      "ListModelsResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModelListItem"
+            },
+            "description": "Recommended models. Use `id` (and optionally `params`) when creating an agent."
+          }
+        }
+      },
+      "Repository": {
+        "required": [
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "GitHub repository URL.",
+            "format": "uri",
+            "example": "https://github.com/your-org/your-repo"
+          }
+        }
+      },
+      "ListRepositoriesResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Repository"
+            }
+          }
+        }
+      },
+      "CreateSubTokenRequest": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "oneOf": [
+          {
+            "required": [
+              "forUserEmail"
+            ],
+            "type": "object",
+            "not": {
+              "required": [
+                "forUserId"
+              ]
+            }
+          },
+          {
+            "required": [
+              "forUserId"
+            ],
+            "type": "object",
+            "not": {
+              "required": [
+                "forUserEmail"
+              ]
+            }
+          }
+        ],
+        "properties": {
+          "forUserEmail": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Active team member email. Case-insensitive. Mutually exclusive with `forUserId`.",
+            "format": "email",
+            "example": "alice@company.com"
+          },
+          "forUserId": {
+            "minimum": 1,
+            "type": "integer",
+            "description": "Active team member's numeric Cursor user ID. Mutually exclusive with `forUserEmail`.",
+            "example": 42
+          },
+          "type": {
+            "type": "string",
+            "description": "Union discriminator"
+          }
+        },
+        "description": "Provide exactly one active team member identifier.",
+        "discriminator": {
+          "propertyName": "type"
+        }
+      },
+      "CreateSubTokenResponse": {
+        "required": [
+          "accessToken",
+          "expiresAt",
+          "userId",
+          "teamId"
+        ],
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Short-lived access token scoped to the requested user. Pass this to the worker with --auth-token or write it to the file used by --auth-token-file.",
+            "example": "eyJ..."
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "When the access token expires (1 hour after mint).",
+            "format": "date-time",
+            "example": "2026-04-24T19:00:00.000Z"
+          },
+          "userId": {
+            "type": "integer",
+            "description": "Numeric ID of the resolved team member.",
+            "example": 42
+          },
+          "teamId": {
+            "type": "integer",
+            "description": "Numeric ID of the service account's team.",
+            "example": 456
+          }
+        }
+      },
+      "Error": {
+        "required": [
+          "error"
+        ],
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorError"
+          }
+        }
+      },
+      "StdioMcpServerEnv": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        },
+        "description": "Environment variables passed to the stdio MCP server inside the VM.",
+        "example": {
+          "GITHUB_TOKEN": "ghp_..."
+        }
+      },
+      "RemoteMcpServerHeaders": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        },
+        "description": "Headers Cursor sends with every request to the remote MCP server.",
+        "example": {
+          "Authorization": "Bearer lin_api_..."
+        }
+      },
+      "CreateAgentRequestPrompt": {
+        "required": [
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "text": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Task instruction for the agent.",
+            "example": "Add a README with setup instructions"
+          },
+          "images": {
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Image"
+            },
+            "description": "Image inputs. Each entry must provide either `data` (with required `mimeType`) or `url`. Maximum 5 images, 15 MB each."
+          }
+        }
+      },
+      "CreateAgentRequestEnvVars": {
+        "maxProperties": 50,
+        "type": "object",
+        "additionalProperties": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "type": "string"
+        },
+        "description": "\"Session-scoped environment variables for the cloud agent.\nValues are encrypted at rest, injected into the agent's\nshell, and deleted with the agent. Names must be non-empty,\n255 bytes or less, and cannot start with `CURSOR_`. Values\nmust be non-empty and 4096 bytes or less. Cannot be\ncombined with a client-supplied `agentId`.\n\nBeta: `envVars` is rolling out. If it isn't enabled for\nyour account yet, the field is silently ignored on create\nrather than failing the request — verify the values are\npresent on a first run before relying on them in\nproduction.\n\""
+      },
+      "CreateRunRequestPrompt": {
+        "required": [
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "text": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Follow-up instruction text.",
+            "example": "Also add troubleshooting steps"
+          },
+          "images": {
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Image"
+            },
+            "description": "Image inputs for the follow-up. Each entry must provide either `data` (with required `mimeType`) or `url`. Maximum 5 images, 15 MB each."
+          }
+        }
+      },
+      "ErrorError": {
+        "required": [
+          "code",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Machine-readable error code. Possible values include\n`unauthorized`, `api_key_not_found`, `plan_required`,\n`role_forbidden`, `feature_unavailable`,\n`integration_not_connected`, `validation_error`,\n`missing_body`, `invalid_model`, `invalid_branch_name`,\n`repository_required`, `repository_access`,\n`pr_resolution_failed`, `artifact_not_found`,\n`service_account_required`, `agent_not_found`,\n`run_not_found`, `agent_busy`, `agent_archived`,\n`agent_id_conflict`, `run_not_cancellable`,\n`rate_limit_exceeded`, `usage_limit_exceeded`,\n`stream_expired`, `stream_unavailable`,\n`invalid_last_event_id`, `client_cancelled`,\n`not_implemented`, `upstream_error`, and\n`internal_error`.\n"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message."
+          },
+          "helpUrl": {
+            "type": "string",
+            "description": "Optional follow-up link. Populated for codes like `integration_not_connected`.",
+            "format": "uri"
+          },
+          "provider": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Optional provider identifier. Populated for codes like `integration_not_connected`."
+          }
+        }
+      },
+      "StreamRun200": {
+        "type": "string"
+      },
+      "JsonValue_Branch1": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "JsonValue_Branch2": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number"
+          }
+        }
+      },
+      "JsonValue_Branch3": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "boolean"
+          }
+        }
+      },
+      "JsonValue_Branch5": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "ExamplePayload": {
+        "type": "object",
+        "description": "Placeholder schema for path example refs"
+      },
+      "UnionBranch": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "enum": [
+              "inherit"
+            ],
+            "type": "string",
+            "additionalProperties": false,
+            "description": "Use the parent agent's model selection."
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Validation error or malformed request body.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Invalid or missing API key.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Authenticated but insufficient permissions, plan required, or feature unavailable.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Agent or run not found.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, or `run_not_cancellable`).",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Gone": {
+        "description": "Stream retention window has elapsed (`stream_expired`).",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "Rate limit exceeded. Response includes `Retry-After`, `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` headers.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "InternalError": {
+        "description": "Internal server error.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "AgentId": {
+        "name": "id",
+        "in": "path",
+        "description": "Unique identifier for the agent.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "bc-00000000-0000-0000-0000-000000000001"
+        }
+      },
+      "RunId": {
+        "name": "runId",
+        "in": "path",
+        "description": "Unique identifier for the run.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "run-00000000-0000-0000-0000-000000000001"
+        }
+      }
+    },
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "description": "API key from Cursor Dashboard, supplied as the Basic\nAuthentication username with an empty password.\n",
+        "scheme": "basic"
+      },
+      "bearerAuth": {
+        "type": "http",
+        "description": "API key from Cursor Dashboard, supplied via\n`Authorization: Bearer <key>`. Equivalent to Basic Auth.\n",
+        "scheme": "bearer"
+      },
+      "assets_jwt": {
+        "type": "http",
+        "description": "JWT used for assets upload",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "basicAuth": [ ]
+    },
+    {
+      "bearerAuth": [ ]
+    }
+  ]
+}

@@ -39,6 +39,14 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public string MimeType { get; set; }
 #endif
+        /// <summary>Union discriminator</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? Type { get; set; }
+#nullable restore
+#else
+        public string Type { get; set; }
+#endif
         /// <summary>HTTP or HTTPS URL Cursor fetches. Mutually exclusive with `data`.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -75,6 +83,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
                 { "data", n => { Data = n.GetStringValue(); } },
                 { "dimension", n => { Dimension = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension.CreateFromDiscriminatorValue); } },
                 { "mimeType", n => { MimeType = n.GetStringValue(); } },
+                { "type", n => { Type = n.GetStringValue(); } },
                 { "url", n => { Url = n.GetStringValue(); } },
             };
         }
@@ -88,6 +97,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteStringValue("data", Data);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ImageDimension>("dimension", Dimension);
             writer.WriteStringValue("mimeType", MimeType);
+            writer.WriteStringValue("type", Type);
             writer.WriteStringValue("url", Url);
             writer.WriteAdditionalData(AdditionalData);
         }

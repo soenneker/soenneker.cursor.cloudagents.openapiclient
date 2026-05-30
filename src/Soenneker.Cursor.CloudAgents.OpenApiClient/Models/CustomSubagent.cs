@@ -81,7 +81,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteStringValue("prompt", Prompt);
         }
         /// <summary>
-        /// Composed type wrapper for classes <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef"/>, <see cref="string"/>
+        /// Composed type wrapper for classes <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef"/>, <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UnionBranch"/>
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
         public partial class CustomSubagent_model : IComposedTypeWrapper, IParsable
@@ -94,13 +94,13 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
             public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef ModelRef { get; set; }
 #endif
-            /// <summary>Composed type representation for type <see cref="string"/></summary>
+            /// <summary>Composed type representation for type <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UnionBranch"/></summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-            public string? String { get; set; }
+            public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UnionBranch? UnionBranch { get; set; }
 #nullable restore
 #else
-            public string String { get; set; }
+            public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UnionBranch UnionBranch { get; set; }
 #endif
             /// <summary>
             /// Creates a new instance of the appropriate class based on discriminator value
@@ -116,9 +116,9 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
                 {
                     result.ModelRef = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef();
                 }
-                else if(parseNode.GetStringValue() is string stringValue)
+                else if("UnionBranch".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
                 {
-                    result.String = stringValue;
+                    result.UnionBranch = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UnionBranch();
                 }
                 return result;
             }
@@ -131,6 +131,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
                 if(ModelRef != null)
                 {
                     return ModelRef.GetFieldDeserializers();
+                }
+                else if(UnionBranch != null)
+                {
+                    return UnionBranch.GetFieldDeserializers();
                 }
                 return new Dictionary<string, Action<IParseNode>>();
             }
@@ -145,9 +149,9 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
                 {
                     writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>(null, ModelRef);
                 }
-                else if(String != null)
+                else if(UnionBranch != null)
                 {
-                    writer.WriteStringValue(null, String);
+                    writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UnionBranch>(null, UnionBranch);
                 }
             }
         }
