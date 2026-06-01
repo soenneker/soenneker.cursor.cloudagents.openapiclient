@@ -69,7 +69,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         /// <summary>Whether to skip requesting the user as a reviewer when Cursor opens a PR.</summary>
         public bool? SkipReviewerRequest { get; set; }
         /// <summary>Agent lifecycle state. Execution status lives on runs.</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Agent_status? Status { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentSummaryStatus? Status { get; set; }
         /// <summary>When the agent was last updated.</summary>
         public DateTimeOffset? UpdatedAt { get; set; }
         /// <summary>URL to view the agent in Cursor Web.</summary>
@@ -116,7 +116,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
                 { "name", n => { Name = n.GetStringValue(); } },
                 { "repos", n => { Repos = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "skipReviewerRequest", n => { SkipReviewerRequest = n.GetBoolValue(); } },
-                { "status", n => { Status = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Agent_status>(); } },
+                { "status", n => { Status = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentSummaryStatus>(); } },
                 { "updatedAt", n => { UpdatedAt = n.GetDateTimeOffsetValue(); } },
                 { "url", n => { Url = n.GetStringValue(); } },
                 { "workOnCurrentBranch", n => { WorkOnCurrentBranch = n.GetBoolValue(); } },
@@ -138,7 +138,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteStringValue("name", Name);
             writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>("repos", Repos);
             writer.WriteBoolValue("skipReviewerRequest", SkipReviewerRequest);
-            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Agent_status>("status", Status);
+            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentSummaryStatus>("status", Status);
             writer.WriteDateTimeOffsetValue("updatedAt", UpdatedAt);
             writer.WriteStringValue("url", Url);
             writer.WriteBoolValue("workOnCurrentBranch", WorkOnCurrentBranch);

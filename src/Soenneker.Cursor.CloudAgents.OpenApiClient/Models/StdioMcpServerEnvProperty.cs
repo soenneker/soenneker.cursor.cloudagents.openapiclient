@@ -7,39 +7,30 @@ using System.IO;
 using System;
 namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
+    /// <summary>
+    /// Environment variables passed to the stdio MCP server inside the VM.
+    /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    #pragma warning disable CS1591
-    public partial class AgentEnv : IAdditionalDataHolder, IParsable
-    #pragma warning restore CS1591
+    public partial class StdioMcpServerEnvProperty : IAdditionalDataHolder, IParsable
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Named Cursor-hosted environment, self-hosted pool, or self-hosted machine name.</summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public string? Name { get; set; }
-#nullable restore
-#else
-        public string Name { get; set; }
-#endif
-        /// <summary>Execution environment type. `cloud` uses Cursor-hosted VMs; `pool` and `machine` route to self-hosted workers.</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnvType? Type { get; set; }
         /// <summary>
-        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv"/> and sets the default values.
+        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerEnvProperty"/> and sets the default values.
         /// </summary>
-        public AgentEnv()
+        public StdioMcpServerEnvProperty()
         {
             AdditionalData = new Dictionary<string, object>();
         }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv"/></returns>
+        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerEnvProperty"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerEnvProperty CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv();
+            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerEnvProperty();
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -49,8 +40,6 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
-                { "name", n => { Name = n.GetStringValue(); } },
-                { "type", n => { Type = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnvType>(); } },
             };
         }
         /// <summary>
@@ -60,8 +49,6 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-            writer.WriteStringValue("name", Name);
-            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnvType>("type", Type);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

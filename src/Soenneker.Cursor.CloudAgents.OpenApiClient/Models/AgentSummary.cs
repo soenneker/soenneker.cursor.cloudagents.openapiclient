@@ -49,7 +49,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public string Name { get; set; }
 #endif
         /// <summary>Agent lifecycle state. Execution status lives on runs.</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentSummary_status? Status { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentSummaryStatus? Status { get; set; }
         /// <summary>When the agent was last updated.</summary>
         public DateTimeOffset? UpdatedAt { get; set; }
         /// <summary>URL to view the agent in Cursor Web.</summary>
@@ -90,7 +90,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
                 { "id", n => { Id = n.GetStringValue(); } },
                 { "latestRunId", n => { LatestRunId = n.GetStringValue(); } },
                 { "name", n => { Name = n.GetStringValue(); } },
-                { "status", n => { Status = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentSummary_status>(); } },
+                { "status", n => { Status = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentSummaryStatus>(); } },
                 { "updatedAt", n => { UpdatedAt = n.GetDateTimeOffsetValue(); } },
                 { "url", n => { Url = n.GetStringValue(); } },
             };
@@ -107,7 +107,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteStringValue("id", Id);
             writer.WriteStringValue("latestRunId", LatestRunId);
             writer.WriteStringValue("name", Name);
-            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentSummary_status>("status", Status);
+            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentSummaryStatus>("status", Status);
             writer.WriteDateTimeOffsetValue("updatedAt", UpdatedAt);
             writer.WriteStringValue("url", Url);
             writer.WriteAdditionalData(AdditionalData);

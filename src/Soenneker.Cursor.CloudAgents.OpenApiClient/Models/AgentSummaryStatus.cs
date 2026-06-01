@@ -5,15 +5,15 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
     /// <summary>Agent lifecycle state. Execution status lives on runs.</summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    public enum Agent_status
+    public enum AgentSummaryStatus
     {
         [EnumMember(Value = "ACTIVE")]
         #pragma warning disable CS1591
-        ACTIVE,
+        Active,
         #pragma warning restore CS1591
         [EnumMember(Value = "ARCHIVED")]
         #pragma warning disable CS1591
-        ARCHIVED,
+        Archived,
         #pragma warning restore CS1591
     }
 }

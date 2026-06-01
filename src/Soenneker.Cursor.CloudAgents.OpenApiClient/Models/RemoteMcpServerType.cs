@@ -5,7 +5,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
     /// <summary>Remote MCP transport. Defaults to `http` when `url` is provided.</summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    public enum RemoteMcpServer_type
+    public enum RemoteMcpServerType
     {
         [EnumMember(Value = "http")]
         #pragma warning disable CS1591

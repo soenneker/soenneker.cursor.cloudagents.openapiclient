@@ -11,7 +11,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     /// The agent&apos;s pushed branches and PRs. Populated once the agent has pushed at least one branch. Per-agent state, not per-run.
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    public partial class Run_git : IAdditionalDataHolder, IParsable
+    public partial class RunGitComposed : IAdditionalDataHolder, IParsable
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
@@ -24,21 +24,21 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunGitBranch> Branches { get; set; }
 #endif
         /// <summary>
-        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run_git"/> and sets the default values.
+        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunGitComposed"/> and sets the default values.
         /// </summary>
-        public Run_git()
+        public RunGitComposed()
         {
             AdditionalData = new Dictionary<string, object>();
         }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run_git"/></returns>
+        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunGitComposed"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run_git CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunGitComposed CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run_git();
+            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunGitComposed();
         }
         /// <summary>
         /// The deserialization information for the current model

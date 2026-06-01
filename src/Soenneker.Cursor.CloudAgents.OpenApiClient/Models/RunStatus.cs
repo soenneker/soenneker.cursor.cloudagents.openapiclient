@@ -5,31 +5,31 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
     /// <summary>Current run status.</summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    public enum Run_status
+    public enum RunStatus
     {
         [EnumMember(Value = "CREATING")]
         #pragma warning disable CS1591
-        CREATING,
+        Creating,
         #pragma warning restore CS1591
         [EnumMember(Value = "RUNNING")]
         #pragma warning disable CS1591
-        RUNNING,
+        Running,
         #pragma warning restore CS1591
         [EnumMember(Value = "FINISHED")]
         #pragma warning disable CS1591
-        FINISHED,
+        Finished,
         #pragma warning restore CS1591
         [EnumMember(Value = "ERROR")]
         #pragma warning disable CS1591
-        ERROR,
+        Error,
         #pragma warning restore CS1591
         [EnumMember(Value = "CANCELLED")]
         #pragma warning disable CS1591
-        CANCELLED,
+        Cancelled,
         #pragma warning restore CS1591
         [EnumMember(Value = "EXPIRED")]
         #pragma warning disable CS1591
-        EXPIRED,
+        Expired,
         #pragma warning restore CS1591
     }
 }

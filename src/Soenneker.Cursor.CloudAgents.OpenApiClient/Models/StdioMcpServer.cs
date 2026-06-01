@@ -31,10 +31,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         /// <summary>Environment variables passed to the stdio MCP server inside the VM.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServer_env? Env { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerEnvProperty? Env { get; set; }
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServer_env Env { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerEnvProperty Env { get; set; }
 #endif
         /// <summary>MCP server name exposed to the agent.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -45,7 +45,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public string Name { get; set; }
 #endif
         /// <summary>Stdio MCP server. Defaults to `stdio` when `command` is provided.</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServer_type? Type { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerType? Type { get; set; }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
@@ -66,9 +66,9 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             {
                 { "args", n => { Args = n.GetCollectionOfPrimitiveValues<string>()?.AsList(); } },
                 { "command", n => { Command = n.GetStringValue(); } },
-                { "env", n => { Env = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServer_env>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServer_env.CreateFromDiscriminatorValue); } },
+                { "env", n => { Env = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerEnvProperty>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerEnvProperty.CreateFromDiscriminatorValue); } },
                 { "name", n => { Name = n.GetStringValue(); } },
-                { "type", n => { Type = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServer_type>(); } },
+                { "type", n => { Type = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerType>(); } },
             };
         }
         /// <summary>
@@ -80,9 +80,9 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteCollectionOfPrimitiveValues<string>("args", Args);
             writer.WriteStringValue("command", Command);
-            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServer_env>("env", Env);
+            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerEnvProperty>("env", Env);
             writer.WriteStringValue("name", Name);
-            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServer_type>("type", Type);
+            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerType>("type", Type);
         }
     }
 }

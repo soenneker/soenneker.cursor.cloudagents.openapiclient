@@ -35,10 +35,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         /// <summary>Concrete parameter values that, combined with the parent model `id`, form a valid model selection. May be empty.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelVariant_params>? Params { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelVariantParamsItem>? Params { get; set; }
 #nullable restore
 #else
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelVariant_params> Params { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelVariantParamsItem> Params { get; set; }
 #endif
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelVariant"/> and sets the default values.
@@ -68,7 +68,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
                 { "description", n => { Description = n.GetStringValue(); } },
                 { "displayName", n => { DisplayName = n.GetStringValue(); } },
                 { "isDefault", n => { IsDefault = n.GetBoolValue(); } },
-                { "params", n => { Params = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelVariant_params>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelVariant_params.CreateFromDiscriminatorValue)?.AsList(); } },
+                { "params", n => { Params = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelVariantParamsItem>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelVariantParamsItem.CreateFromDiscriminatorValue)?.AsList(); } },
             };
         }
         /// <summary>
@@ -81,7 +81,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteStringValue("description", Description);
             writer.WriteStringValue("displayName", DisplayName);
             writer.WriteBoolValue("isDefault", IsDefault);
-            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelVariant_params>("params", Params);
+            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelVariantParamsItem>("params", Params);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

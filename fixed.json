@@ -2,7 +2,7 @@
   "openapi": "3.0.4",
   "info": {
     "title": "Cursor Cloud Agents API",
-    "description": "\"Programmatically create and manage Cursor Cloud Agents that work\nautonomously on your repositories. v1 separates a durable agent\nfrom one or more runs: each prompt submission creates a run on the\nagent. Streaming and cancellation are scoped to the active run.\n\"",
+    "description": "\u0022Programmatically create and manage Cursor Cloud Agents that work\nautonomously on your repositories. v1 separates a durable agent\nfrom one or more runs: each prompt submission creates a run on the\nagent. Streaming and cancellation are scoped to the active run.\n\u0022",
     "contact": {
       "email": "background-agent-feedback@cursor.com"
     },
@@ -18,8 +18,8 @@
     "/v1/agents": {
       "post": {
         "summary": "Create an agent",
-        "description": "Create a Cloud Agent and immediately enqueue its initial run.\nThe response contains both the durable `agent` and the initial\n`run`.\n",
-        "operationId": "createAgent",
+        "description": "Create a Cloud Agent and immediately enqueue its initial run.\nThe response contains both the durable \u0060agent\u0060 and the initial\n\u0060run\u0060.\n",
+        "operationId": "CreateAgent",
         "requestBody": {
           "content": {
             "application/json": {
@@ -63,7 +63,7 @@
       "get": {
         "summary": "List agents",
         "description": "List agents for the authenticated user, newest first.",
-        "operationId": "listAgents",
+        "operationId": "ListAgents",
         "parameters": [
           {
             "name": "limit",
@@ -137,7 +137,7 @@
       "get": {
         "summary": "Get an agent",
         "description": "Retrieve durable metadata for an agent. Execution status lives on runs.",
-        "operationId": "getAgent",
+        "operationId": "GetAgent",
         "parameters": [
           {
             "$ref": "#/components/parameters/AgentId"
@@ -174,7 +174,7 @@
       "delete": {
         "summary": "Delete an agent permanently",
         "description": "Permanently delete an agent. This action is irreversible. Use POST /v1/agents/{id}/archive for reversible removal.",
-        "operationId": "deleteAgent",
+        "operationId": "DeleteAgent",
         "parameters": [
           {
             "$ref": "#/components/parameters/AgentId"
@@ -212,8 +212,8 @@
     "/v1/agents/{id}/runs": {
       "post": {
         "summary": "Create a run",
-        "description": "Send a follow-up prompt to an existing active agent. The new\nrun uses the agent's current conversation and workspace state.\nOnly one run can be active per agent at a time.\n",
-        "operationId": "createRun",
+        "description": "Send a follow-up prompt to an existing active agent. The new\nrun uses the agent\u0027s current conversation and workspace state.\nOnly one run can be active per agent at a time.\n",
+        "operationId": "CreateRun",
         "parameters": [
           {
             "$ref": "#/components/parameters/AgentId"
@@ -265,7 +265,7 @@
       "get": {
         "summary": "List runs",
         "description": "List runs for an agent, newest first.",
-        "operationId": "listRuns",
+        "operationId": "ListRuns",
         "parameters": [
           {
             "$ref": "#/components/parameters/AgentId"
@@ -323,7 +323,7 @@
       "get": {
         "summary": "Get a run",
         "description": "Retrieve status and timestamps for a specific run.",
-        "operationId": "getRun",
+        "operationId": "GetRun",
         "parameters": [
           {
             "$ref": "#/components/parameters/AgentId"
@@ -364,8 +364,8 @@
     "/v1/agents/{id}/runs/{runId}/stream": {
       "get": {
         "summary": "Stream a run",
-        "description": "Stream Server-Sent Events for one run. Event types are\n`status`, `assistant`, `thinking`, `tool_call`,\n`interaction_update`, `heartbeat`, `result`, `error`, and\n`done`.\n\n- `status` carries `{ runId, status }`. It has no `id` line\n  and is replayed at the top of every reconnect.\n- `result` carries `{ runId, status, text?, durationMs?,\n  git? }`; `text` is the final assistant reply, `durationMs`\n  the wall-clock duration, and `git` mirrors `Run.git`.\n- `interaction_update` carries the richer SDK-shape update\n  used by the TypeScript SDK and is emitted alongside the\n  simplified events that share the same event id. Use this if\n  you want the full SDK stream; otherwise handle the simplified\n  events and ignore it.\n\nReconnect with the `Last-Event-ID` header to resume after a\ndisconnect; the event ID must belong to the requested run\notherwise the endpoint returns `400 invalid_last_event_id`.\nResponses include the `X-Cursor-Stream-Retention-Seconds`\nheader; after the retention window the endpoint may return\n`410 stream_expired`. `tool_call` event data uses the\n`RunStreamToolCallData` schema.\n",
-        "operationId": "streamRun",
+        "description": "Stream Server-Sent Events for one run. Event types are\n\u0060status\u0060, \u0060assistant\u0060, \u0060thinking\u0060, \u0060tool_call\u0060,\n\u0060interaction_update\u0060, \u0060heartbeat\u0060, \u0060result\u0060, \u0060error\u0060, and\n\u0060done\u0060.\n\n- \u0060status\u0060 carries \u0060{ runId, status }\u0060. It has no \u0060id\u0060 line\n  and is replayed at the top of every reconnect.\n- \u0060result\u0060 carries \u0060{ runId, status, text?, durationMs?,\n  git? }\u0060; \u0060text\u0060 is the final assistant reply, \u0060durationMs\u0060\n  the wall-clock duration, and \u0060git\u0060 mirrors \u0060Run.git\u0060.\n- \u0060interaction_update\u0060 carries the richer SDK-shape update\n  used by the TypeScript SDK and is emitted alongside the\n  simplified events that share the same event id. Use this if\n  you want the full SDK stream; otherwise handle the simplified\n  events and ignore it.\n\nReconnect with the \u0060Last-Event-ID\u0060 header to resume after a\ndisconnect; the event ID must belong to the requested run\notherwise the endpoint returns \u0060400 invalid_last_event_id\u0060.\nResponses include the \u0060X-Cursor-Stream-Retention-Seconds\u0060\nheader; after the retention window the endpoint may return\n\u0060410 stream_expired\u0060. \u0060tool_call\u0060 event data uses the\n\u0060RunStreamToolCallData\u0060 schema.\n",
+        "operationId": "StreamRun",
         "parameters": [
           {
             "$ref": "#/components/parameters/AgentId"
@@ -388,12 +388,12 @@
             "content": {
               "text/event-stream": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/StreamRun200ResponseResponseEventStream"
                 },
                 "examples": {
                   "toolCall": {
                     "summary": "Tool call events",
-                    "value": "id: 1713033005000-0\nevent: tool_call\ndata: {\"callId\":\"call-1\",\"name\":\"read_file\",\"status\":\"running\",\"args\":{\"path\":\"README.md\"}}\n\nid: 1713033006000-0\nevent: tool_call\ndata: {\"callId\":\"call-1\",\"name\":\"read_file\",\"status\":\"completed\",\"args\":{\"path\":\"README.md\"},\"result\":{\"success\":{\"content\":\"# Project\",\"totalLines\":1,\"fileSize\":9,\"path\":\"README.md\"}}}\n"
+                    "value": "id: 1713033005000-0\nevent: tool_call\ndata: {\u0022callId\u0022:\u0022call-1\u0022,\u0022name\u0022:\u0022read_file\u0022,\u0022status\u0022:\u0022running\u0022,\u0022args\u0022:{\u0022path\u0022:\u0022README.md\u0022}}\n\nid: 1713033006000-0\nevent: tool_call\ndata: {\u0022callId\u0022:\u0022call-1\u0022,\u0022name\u0022:\u0022read_file\u0022,\u0022status\u0022:\u0022completed\u0022,\u0022args\u0022:{\u0022path\u0022:\u0022README.md\u0022},\u0022result\u0022:{\u0022success\u0022:{\u0022content\u0022:\u0022# Project\u0022,\u0022totalLines\u0022:1,\u0022fileSize\u0022:9,\u0022path\u0022:\u0022README.md\u0022}}}\n"
                   }
                 }
               }
@@ -426,8 +426,8 @@
     "/v1/agents/{id}/runs/{runId}/cancel": {
       "post": {
         "summary": "Cancel a run",
-        "description": "Cancel the active run for an agent. Cancellation is terminal —\nthe run transitions to `CANCELLED`. Cancelling a run that is\nalready terminal or was never active returns\n`409 run_not_cancellable`. To continue the conversation,\ncreate a new run on the same agent.\n",
-        "operationId": "cancelRun",
+        "description": "Cancel the active run for an agent. Cancellation is terminal \u2014\nthe run transitions to \u0060CANCELLED\u0060. Cancelling a run that is\nalready terminal or was never active returns\n\u0060409 run_not_cancellable\u0060. To continue the conversation,\ncreate a new run on the same agent.\n",
+        "operationId": "CancelRun",
         "parameters": [
           {
             "$ref": "#/components/parameters/AgentId"
@@ -472,7 +472,7 @@
       "post": {
         "summary": "Archive an agent",
         "description": "Archive an agent. Archived agents remain readable but cannot accept new runs until unarchived.",
-        "operationId": "archiveAgent",
+        "operationId": "ArchiveAgent",
         "parameters": [
           {
             "$ref": "#/components/parameters/AgentId"
@@ -511,7 +511,7 @@
       "post": {
         "summary": "Unarchive an agent",
         "description": "Unarchive an agent so it can accept new runs again.",
-        "operationId": "unarchiveAgent",
+        "operationId": "UnarchiveAgent",
         "parameters": [
           {
             "$ref": "#/components/parameters/AgentId"
@@ -549,8 +549,8 @@
     "/v1/agents/{id}/artifacts": {
       "get": {
         "summary": "List artifacts",
-        "description": "List artifacts produced by an agent. Each artifact's `path` is\nrelative to the workspace's `artifacts/` directory. Pass that\n`path` to GET /v1/agents/{id}/artifacts/download to obtain a\npresigned download URL.\n",
-        "operationId": "listArtifacts",
+        "description": "List artifacts produced by an agent. Each artifact\u0027s \u0060path\u0060 is\nrelative to the workspace\u0027s \u0060artifacts/\u0060 directory. Pass that\n\u0060path\u0060 to GET /v1/agents/{id}/artifacts/download to obtain a\npresigned download URL.\n",
+        "operationId": "ListArtifacts",
         "parameters": [
           {
             "$ref": "#/components/parameters/AgentId"
@@ -588,8 +588,8 @@
     "/v1/agents/{id}/artifacts/download": {
       "get": {
         "summary": "Download an artifact",
-        "description": "Retrieve a temporary 15-minute presigned S3 URL for an\nartifact. The `path` query parameter must be a relative path\nunder `artifacts/` returned by GET /v1/agents/{id}/artifacts.\n",
-        "operationId": "downloadArtifact",
+        "description": "Retrieve a temporary 15-minute presigned S3 URL for an\nartifact. The \u0060path\u0060 query parameter must be a relative path\nunder \u0060artifacts/\u0060 returned by GET /v1/agents/{id}/artifacts.\n",
+        "operationId": "DownloadArtifact",
         "parameters": [
           {
             "$ref": "#/components/parameters/AgentId"
@@ -597,7 +597,7 @@
           {
             "name": "path",
             "in": "query",
-            "description": "Relative artifact path under `artifacts/`.",
+            "description": "Relative artifact path under \u0060artifacts/\u0060.",
             "required": true,
             "schema": {
               "minLength": 1,
@@ -642,7 +642,7 @@
       "get": {
         "summary": "API key info",
         "description": "Retrieve information about the API key being used for authentication.",
-        "operationId": "getApiKeyInfo",
+        "operationId": "GetApiKeyInfo",
         "responses": {
           "200": {
             "description": "API key info retrieved successfully.",
@@ -669,8 +669,8 @@
     "/v1/models": {
       "get": {
         "summary": "List models",
-        "description": "Returns a recommended set of explicit model IDs you can pass\nto the `model.id` field on POST /v1/agents. To use the\nconfigured default model, omit the `model` field from the\nrequest body entirely.\n",
-        "operationId": "listModels",
+        "description": "Returns a recommended set of explicit model IDs you can pass\nto the \u0060model.id\u0060 field on POST /v1/agents. To use the\nconfigured default model, omit the \u0060model\u0060 field from the\nrequest body entirely.\n",
+        "operationId": "ListModels",
         "responses": {
           "200": {
             "description": "Models retrieved successfully.",
@@ -697,8 +697,8 @@
     "/v1/repositories": {
       "get": {
         "summary": "List GitHub repositories",
-        "description": "List GitHub repositories accessible to the authenticated user\nthrough Cursor's GitHub App installation. This endpoint has\nvery strict rate limits (1 request per user per minute, 30\nper user per hour) and can take tens of seconds to respond\nfor users with access to many repositories. Cache responses\naggressively and handle this information not being available\ngracefully.\n",
-        "operationId": "listRepositories",
+        "description": "List GitHub repositories accessible to the authenticated user\nthrough Cursor\u0027s GitHub App installation. This endpoint has\nvery strict rate limits (1 request per user per minute, 30\nper user per hour) and can take tens of seconds to respond\nfor users with access to many repositories. Cache responses\naggressively and handle this information not being available\ngracefully.\n",
+        "operationId": "ListRepositories",
         "responses": {
           "200": {
             "description": "Repositories retrieved successfully.",
@@ -725,8 +725,8 @@
     "/v1/sub-tokens": {
       "post": {
         "summary": "Create A User-Scoped Worker Token",
-        "description": "Create a one-hour user-scoped token for a My Machines worker to run as an\nactive team member. Requires an agent-scoped team service account\nAPI key. User-scoped tokens can't mint other user-scoped tokens.\n",
-        "operationId": "createSubToken",
+        "description": "Create a one-hour user-scoped token for a My Machines worker to run as an\nactive team member. Requires an agent-scoped team service account\nAPI key. User-scoped tokens can\u0027t mint other user-scoped tokens.\n",
+        "operationId": "CreateSubToken",
         "requestBody": {
           "content": {
             "application/json": {
@@ -811,9 +811,6 @@
         }
       },
       "Image": {
-        "required": [
-          "type"
-        ],
         "type": "object",
         "oneOf": [
           {
@@ -853,33 +850,26 @@
           "data": {
             "minLength": 1,
             "type": "string",
-            "description": "Base64 encoded image bytes (max 15 MB). Mutually exclusive with `url`.",
+            "description": "Base64 encoded image bytes (max 15 MB). Mutually exclusive with \u0060url\u0060.",
             "example": "iVBORw0KGgoAAAANSUhEUgAA..."
           },
           "url": {
             "type": "string",
-            "description": "HTTP or HTTPS URL Cursor fetches. Mutually exclusive with `data`.",
+            "description": "HTTP or HTTPS URL Cursor fetches. Mutually exclusive with \u0060data\u0060.",
             "format": "uri",
             "example": "https://example.com/screenshot.png"
           },
           "mimeType": {
             "minLength": 1,
             "type": "string",
-            "description": "MIME type of the image bytes. Required when `data` is provided; must be omitted when `url` is provided. Supported types are `image/png`, `image/jpeg`, `image/gif`, and `image/webp`.",
+            "description": "MIME type of the image bytes. Required when \u0060data\u0060 is provided; must be omitted when \u0060url\u0060 is provided. Supported types are \u0060image/png\u0060, \u0060image/jpeg\u0060, \u0060image/gif\u0060, and \u0060image/webp\u0060.",
             "example": "image/png"
           },
           "dimension": {
             "$ref": "#/components/schemas/ImageDimension"
-          },
-          "type": {
-            "type": "string",
-            "description": "Union discriminator"
           }
         },
-        "description": "An image input. Provide exactly one of `data` or `url`. When\n`data` is provided, `mimeType` is required. When `url` is\nprovided, Cursor fetches the image and `mimeType` must be\nomitted.\n",
-        "discriminator": {
-          "propertyName": "type"
-        }
+        "description": "An image input. Provide exactly one of \u0060data\u0060 or \u0060url\u0060. When\n\u0060data\u0060 is provided, \u0060mimeType\u0060 is required. When \u0060url\u0060 is\nprovided, Cursor fetches the image and \u0060mimeType\u0060 must be\nomitted.\n"
       },
       "ModelRef": {
         "required": [
@@ -890,29 +880,13 @@
           "id": {
             "minLength": 1,
             "type": "string",
-            "description": "Explicit model ID returned by GET /v1/models. Omit `model` from the request to use the configured default.",
+            "description": "Explicit model ID returned by GET /v1/models. Omit \u0060model\u0060 from the request to use the configured default.",
             "example": "composer-2"
           },
           "params": {
             "type": "array",
             "items": {
-              "required": [
-                "id",
-                "value"
-              ],
-              "type": "object",
-              "properties": {
-                "id": {
-                  "minLength": 1,
-                  "type": "string",
-                  "example": "thinking"
-                },
-                "value": {
-                  "minLength": 1,
-                  "type": "string",
-                  "example": "high"
-                }
-              }
+              "$ref": "#/components/schemas/ModelRefParamsItem"
             },
             "description": "Per-model parameters such as reasoning effort or max mode. Use only parameters supported by the selected model."
           }
@@ -927,18 +901,18 @@
           "url": {
             "minLength": 1,
             "type": "string",
-            "description": "GitHub repository URL. Required on every repo entry, including when `prUrl` is provided.",
+            "description": "GitHub repository URL. Required on every repo entry, including when \u0060prUrl\u0060 is provided.",
             "example": "https://github.com/your-org/your-repo"
           },
           "startingRef": {
             "minLength": 1,
             "type": "string",
-            "description": "Branch name or commit SHA to use as the starting point. Ignored when `prUrl` is provided.",
+            "description": "Branch name or commit SHA to use as the starting point. Ignored when \u0060prUrl\u0060 is provided.",
             "example": "main"
           },
           "prUrl": {
             "type": "string",
-            "description": "GitHub pull request URL. When provided, the agent works on this PR's repository and branches; `startingRef` is ignored. `url` must still be set on the same entry.",
+            "description": "GitHub pull request URL. When provided, the agent works on this PR\u0027s repository and branches; \u0060startingRef\u0060 is ignored. \u0060url\u0060 must still be set on the same entry.",
             "format": "uri",
             "example": "https://github.com/your-org/your-repo/pull/123"
           }
@@ -951,15 +925,7 @@
         "type": "object",
         "properties": {
           "type": {
-            "enum": [
-              "cloud",
-              "pool",
-              "machine"
-            ],
-            "type": "string",
-            "additionalProperties": false,
-            "description": "Execution environment type. `cloud` uses Cursor-hosted VMs; `pool` and `machine` route to self-hosted workers.",
-            "example": "cloud"
+            "$ref": "#/components/schemas/AgentEnvType"
           },
           "name": {
             "minLength": 1,
@@ -1011,13 +977,7 @@
             "example": "github"
           },
           "type": {
-            "enum": [
-              "stdio"
-            ],
-            "type": "string",
-            "additionalProperties": false,
-            "description": "Stdio MCP server. Defaults to `stdio` when `command` is provided.",
-            "example": "stdio"
+            "$ref": "#/components/schemas/StdioMcpServerType"
           },
           "command": {
             "minLength": 1,
@@ -1033,11 +993,7 @@
             "description": "Command arguments."
           },
           "env": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            },
-            "description": "Environment variables passed to the stdio MCP server inside the VM."
+            "$ref": "#/components/schemas/StdioMcpServerEnvProperty"
           }
         },
         "additionalProperties": false
@@ -1056,14 +1012,7 @@
             "example": "linear"
           },
           "type": {
-            "enum": [
-              "http",
-              "sse"
-            ],
-            "type": "string",
-            "additionalProperties": false,
-            "description": "Remote MCP transport. Defaults to `http` when `url` is provided.",
-            "example": "http"
+            "$ref": "#/components/schemas/RemoteMcpServerType"
           },
           "url": {
             "type": "string",
@@ -1072,11 +1021,7 @@
             "example": "https://mcp.linear.app/sse"
           },
           "headers": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            },
-            "description": "Headers Cursor sends with every request to the remote MCP server."
+            "$ref": "#/components/schemas/RemoteMcpServerHeadersProperty"
           },
           "auth": {
             "$ref": "#/components/schemas/McpAuth"
@@ -1133,13 +1078,7 @@
             "example": "Add README with setup instructions"
           },
           "status": {
-            "enum": [
-              "ACTIVE",
-              "ARCHIVED"
-            ],
-            "type": "string",
-            "additionalProperties": false,
-            "description": "Agent lifecycle state. Execution status lives on runs."
+            "$ref": "#/components/schemas/AgentSummaryStatus"
           },
           "env": {
             "$ref": "#/components/schemas/AgentEnv"
@@ -1189,13 +1128,7 @@
             "example": "Add README with setup instructions"
           },
           "status": {
-            "enum": [
-              "ACTIVE",
-              "ARCHIVED"
-            ],
-            "type": "string",
-            "additionalProperties": false,
-            "description": "Agent lifecycle state. Execution status lives on runs."
+            "$ref": "#/components/schemas/AgentSummaryStatus"
           },
           "env": {
             "$ref": "#/components/schemas/AgentEnv"
@@ -1230,7 +1163,7 @@
           },
           "workOnCurrentBranch": {
             "type": "boolean",
-            "description": "When `false` (the default), Cursor pushes commits to a new auto-generated branch. When `true`, commits land on the existing head branch.",
+            "description": "When \u0060false\u0060 (the default), Cursor pushes commits to a new auto-generated branch. When \u0060true\u0060, commits land on the existing head branch.",
             "example": false
           },
           "autoCreatePR": {
@@ -1260,7 +1193,7 @@
           "repoUrl": {
             "minLength": 1,
             "type": "string",
-            "description": "Repository URL the agent pushed to. Returned without the scheme (for example, `github.com/your-org/your-repo`).",
+            "description": "Repository URL the agent pushed to. Returned without the scheme (for example, \u0060github.com/your-org/your-repo\u0060).",
             "example": "github.com/your-org/your-repo"
           },
           "branch": {
@@ -1291,7 +1224,7 @@
             "description": "Branches the agent has pushed. Stacked agents return one entry per branch."
           }
         },
-        "description": "The agent's current pushed branches and pull requests. This is\nper-agent state — every run on the same agent returns the same\n`git` snapshot rather than only that run's contributions. Use\nthe agent's `latestRunId` or the SSE stream to attribute work\nto a specific run.\n"
+        "description": "The agent\u0027s current pushed branches and pull requests. This is\nper-agent state \u2014 every run on the same agent returns the same\n\u0060git\u0060 snapshot rather than only that run\u0027s contributions. Use\nthe agent\u0027s \u0060latestRunId\u0060 or the SSE stream to attribute work\nto a specific run.\n"
       },
       "Run": {
         "required": [
@@ -1314,17 +1247,7 @@
             "example": "bc-00000000-0000-0000-0000-000000000001"
           },
           "status": {
-            "enum": [
-              "CREATING",
-              "RUNNING",
-              "FINISHED",
-              "ERROR",
-              "CANCELLED",
-              "EXPIRED"
-            ],
-            "type": "string",
-            "additionalProperties": false,
-            "description": "Current run status."
+            "$ref": "#/components/schemas/RunStatus"
           },
           "createdAt": {
             "type": "string",
@@ -1337,7 +1260,7 @@
           "durationMs": {
             "minimum": 0,
             "type": "integer",
-            "description": "Wall-clock duration of the run in milliseconds. Populated once the run reaches a terminal status (`FINISHED`, `ERROR`, `CANCELLED`, `EXPIRED`).",
+            "description": "Wall-clock duration of the run in milliseconds. Populated once the run reaches a terminal status (\u0060FINISHED\u0060, \u0060ERROR\u0060, \u0060CANCELLED\u0060, \u0060EXPIRED\u0060).",
             "example": 12357
           },
           "result": {
@@ -1347,20 +1270,7 @@
             "example": "Added README.md with installation instructions."
           },
           "git": {
-            "required": [
-              "branches"
-            ],
-            "type": "object",
-            "properties": {
-              "branches": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/RunGitBranch"
-                },
-                "description": "Branches the agent has pushed. Stacked agents return one entry per branch."
-              }
-            },
-            "description": "The agent's pushed branches and PRs. Populated once the agent has pushed at least one branch. Per-agent state, not per-run."
+            "$ref": "#/components/schemas/RunGitComposed"
           }
         }
       },
@@ -1386,19 +1296,19 @@
         ],
         "oneOf": [
           {
-            "$ref": "#/components/schemas/JsonValue_Branch1"
+            "$ref": "#/components/schemas/JsonValueBranch1"
           },
           {
-            "$ref": "#/components/schemas/JsonValue_Branch2"
+            "$ref": "#/components/schemas/JsonValueBranch2"
           },
           {
-            "$ref": "#/components/schemas/JsonValue_Branch3"
+            "$ref": "#/components/schemas/JsonValueBranch3"
           },
           {
             "type": "object"
           },
           {
-            "$ref": "#/components/schemas/JsonValue_Branch5"
+            "$ref": "#/components/schemas/JsonValueBranch5"
           }
         ],
         "properties": {
@@ -1412,10 +1322,10 @@
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "JsonValue_1": "#/components/schemas/JsonValue_Branch1",
-            "JsonValue_2": "#/components/schemas/JsonValue_Branch2",
-            "JsonValue_3": "#/components/schemas/JsonValue_Branch3",
-            "JsonValue_5": "#/components/schemas/JsonValue_Branch5"
+            "JsonValue_1": "#/components/schemas/JsonValueBranch1",
+            "JsonValue_2": "#/components/schemas/JsonValueBranch2",
+            "JsonValue_3": "#/components/schemas/JsonValueBranch3",
+            "JsonValue_5": "#/components/schemas/JsonValueBranch5"
           }
         }
       },
@@ -1436,47 +1346,17 @@
           "name": {
             "minLength": 1,
             "type": "string",
-            "description": "Public tool name, such as `read_file`, `run_terminal_cmd`, or `mcp`.",
+            "description": "Public tool name, such as \u0060read_file\u0060, \u0060run_terminal_cmd\u0060, or \u0060mcp\u0060.",
             "example": "read_file"
           },
           "status": {
-            "enum": [
-              "running",
-              "completed"
-            ],
-            "type": "string",
-            "additionalProperties": false,
-            "description": "Tool invocation lifecycle status.",
-            "example": "completed"
+            "$ref": "#/components/schemas/RunStreamToolCallDataStatus"
           },
           "args": {
-            "type": "object",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/JsonValue"
-              }
-            ],
-            "description": "Tool-specific JSON arguments, when available.",
-            "example": {
-              "path": "README.md"
-            }
+            "$ref": "#/components/schemas/RunStreamToolCallDataArgs"
           },
           "result": {
-            "type": "object",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/JsonValue"
-              }
-            ],
-            "description": "Tool-specific JSON result, when available.",
-            "example": {
-              "success": {
-                "content": "# Project",
-                "totalLines": 1,
-                "fileSize": 9,
-                "path": "README.md"
-              }
-            }
+            "$ref": "#/components/schemas/RunStreamToolCallDataResult"
           },
           "truncated": {
             "$ref": "#/components/schemas/RunStreamToolCallTruncation"
@@ -1492,15 +1372,11 @@
         "type": "object",
         "properties": {
           "event": {
-            "enum": [
-              "tool_call"
-            ],
-            "type": "string",
-            "additionalProperties": false
+            "$ref": "#/components/schemas/RunStreamToolCallEventEvent"
           },
           "id": {
             "type": "string",
-            "description": "Opaque SSE event id passed back via `Last-Event-ID` to resume the stream. Do not parse — the format is implementation-defined.",
+            "description": "Opaque SSE event id passed back via \u0060Last-Event-ID\u0060 to resume the stream. Do not parse \u2014 the format is implementation-defined.",
             "example": "1713033006000-0"
           },
           "data": {
@@ -1521,7 +1397,7 @@
             "maxLength": 100,
             "minLength": 1,
             "type": "string",
-            "description": "Subagent name. Must be unique within `customSubagents` and cannot collide with built-ins (for example, `explore`, `shell`, `debug`, `computerUse`, `cursorGuide`).",
+            "description": "Subagent name. Must be unique within \u0060customSubagents\u0060 and cannot collide with built-ins (for example, \u0060explore\u0060, \u0060shell\u0060, \u0060debug\u0060, \u0060computerUse\u0060, \u0060cursorGuide\u0060).",
             "example": "frontend-reviewer"
           },
           "description": {
@@ -1537,15 +1413,7 @@
             "description": "System prompt the subagent receives when invoked."
           },
           "model": {
-            "type": "object",
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/UnionBranch"
-              },
-              {
-                "$ref": "#/components/schemas/ModelRef"
-              }
-            ]
+            "$ref": "#/components/schemas/CustomSubagentModel"
           }
         },
         "additionalProperties": false
@@ -1573,7 +1441,7 @@
             "minLength": 1,
             "pattern": "^bc-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
             "type": "string",
-            "description": "Optional client-supplied agent identifier in `bc-<uuid>` form. Re-POSTing the same `agentId` returns `409 agent_id_conflict` instead of creating a duplicate. Cannot be combined with `envVars`; omit `agentId` so the server mints one when you need session secrets.",
+            "description": "Optional client-supplied agent identifier in \u0060bc-\u003Cuuid\u003E\u0060 form. Re-POSTing the same \u0060agentId\u0060 returns \u0060409 agent_id_conflict\u0060 instead of creating a duplicate. Cannot be combined with \u0060envVars\u0060; omit \u0060agentId\u0060 so the server mints one when you need session secrets.",
             "example": "bc-00000000-0000-0000-0000-000000000001"
           },
           "env": {
@@ -1585,11 +1453,11 @@
             "items": {
               "$ref": "#/components/schemas/RepoConfig"
             },
-            "description": "\"Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` (or pass `repos: []`) to start a no-repo agent.\""
+            "description": "\u0022Repository configuration. Mutually exclusive with a named cloud environment. Omit both \u0060repos\u0060 and \u0060env\u0060 (or pass \u0060repos: []\u0060) to start a no-repo agent.\u0022"
           },
           "workOnCurrentBranch": {
             "type": "boolean",
-            "description": "When `false` (the default), Cursor pushes commits to a new\nauto-generated branch (`cursor/...`) based on\n`repos[0].startingRef` (or the PR base ref when `prUrl`\nis set). When `true`, Cursor pushes directly to that\nstarting ref — for a non-PR create, that's the branch you\npassed in `startingRef`; for a `prUrl` create, that's the\nPR's head branch.\n",
+            "description": "When \u0060false\u0060 (the default), Cursor pushes commits to a new\nauto-generated branch (\u0060cursor/...\u0060) based on\n\u0060repos[0].startingRef\u0060 (or the PR base ref when \u0060prUrl\u0060\nis set). When \u0060true\u0060, Cursor pushes directly to that\nstarting ref \u2014 for a non-PR create, that\u0027s the branch you\npassed in \u0060startingRef\u0060; for a \u0060prUrl\u0060 create, that\u0027s the\nPR\u0027s head branch.\n",
             "default": false
           },
           "autoCreatePR": {
@@ -1599,17 +1467,11 @@
           },
           "skipReviewerRequest": {
             "type": "boolean",
-            "description": "Whether to skip requesting the user as a reviewer when Cursor opens a PR. Only applies when `autoCreatePR` is true.",
+            "description": "Whether to skip requesting the user as a reviewer when Cursor opens a PR. Only applies when \u0060autoCreatePR\u0060 is true.",
             "default": false
           },
           "envVars": {
-            "type": "object",
-            "additionalProperties": {
-              "maxLength": 4096,
-              "minLength": 1,
-              "type": "string"
-            },
-            "description": "\"Session-scoped environment variables for the cloud agent.\nValues are encrypted at rest, injected into the agent's\nshell, and deleted with the agent. Names must be non-empty,\n255 bytes or less, and cannot start with `CURSOR_`. Values\nmust be non-empty and 4096 bytes or less. Cannot be\ncombined with a client-supplied `agentId`.\n\nBeta: `envVars` is rolling out. If it isn't enabled for\nyour account yet, the field is silently ignored on create\nrather than failing the request — verify the values are\npresent on a first run before relying on them in\nproduction.\n\""
+            "$ref": "#/components/schemas/CreateAgentRequestEnvVarsProperty"
           },
           "mcpServers": {
             "maxItems": 50,
@@ -1617,7 +1479,7 @@
             "items": {
               "$ref": "#/components/schemas/McpServer"
             },
-            "description": "Inline MCP server definitions available to the initial run. Remote servers support `headers` or OAuth `auth`; stdio servers run inside the cloud agent VM and can receive `env`. Server names must be unique."
+            "description": "Inline MCP server definitions available to the initial run. Remote servers support \u0060headers\u0060 or OAuth \u0060auth\u0060; stdio servers run inside the cloud agent VM and can receive \u0060env\u0060. Server names must be unique."
           },
           "customSubagents": {
             "maxItems": 20,
@@ -1628,7 +1490,7 @@
             "description": "Custom subagents the main agent can delegate to. Names must be unique and not collide with built-ins."
           },
           "mode": {
-            "$ref": "#/components/schemas/AgentMode"
+            "$ref": "#/components/schemas/CreateAgentRequestMode"
           }
         }
       },
@@ -1661,7 +1523,21 @@
         ],
         "type": "string",
         "additionalProperties": false,
-        "description": "Conversation mode. `plan` explores and drafts a plan before coding; `agent` implements changes directly. On follow-up runs, omit to keep the conversation's current mode; set explicitly to switch modes for that run.\n"
+        "description": "Conversation mode. \u0060plan\u0060 explores and drafts a plan before coding; \u0060agent\u0060 implements changes directly. On follow-up runs, omit to keep the conversation\u0027s current mode; set explicitly to switch modes for that run.\n",
+        "x-ms-enum": {
+          "name": "AgentMode",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "agent",
+              "name": "Agent"
+            },
+            {
+              "value": "plan",
+              "name": "Plan"
+            }
+          ]
+        }
       },
       "CreateAgentResponse": {
         "required": [
@@ -1705,7 +1581,7 @@
           "nextCursor": {
             "minLength": 1,
             "type": "string",
-            "description": "Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages.",
+            "description": "Cursor for fetching the next page of results. Omitted (not \u0060null\u0060) when there are no more pages.",
             "example": "bc-00000000-0000-0000-0000-000000000002"
           }
         }
@@ -1726,7 +1602,7 @@
           "nextCursor": {
             "minLength": 1,
             "type": "string",
-            "description": "Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages."
+            "description": "Cursor for fetching the next page of results. Omitted (not \u0060null\u0060) when there are no more pages."
           }
         }
       },
@@ -1753,7 +1629,7 @@
           "path": {
             "minLength": 1,
             "type": "string",
-            "description": "Artifact path relative to the workspace's `artifacts/` directory.",
+            "description": "Artifact path relative to the workspace\u0027s \u0060artifacts/\u0060 directory.",
             "example": "artifacts/screenshot.png"
           },
           "sizeBytes": {
@@ -1824,25 +1700,25 @@
           "userId": {
             "minimum": 0,
             "type": "integer",
-            "description": "Numeric Cursor user ID of the API key's owner. Omitted for service-account / team API keys, which aren't tied to a specific user.",
+            "description": "Numeric Cursor user ID of the API key\u0027s owner. Omitted for service-account / team API keys, which aren\u0027t tied to a specific user.",
             "example": 42
           },
           "userEmail": {
             "type": "string",
-            "description": "Email of the API key's owner. Omitted for service-account / team API keys.",
+            "description": "Email of the API key\u0027s owner. Omitted for service-account / team API keys.",
             "format": "email",
             "example": "developer@example.com"
           },
           "userFirstName": {
             "minLength": 1,
             "type": "string",
-            "description": "First name of the API key's owner, when populated.",
+            "description": "First name of the API key\u0027s owner, when populated.",
             "example": "Alex"
           },
           "userLastName": {
             "minLength": 1,
             "type": "string",
-            "description": "Last name of the API key's owner, when populated.",
+            "description": "Last name of the API key\u0027s owner, when populated.",
             "example": "Rivera"
           }
         }
@@ -1877,7 +1753,7 @@
           "id": {
             "minLength": 1,
             "type": "string",
-            "description": "Parameter identifier. Pass as `model.params[].id`.",
+            "description": "Parameter identifier. Pass as \u0060model.params[].id\u0060.",
             "example": "fast"
           },
           "displayName": {
@@ -1906,23 +1782,9 @@
           "params": {
             "type": "array",
             "items": {
-              "required": [
-                "id",
-                "value"
-              ],
-              "type": "object",
-              "properties": {
-                "id": {
-                  "minLength": 1,
-                  "type": "string"
-                },
-                "value": {
-                  "minLength": 1,
-                  "type": "string"
-                }
-              }
+              "$ref": "#/components/schemas/ModelVariantParamsItem"
             },
-            "description": "Concrete parameter values that, combined with the parent model `id`, form a valid model selection. May be empty."
+            "description": "Concrete parameter values that, combined with the parent model \u0060id\u0060, form a valid model selection. May be empty."
           },
           "displayName": {
             "minLength": 1,
@@ -1935,7 +1797,7 @@
           },
           "isDefault": {
             "type": "boolean",
-            "description": "True for the variant Cursor selects when the user picks this model without explicit `params`."
+            "description": "True for the variant Cursor selects when the user picks this model without explicit \u0060params\u0060."
           }
         }
       },
@@ -1949,7 +1811,7 @@
           "id": {
             "minLength": 1,
             "type": "string",
-            "description": "Pass this value as `model.id` when creating an agent.",
+            "description": "Pass this value as \u0060model.id\u0060 when creating an agent.",
             "example": "composer-2"
           },
           "displayName": {
@@ -1975,14 +1837,14 @@
             "items": {
               "$ref": "#/components/schemas/ModelParameterDefinition"
             },
-            "description": "Per-model parameter definitions, when the model accepts parameters. Use these to populate `model.params`."
+            "description": "Per-model parameter definitions, when the model accepts parameters. Use these to populate \u0060model.params\u0060."
           },
           "variants": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ModelVariant"
             },
-            "description": "Concrete `id`+`params` combinations the model accepts."
+            "description": "Concrete \u0060id\u0060\u002B\u0060params\u0060 combinations the model accepts."
           }
         }
       },
@@ -1997,7 +1859,7 @@
             "items": {
               "$ref": "#/components/schemas/ModelListItem"
             },
-            "description": "Recommended models. Use `id` (and optionally `params`) when creating an agent."
+            "description": "Recommended models. Use \u0060id\u0060 (and optionally \u0060params\u0060) when creating an agent."
           }
         }
       },
@@ -2030,9 +1892,6 @@
         }
       },
       "CreateSubTokenRequest": {
-        "required": [
-          "type"
-        ],
         "type": "object",
         "oneOf": [
           {
@@ -2062,25 +1921,18 @@
           "forUserEmail": {
             "minLength": 1,
             "type": "string",
-            "description": "Active team member email. Case-insensitive. Mutually exclusive with `forUserId`.",
+            "description": "Active team member email. Case-insensitive. Mutually exclusive with \u0060forUserId\u0060.",
             "format": "email",
             "example": "alice@company.com"
           },
           "forUserId": {
             "minimum": 1,
             "type": "integer",
-            "description": "Active team member's numeric Cursor user ID. Mutually exclusive with `forUserEmail`.",
+            "description": "Active team member\u0027s numeric Cursor user ID. Mutually exclusive with \u0060forUserEmail\u0060.",
             "example": 42
-          },
-          "type": {
-            "type": "string",
-            "description": "Union discriminator"
           }
         },
-        "description": "Provide exactly one active team member identifier.",
-        "discriminator": {
-          "propertyName": "type"
-        }
+        "description": "Provide exactly one active team member identifier."
       },
       "CreateSubTokenResponse": {
         "required": [
@@ -2110,7 +1962,7 @@
           },
           "teamId": {
             "type": "integer",
-            "description": "Numeric ID of the service account's team.",
+            "description": "Numeric ID of the service account\u0027s team.",
             "example": 456
           }
         }
@@ -2123,6 +1975,145 @@
         "properties": {
           "error": {
             "$ref": "#/components/schemas/ErrorError"
+          }
+        }
+      },
+      "AgentAllOf2": {
+        "type": "object",
+        "properties": {
+          "repos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RepoConfig"
+            },
+            "description": "Repository configuration. Empty for no-repo agents."
+          },
+          "workOnCurrentBranch": {
+            "type": "boolean",
+            "description": "When \u0060false\u0060 (the default), Cursor pushes commits to a new auto-generated branch. When \u0060true\u0060, commits land on the existing head branch.",
+            "example": false
+          },
+          "autoCreatePR": {
+            "type": "boolean",
+            "description": "Whether Cursor opens a pull request when the run completes.",
+            "example": true
+          },
+          "skipReviewerRequest": {
+            "type": "boolean",
+            "description": "Whether to skip requesting the user as a reviewer when Cursor opens a PR."
+          },
+          "customSubagents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomSubagent"
+            },
+            "description": "Custom subagents defined at create time. Omitted when none were provided."
+          }
+        }
+      },
+      "RunGitComposed": {
+        "required": [
+          "branches"
+        ],
+        "type": "object",
+        "properties": {
+          "branches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RunGitBranch"
+            },
+            "description": "Branches the agent has pushed. Stacked agents return one entry per branch."
+          }
+        },
+        "description": "The agent\u0027s pushed branches and PRs. Populated once the agent has pushed at least one branch. Per-agent state, not per-run."
+      },
+      "RunStreamToolCallDataArgs": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonValue"
+          }
+        ],
+        "description": "Tool-specific JSON arguments, when available.",
+        "example": {
+          "path": "README.md"
+        }
+      },
+      "RunStreamToolCallDataResult": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JsonValue"
+          }
+        ],
+        "description": "Tool-specific JSON result, when available.",
+        "example": {
+          "success": {
+            "content": "# Project",
+            "totalLines": 1,
+            "fileSize": 9,
+            "path": "README.md"
+          }
+        }
+      },
+      "CustomSubagentModel": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CustomSubagentModelWrapper"
+          },
+          {
+            "$ref": "#/components/schemas/CustomSubagentModelBranch2"
+          },
+          {
+            "$ref": "#/components/schemas/ModelRef"
+          }
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Union discriminator"
+          }
+        },
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "CustomSubagentModel_2": "#/components/schemas/CustomSubagentModelBranch2",
+            "ModelRef": "#/components/schemas/ModelRef"
+          }
+        }
+      },
+      "CreateAgentRequestMode": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "$ref": "#/components/schemas/AgentMode"
+          }
+        },
+        "description": "Initial conversation mode for the agent\u0027s first run."
+      },
+      "ModelRefParamsItem": {
+        "required": [
+          "id",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string",
+            "example": "thinking"
+          },
+          "value": {
+            "minLength": 1,
+            "type": "string",
+            "example": "high"
           }
         }
       },
@@ -2164,7 +2155,7 @@
             "items": {
               "$ref": "#/components/schemas/Image"
             },
-            "description": "Image inputs. Each entry must provide either `data` (with required `mimeType`) or `url`. Maximum 5 images, 15 MB each."
+            "description": "Image inputs. Each entry must provide either \u0060data\u0060 (with required \u0060mimeType\u0060) or \u0060url\u0060. Maximum 5 images, 15 MB each."
           }
         }
       },
@@ -2176,7 +2167,7 @@
           "minLength": 1,
           "type": "string"
         },
-        "description": "\"Session-scoped environment variables for the cloud agent.\nValues are encrypted at rest, injected into the agent's\nshell, and deleted with the agent. Names must be non-empty,\n255 bytes or less, and cannot start with `CURSOR_`. Values\nmust be non-empty and 4096 bytes or less. Cannot be\ncombined with a client-supplied `agentId`.\n\nBeta: `envVars` is rolling out. If it isn't enabled for\nyour account yet, the field is silently ignored on create\nrather than failing the request — verify the values are\npresent on a first run before relying on them in\nproduction.\n\""
+        "description": "\u0022Session-scoped environment variables for the cloud agent.\nValues are encrypted at rest, injected into the agent\u0027s\nshell, and deleted with the agent. Names must be non-empty,\n255 bytes or less, and cannot start with \u0060CURSOR_\u0060. Values\nmust be non-empty and 4096 bytes or less. Cannot be\ncombined with a client-supplied \u0060agentId\u0060.\n\nBeta: \u0060envVars\u0060 is rolling out. If it isn\u0027t enabled for\nyour account yet, the field is silently ignored on create\nrather than failing the request \u2014 verify the values are\npresent on a first run before relying on them in\nproduction.\n\u0022"
       },
       "CreateRunRequestPrompt": {
         "required": [
@@ -2196,7 +2187,24 @@
             "items": {
               "$ref": "#/components/schemas/Image"
             },
-            "description": "Image inputs for the follow-up. Each entry must provide either `data` (with required `mimeType`) or `url`. Maximum 5 images, 15 MB each."
+            "description": "Image inputs for the follow-up. Each entry must provide either \u0060data\u0060 (with required \u0060mimeType\u0060) or \u0060url\u0060. Maximum 5 images, 15 MB each."
+          }
+        }
+      },
+      "ModelVariantParamsItem": {
+        "required": [
+          "id",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "value": {
+            "minLength": 1,
+            "type": "string"
           }
         }
       },
@@ -2209,7 +2217,7 @@
         "properties": {
           "code": {
             "type": "string",
-            "description": "Machine-readable error code. Possible values include\n`unauthorized`, `api_key_not_found`, `plan_required`,\n`role_forbidden`, `feature_unavailable`,\n`integration_not_connected`, `validation_error`,\n`missing_body`, `invalid_model`, `invalid_branch_name`,\n`repository_required`, `repository_access`,\n`pr_resolution_failed`, `artifact_not_found`,\n`service_account_required`, `agent_not_found`,\n`run_not_found`, `agent_busy`, `agent_archived`,\n`agent_id_conflict`, `run_not_cancellable`,\n`rate_limit_exceeded`, `usage_limit_exceeded`,\n`stream_expired`, `stream_unavailable`,\n`invalid_last_event_id`, `client_cancelled`,\n`not_implemented`, `upstream_error`, and\n`internal_error`.\n"
+            "description": "Machine-readable error code. Possible values include\n\u0060unauthorized\u0060, \u0060api_key_not_found\u0060, \u0060plan_required\u0060,\n\u0060role_forbidden\u0060, \u0060feature_unavailable\u0060,\n\u0060integration_not_connected\u0060, \u0060validation_error\u0060,\n\u0060missing_body\u0060, \u0060invalid_model\u0060, \u0060invalid_branch_name\u0060,\n\u0060repository_required\u0060, \u0060repository_access\u0060,\n\u0060pr_resolution_failed\u0060, \u0060artifact_not_found\u0060,\n\u0060service_account_required\u0060, \u0060agent_not_found\u0060,\n\u0060run_not_found\u0060, \u0060agent_busy\u0060, \u0060agent_archived\u0060,\n\u0060agent_id_conflict\u0060, \u0060run_not_cancellable\u0060,\n\u0060rate_limit_exceeded\u0060, \u0060usage_limit_exceeded\u0060,\n\u0060stream_expired\u0060, \u0060stream_unavailable\u0060,\n\u0060invalid_last_event_id\u0060, \u0060client_cancelled\u0060,\n\u0060not_implemented\u0060, \u0060upstream_error\u0060, and\n\u0060internal_error\u0060.\n"
           },
           "message": {
             "type": "string",
@@ -2217,20 +2225,45 @@
           },
           "helpUrl": {
             "type": "string",
-            "description": "Optional follow-up link. Populated for codes like `integration_not_connected`.",
+            "description": "Optional follow-up link. Populated for codes like \u0060integration_not_connected\u0060.",
             "format": "uri"
           },
           "provider": {
             "minLength": 1,
             "type": "string",
-            "description": "Optional provider identifier. Populated for codes like `integration_not_connected`."
+            "description": "Optional provider identifier. Populated for codes like \u0060integration_not_connected\u0060."
           }
         }
       },
-      "StreamRun200": {
+      "StreamRun200Response": {
         "type": "string"
       },
-      "JsonValue_Branch1": {
+      "CustomSubagentModelWrapper": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "$ref": "#/components/schemas/CustomSubagentModelWrapperValue"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "AgentModeWrapper": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "$ref": "#/components/schemas/AgentMode"
+          }
+        }
+      },
+      "JsonValueBranch1": {
         "required": [
           "value"
         ],
@@ -2241,7 +2274,7 @@
           }
         }
       },
-      "JsonValue_Branch2": {
+      "JsonValueBranch2": {
         "required": [
           "value"
         ],
@@ -2252,7 +2285,7 @@
           }
         }
       },
-      "JsonValue_Branch3": {
+      "JsonValueBranch3": {
         "required": [
           "value"
         ],
@@ -2263,7 +2296,7 @@
           }
         }
       },
-      "JsonValue_Branch5": {
+      "JsonValueBranch5": {
         "required": [
           "value"
         ],
@@ -2272,8 +2305,22 @@
           "value": {
             "type": "array",
             "items": {
-              "type": "object"
+              "$ref": "#/components/schemas/JsonValueBranch5ValueItem"
             }
+          }
+        }
+      },
+      "CustomSubagentModelBranch2": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "minLength": 1,
+            "type": "string",
+            "description": "An explicit model ID.",
+            "example": "claude-4.6-sonnet-thinking"
           }
         }
       },
@@ -2281,20 +2328,230 @@
         "type": "object",
         "description": "Placeholder schema for path example refs"
       },
-      "UnionBranch": {
-        "required": [
-          "value"
-        ],
+      "StreamRun200ResponseResponseEventStream": {
+        "type": "string"
+      },
+      "StdioMcpServerEnvProperty": {
         "type": "object",
-        "properties": {
-          "value": {
-            "enum": [
-              "inherit"
-            ],
-            "type": "string",
-            "additionalProperties": false,
-            "description": "Use the parent agent's model selection."
-          }
+        "additionalProperties": {
+          "type": "string"
+        },
+        "description": "Environment variables passed to the stdio MCP server inside the VM."
+      },
+      "RemoteMcpServerHeadersProperty": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        },
+        "description": "Headers Cursor sends with every request to the remote MCP server."
+      },
+      "CreateAgentRequestEnvVarsProperty": {
+        "type": "object",
+        "additionalProperties": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "type": "string"
+        },
+        "description": "\u0022Session-scoped environment variables for the cloud agent.\nValues are encrypted at rest, injected into the agent\u0027s\nshell, and deleted with the agent. Names must be non-empty,\n255 bytes or less, and cannot start with \u0060CURSOR_\u0060. Values\nmust be non-empty and 4096 bytes or less. Cannot be\ncombined with a client-supplied \u0060agentId\u0060.\n\nBeta: \u0060envVars\u0060 is rolling out. If it isn\u0027t enabled for\nyour account yet, the field is silently ignored on create\nrather than failing the request \u2014 verify the values are\npresent on a first run before relying on them in\nproduction.\n\u0022"
+      },
+      "JsonValueBranch5ValueItem": {
+        "type": "object"
+      },
+      "AgentEnvType": {
+        "enum": [
+          "cloud",
+          "pool",
+          "machine"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "Execution environment type. \u0060cloud\u0060 uses Cursor-hosted VMs; \u0060pool\u0060 and \u0060machine\u0060 route to self-hosted workers.",
+        "example": "cloud",
+        "x-ms-enum": {
+          "name": "AgentEnvType",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "cloud",
+              "name": "Cloud"
+            },
+            {
+              "value": "pool",
+              "name": "Pool"
+            },
+            {
+              "value": "machine",
+              "name": "Machine"
+            }
+          ]
+        }
+      },
+      "StdioMcpServerType": {
+        "enum": [
+          "stdio"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "Stdio MCP server. Defaults to \u0060stdio\u0060 when \u0060command\u0060 is provided.",
+        "example": "stdio",
+        "x-ms-enum": {
+          "name": "StdioMcpServerType",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "stdio",
+              "name": "Stdio"
+            }
+          ]
+        }
+      },
+      "RemoteMcpServerType": {
+        "enum": [
+          "http",
+          "sse"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "Remote MCP transport. Defaults to \u0060http\u0060 when \u0060url\u0060 is provided.",
+        "example": "http",
+        "x-ms-enum": {
+          "name": "RemoteMcpServerType",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "http",
+              "name": "Http"
+            },
+            {
+              "value": "sse",
+              "name": "Sse"
+            }
+          ]
+        }
+      },
+      "AgentSummaryStatus": {
+        "enum": [
+          "ACTIVE",
+          "ARCHIVED"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "Agent lifecycle state. Execution status lives on runs.",
+        "x-ms-enum": {
+          "name": "AgentSummaryStatus",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "ACTIVE",
+              "name": "Active"
+            },
+            {
+              "value": "ARCHIVED",
+              "name": "Archived"
+            }
+          ]
+        }
+      },
+      "RunStatus": {
+        "enum": [
+          "CREATING",
+          "RUNNING",
+          "FINISHED",
+          "ERROR",
+          "CANCELLED",
+          "EXPIRED"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "Current run status.",
+        "x-ms-enum": {
+          "name": "RunStatus",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "CREATING",
+              "name": "Creating"
+            },
+            {
+              "value": "RUNNING",
+              "name": "Running"
+            },
+            {
+              "value": "FINISHED",
+              "name": "Finished"
+            },
+            {
+              "value": "ERROR",
+              "name": "Error"
+            },
+            {
+              "value": "CANCELLED",
+              "name": "Cancelled"
+            },
+            {
+              "value": "EXPIRED",
+              "name": "Expired"
+            }
+          ]
+        }
+      },
+      "RunStreamToolCallDataStatus": {
+        "enum": [
+          "running",
+          "completed"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "Tool invocation lifecycle status.",
+        "example": "completed",
+        "x-ms-enum": {
+          "name": "RunStreamToolCallDataStatus",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "running",
+              "name": "Running"
+            },
+            {
+              "value": "completed",
+              "name": "Completed"
+            }
+          ]
+        }
+      },
+      "RunStreamToolCallEventEvent": {
+        "enum": [
+          "tool_call"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "x-ms-enum": {
+          "name": "RunStreamToolCallEventEvent",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "tool_call",
+              "name": "ToolCall"
+            }
+          ]
+        }
+      },
+      "CustomSubagentModelWrapperValue": {
+        "enum": [
+          "inherit"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "Use the parent agent\u0027s model selection.",
+        "x-ms-enum": {
+          "name": "CustomSubagentModelWrapperValue",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "inherit",
+              "name": "Inherit"
+            }
+          ]
         }
       }
     },
@@ -2340,7 +2597,7 @@
         }
       },
       "Conflict": {
-        "description": "Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, or `run_not_cancellable`).",
+        "description": "Resource state conflict (\u0060agent_busy\u0060, \u0060agent_archived\u0060, \u0060agent_id_conflict\u0060, or \u0060run_not_cancellable\u0060).",
         "content": {
           "application/json": {
             "schema": {
@@ -2350,7 +2607,7 @@
         }
       },
       "Gone": {
-        "description": "Stream retention window has elapsed (`stream_expired`).",
+        "description": "Stream retention window has elapsed (\u0060stream_expired\u0060).",
         "content": {
           "application/json": {
             "schema": {
@@ -2360,7 +2617,7 @@
         }
       },
       "RateLimited": {
-        "description": "Rate limit exceeded. Response includes `Retry-After`, `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` headers.",
+        "description": "Rate limit exceeded. Response includes \u0060Retry-After\u0060, \u0060X-RateLimit-Limit\u0060, \u0060X-RateLimit-Remaining\u0060, and \u0060X-RateLimit-Reset\u0060 headers.",
         "content": {
           "application/json": {
             "schema": {
@@ -2410,7 +2667,7 @@
       },
       "bearerAuth": {
         "type": "http",
-        "description": "API key from Cursor Dashboard, supplied via\n`Authorization: Bearer <key>`. Equivalent to Basic Auth.\n",
+        "description": "API key from Cursor Dashboard, supplied via\n\u0060Authorization: Bearer \u003Ckey\u003E\u0060. Equivalent to Basic Auth.\n",
         "scheme": "bearer"
       },
       "assets_jwt": {
@@ -2423,10 +2680,10 @@
   },
   "security": [
     {
-      "basicAuth": [ ]
+      "basicAuth": []
     },
     {
-      "bearerAuth": [ ]
+      "bearerAuth": []
     }
   ]
 }

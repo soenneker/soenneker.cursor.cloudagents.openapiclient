@@ -3,13 +3,13 @@ using System.Runtime.Serialization;
 using System;
 namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
-    /// <summary>Use the parent agent&apos;s model selection.</summary>
+    /// <summary>Stdio MCP server. Defaults to `stdio` when `command` is provided.</summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    public enum UnionBranch_value
+    public enum StdioMcpServerType
     {
-        [EnumMember(Value = "inherit")]
+        [EnumMember(Value = "stdio")]
         #pragma warning disable CS1591
-        Inherit,
+        Stdio,
         #pragma warning restore CS1591
     }
 }

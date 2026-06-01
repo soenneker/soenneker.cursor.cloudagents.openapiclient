@@ -11,26 +11,26 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     /// &quot;Session-scoped environment variables for the cloud agent.Values are encrypted at rest, injected into the agent&apos;sshell, and deleted with the agent. Names must be non-empty,255 bytes or less, and cannot start with `CURSOR_`. Valuesmust be non-empty and 4096 bytes or less. Cannot becombined with a client-supplied `agentId`.Beta: `envVars` is rolling out. If it isn&apos;t enabled foryour account yet, the field is silently ignored on createrather than failing the request — verify the values arepresent on a first run before relying on them inproduction.&quot;
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    public partial class CreateAgentRequest_envVars : IAdditionalDataHolder, IParsable
+    public partial class CreateAgentRequestEnvVarsProperty : IAdditionalDataHolder, IParsable
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
         /// <summary>
-        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars"/> and sets the default values.
+        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVarsProperty"/> and sets the default values.
         /// </summary>
-        public CreateAgentRequest_envVars()
+        public CreateAgentRequestEnvVarsProperty()
         {
             AdditionalData = new Dictionary<string, object>();
         }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars"/></returns>
+        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVarsProperty"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVarsProperty CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest_envVars();
+            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVarsProperty();
         }
         /// <summary>
         /// The deserialization information for the current model

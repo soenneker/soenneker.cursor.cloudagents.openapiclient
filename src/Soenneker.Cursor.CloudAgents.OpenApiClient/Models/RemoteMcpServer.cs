@@ -23,10 +23,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         /// <summary>Headers Cursor sends with every request to the remote MCP server.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServer_headers? Headers { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServerHeadersProperty? Headers { get; set; }
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServer_headers Headers { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServerHeadersProperty Headers { get; set; }
 #endif
         /// <summary>MCP server name exposed to the agent.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -37,7 +37,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public string Name { get; set; }
 #endif
         /// <summary>Remote MCP transport. Defaults to `http` when `url` is provided.</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServer_type? Type { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServerType? Type { get; set; }
         /// <summary>HTTP or HTTPS URL for the remote MCP server. Userinfo in the URL is not allowed.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -65,9 +65,9 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             return new Dictionary<string, Action<IParseNode>>
             {
                 { "auth", n => { Auth = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpAuth>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpAuth.CreateFromDiscriminatorValue); } },
-                { "headers", n => { Headers = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServer_headers>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServer_headers.CreateFromDiscriminatorValue); } },
+                { "headers", n => { Headers = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServerHeadersProperty>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServerHeadersProperty.CreateFromDiscriminatorValue); } },
                 { "name", n => { Name = n.GetStringValue(); } },
-                { "type", n => { Type = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServer_type>(); } },
+                { "type", n => { Type = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServerType>(); } },
                 { "url", n => { Url = n.GetStringValue(); } },
             };
         }
@@ -79,9 +79,9 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpAuth>("auth", Auth);
-            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServer_headers>("headers", Headers);
+            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServerHeadersProperty>("headers", Headers);
             writer.WriteStringValue("name", Name);
-            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServer_type>("type", Type);
+            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServerType>("type", Type);
             writer.WriteStringValue("url", Url);
         }
     }

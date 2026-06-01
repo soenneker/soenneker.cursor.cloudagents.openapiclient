@@ -5,7 +5,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
     /// <summary>Execution environment type. `cloud` uses Cursor-hosted VMs; `pool` and `machine` route to self-hosted workers.</summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    public enum AgentEnv_type
+    public enum AgentEnvType
     {
         [EnumMember(Value = "cloud")]
         #pragma warning disable CS1591
