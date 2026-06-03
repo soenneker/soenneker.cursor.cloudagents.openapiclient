@@ -106,6 +106,9 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public CreateAgentRequest()
         {
             AdditionalData = new Dictionary<string, object>();
+            AutoCreatePR = false;
+            SkipReviewerRequest = false;
+            WorkOnCurrentBranch = false;
         }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value

@@ -51,10 +51,6 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             {
                 result.CustomSubagentModelBranch2 = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelBranch2();
             }
-            else if("".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
-            {
-                result.CustomSubagentModelWrapper = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelWrapper();
-            }
             else if("ModelRef".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
             {
                 result.ModelRef = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef();
