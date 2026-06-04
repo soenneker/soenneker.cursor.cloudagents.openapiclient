@@ -2,7 +2,7 @@
   "descriptionHash": "0414120FC079802BBDEF301E09E19C5A734EFEED576C0BA420933897173B53065D332B0ACA90927EA95792B388344B7C0BE2DAC234AF9AD13F7429301A79614D",
   "descriptionLocation": "../../fixed.json",
   "lockFileVersion": "1.0.0",
-  "kiotaVersion": "1.32.0",
+  "kiotaVersion": "1.32.1",
   "clientClassName": "CursorCloudAgentsOpenApiClient",
   "typeAccessModifier": "Public",
   "clientNamespaceName": "Soenneker.Cursor.CloudAgents.OpenApiClient",
