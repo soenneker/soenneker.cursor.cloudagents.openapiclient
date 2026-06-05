@@ -35,7 +35,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public AgentsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "", pathParameters)
+        public AgentsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/agents{?cursor*,includeArchived*,limit*,prUrl*}", pathParameters)
         {
         }
         /// <summary>
@@ -43,7 +43,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public AgentsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "", rawUrl)
+        public AgentsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/agents{?cursor*,includeArchived*,limit*,prUrl*}", rawUrl)
         {
         }
         /// <summary>
@@ -126,7 +126,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents
         public RequestInformation ToGetRequestInformation(Action<RequestConfiguration<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.AgentsRequestBuilder.AgentsRequestBuilderGetQueryParameters>> requestConfiguration = default)
         {
 #endif
-            var requestInfo = new RequestInformation(Method.GET, "{+baseurl}/v1/agents{?cursor*,includeArchived*,limit*,prUrl*}", PathParameters);
+            var requestInfo = new RequestInformation(Method.GET, UrlTemplate, PathParameters);
             requestInfo.Configure(requestConfiguration);
             requestInfo.Headers.TryAdd("Accept", "application/json");
             return requestInfo;
@@ -147,7 +147,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents
         {
 #endif
             if(ReferenceEquals(body, null)) throw new ArgumentNullException(nameof(body));
-            var requestInfo = new RequestInformation(Method.POST, "{+baseurl}/v1/agents", PathParameters);
+            var requestInfo = new RequestInformation(Method.POST, UrlTemplate, PathParameters);
             requestInfo.Configure(requestConfiguration);
             requestInfo.Headers.TryAdd("Accept", "application/json");
             requestInfo.SetContentFromParsable(RequestAdapter, "application/json", body);
