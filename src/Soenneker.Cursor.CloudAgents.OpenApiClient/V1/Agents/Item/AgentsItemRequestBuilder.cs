@@ -8,6 +8,7 @@ using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Archive;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Artifacts;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Runs;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Unarchive;
+using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Usage;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -40,6 +41,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Unarchive.UnarchiveRequestBuilder Unarchive
         {
             get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Unarchive.UnarchiveRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The usage property</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Usage.UsageRequestBuilder Usage
+        {
+            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Usage.UsageRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.AgentsItemRequestBuilder"/> and sets the default values.

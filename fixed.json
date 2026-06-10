@@ -468,6 +468,57 @@
         }
       }
     },
+    "/v1/agents/{id}/usage": {
+      "get": {
+        "summary": "Get agent usage",
+        "description": "Retrieve token usage for an agent, broken down per run.\n\u0060totalUsage\u0060 sums input, output, and cache token counts across\nevery run on the agent, and \u0060runs\u0060 lists the same breakdown for\neach run. Token usage mirrors the \u0060tokenUsage\u0060 shape on the team\nusage events endpoint.\n\nThis endpoint is in early access. When it isn\u0027t enabled for the\naccount it returns \u0060403 feature_unavailable\u0060. An unknown \u0060runId\u0060\nreturns \u0060404 run_not_found\u0060.\n",
+        "operationId": "GetAgentUsage",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AgentId"
+          },
+          {
+            "name": "runId",
+            "in": "query",
+            "description": "Scope usage to a single run. Omit to return usage for every run on the agent.",
+            "schema": {
+              "type": "string",
+              "example": "run-00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usage retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentUsageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
     "/v1/agents/{id}/archive": {
       "post": {
         "summary": "Archive an agent",
@@ -1680,6 +1731,91 @@
           }
         }
       },
+      "UsageTokenUsage": {
+        "required": [
+          "inputTokens",
+          "outputTokens",
+          "cacheWriteTokens",
+          "cacheReadTokens",
+          "totalTokens"
+        ],
+        "type": "object",
+        "properties": {
+          "inputTokens": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Input tokens consumed.",
+            "example": 6320
+          },
+          "outputTokens": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Output tokens generated.",
+            "example": 1450
+          },
+          "cacheWriteTokens": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Tokens written to cache.",
+            "example": 7100
+          },
+          "cacheReadTokens": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Tokens read from cache.",
+            "example": 21300
+          },
+          "totalTokens": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Sum of the four token counts above.",
+            "example": 36170
+          }
+        }
+      },
+      "RunUsage": {
+        "required": [
+          "id",
+          "usage"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Run identifier.",
+            "example": "run-00000000-0000-0000-0000-000000000001"
+          },
+          "usageUuid": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Internal usage identifier for the run. Omitted when the run has no recorded usage yet.",
+            "example": "00000000-0000-0000-0000-000000000001"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/RunUsageUsage"
+          }
+        }
+      },
+      "AgentUsageResponse": {
+        "required": [
+          "totalUsage",
+          "runs"
+        ],
+        "type": "object",
+        "properties": {
+          "totalUsage": {
+            "$ref": "#/components/schemas/AgentUsageResponseTotalUsage"
+          },
+          "runs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RunUsage"
+            },
+            "description": "Per-run usage, one entry per run (or a single entry when \u0060runId\u0060 is set)."
+          }
+        }
+      },
       "ApiKeyInfo": {
         "required": [
           "apiKeyName",
@@ -2097,6 +2233,92 @@
           }
         },
         "description": "Initial conversation mode for the agent\u0027s first run."
+      },
+      "RunUsageUsage": {
+        "required": [
+          "inputTokens",
+          "outputTokens",
+          "cacheWriteTokens",
+          "cacheReadTokens",
+          "totalTokens"
+        ],
+        "type": "object",
+        "properties": {
+          "inputTokens": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Input tokens consumed.",
+            "example": 6320
+          },
+          "outputTokens": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Output tokens generated.",
+            "example": 1450
+          },
+          "cacheWriteTokens": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Tokens written to cache.",
+            "example": 7100
+          },
+          "cacheReadTokens": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Tokens read from cache.",
+            "example": 21300
+          },
+          "totalTokens": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Sum of the four token counts above.",
+            "example": 36170
+          }
+        },
+        "description": "Token usage for this run. Runs without recorded usage report zeros across all fields."
+      },
+      "AgentUsageResponseTotalUsage": {
+        "required": [
+          "inputTokens",
+          "outputTokens",
+          "cacheWriteTokens",
+          "cacheReadTokens",
+          "totalTokens"
+        ],
+        "type": "object",
+        "properties": {
+          "inputTokens": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Input tokens consumed.",
+            "example": 6320
+          },
+          "outputTokens": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Output tokens generated.",
+            "example": 1450
+          },
+          "cacheWriteTokens": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Tokens written to cache.",
+            "example": 7100
+          },
+          "cacheReadTokens": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Tokens read from cache.",
+            "example": 21300
+          },
+          "totalTokens": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Sum of the four token counts above.",
+            "example": 36170
+          }
+        },
+        "description": "Token usage summed across the returned runs."
       },
       "ModelRefParamsItem": {
         "required": [
