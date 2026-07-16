@@ -1345,6 +1345,7 @@
         "required": [
           "type"
         ],
+        "type": "object",
         "oneOf": [
           {
             "$ref": "#/components/schemas/JsonValueBranch1"
@@ -1369,7 +1370,6 @@
           }
         },
         "description": "Any JSON value.",
-        "nullable": true,
         "discriminator": {
           "propertyName": "type",
           "mapping": {
