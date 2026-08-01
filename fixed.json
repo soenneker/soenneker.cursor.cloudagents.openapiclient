@@ -388,7 +388,7 @@
             "content": {
               "text/event-stream": {
                 "schema": {
-                  "$ref": "#/components/schemas/StreamRun200ResponseResponseEventStream"
+                  "$ref": "#/components/schemas/StreamRun200EventStreamResponseSchema"
                 },
                 "examples": {
                   "toolCall": {
@@ -2457,7 +2457,7 @@
           }
         }
       },
-      "StreamRun200Response": {
+      "StreamRun200EventStreamResponse": {
         "type": "string"
       },
       "CustomSubagentModelWrapper": {
@@ -2550,7 +2550,7 @@
         "type": "object",
         "description": "Placeholder schema for path example refs"
       },
-      "StreamRun200ResponseResponseEventStream": {
+      "StreamRun200EventStreamResponseSchema": {
         "type": "string"
       },
       "StdioMcpServerEnvProperty": {
