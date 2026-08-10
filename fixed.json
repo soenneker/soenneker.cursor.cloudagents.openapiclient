@@ -1869,7 +1869,7 @@
             "minLength": 1,
             "type": "string",
             "description": "Permitted value for the parameter.",
-            "example": true
+            "example": "true"
           },
           "displayName": {
             "minLength": 1,
