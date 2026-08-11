@@ -4,7 +4,7 @@
     "title": "Cursor Cloud Agents API",
     "description": "\u0022Programmatically create and manage Cursor Cloud Agents that work\nautonomously on your repositories. v1 separates a durable agent\nfrom one or more runs: each prompt submission creates a run on the\nagent. Streaming and cancellation are scoped to the active run.\n\u0022",
     "contact": {
-      "email": "background-agent-feedback@cursor.com"
+      "email": "hi@cursor.com"
     },
     "version": "1.0.0"
   },

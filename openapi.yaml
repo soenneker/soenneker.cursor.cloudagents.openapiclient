@@ -8,7 +8,7 @@ info:
     agent. Streaming and cancellation are scoped to the active run.
   version: 1.0.0
   contact:
-    email: background-agent-feedback@cursor.com
+    email: hi@cursor.com
 
 servers:
   - url: https://api.cursor.com
