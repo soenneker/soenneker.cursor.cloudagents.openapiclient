@@ -14,16 +14,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>The type property</summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public string? Type { get; set; }
-#nullable restore
-#else
-        public string Type { get; set; }
-#endif
         /// <summary>Use the parent agent&apos;s model selection.</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelWrapperValue? Value { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.InheritValue? Value { get; set; }
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelWrapper"/> and sets the default values.
         /// </summary>
@@ -49,8 +41,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
-                { "type", n => { Type = n.GetStringValue(); } },
-                { "value", n => { Value = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelWrapperValue>(); } },
+                { "value", n => { Value = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.InheritValue>(); } },
             };
         }
         /// <summary>
@@ -60,8 +51,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-            writer.WriteStringValue("type", Type);
-            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelWrapperValue>("value", Value);
+            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.InheritValue>("value", Value);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

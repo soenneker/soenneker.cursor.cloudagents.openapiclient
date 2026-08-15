@@ -5,7 +5,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
     /// <summary>Use the parent agent&apos;s model selection.</summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    public enum CustomSubagentModelWrapperValue
+    public enum InheritValue
     {
         [EnumMember(Value = "inherit")]
         #pragma warning disable CS1591

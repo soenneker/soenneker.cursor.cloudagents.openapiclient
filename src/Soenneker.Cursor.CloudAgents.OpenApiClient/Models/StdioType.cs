@@ -5,7 +5,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
     /// <summary>Stdio MCP server. Defaults to `stdio` when `command` is provided.</summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    public enum StdioMcpServerType
+    public enum StdioType
     {
         [EnumMember(Value = "stdio")]
         #pragma warning disable CS1591

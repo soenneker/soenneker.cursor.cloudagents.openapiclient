@@ -40,7 +40,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv Env { get; set; }
 #endif
-        /// <summary>&quot;Session-scoped environment variables for the cloud agent.Values are encrypted at rest, injected into the agent&apos;sshell, and deleted with the agent. Names must be non-empty,255 bytes or less, and cannot start with `CURSOR_`. Valuesmust be non-empty and 4096 bytes or less. Cannot becombined with a client-supplied `agentId`.Beta: `envVars` is rolling out. If it isn&apos;t enabled foryour account yet, the field is silently ignored on createrather than failing the request — verify the values arepresent on a first run before relying on them inproduction.&quot;</summary>
+        /// <summary>Session-scoped environment variables for the cloud agent.Values are encrypted at rest, injected into the agent&apos;sshell, and deleted with the agent. Names must be non-empty,255 bytes or less, and cannot start with `CURSOR_`. Valuesmust be non-empty and 4096 bytes or less. Cannot becombined with a client-supplied `agentId`.Beta: `envVars` is rolling out. If it isn&apos;t enabled foryour account yet, the field is silently ignored on createrather than failing the request — verify the values arepresent on a first run before relying on them inproduction.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVarsProperty? EnvVars { get; set; }
@@ -88,7 +88,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestPrompt Prompt { get; set; }
 #endif
-        /// <summary>&quot;Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` (or pass `repos: []`) to start a no-repo agent.&quot;</summary>
+        /// <summary>Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` (or pass `repos: []`) to start a no-repo agent.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>? Repos { get; set; }

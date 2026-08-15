@@ -45,7 +45,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public string Name { get; set; }
 #endif
         /// <summary>Stdio MCP server. Defaults to `stdio` when `command` is provided.</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerType? Type { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioType? Type { get; set; }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
@@ -68,7 +68,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
                 { "command", n => { Command = n.GetStringValue(); } },
                 { "env", n => { Env = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerEnvProperty>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerEnvProperty.CreateFromDiscriminatorValue); } },
                 { "name", n => { Name = n.GetStringValue(); } },
-                { "type", n => { Type = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerType>(); } },
+                { "type", n => { Type = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioType>(); } },
             };
         }
         /// <summary>
@@ -82,7 +82,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteStringValue("command", Command);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerEnvProperty>("env", Env);
             writer.WriteStringValue("name", Name);
-            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServerType>("type", Type);
+            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioType>("type", Type);
         }
     }
 }

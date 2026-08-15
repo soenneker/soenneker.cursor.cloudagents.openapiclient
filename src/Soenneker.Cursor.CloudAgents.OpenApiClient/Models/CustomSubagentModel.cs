@@ -45,11 +45,15 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModel CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            var mappingValue = parseNode.GetChildNode("type")?.GetStringValue();
+            var mappingValue = parseNode.GetChildNode("")?.GetStringValue();
             var result = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModel();
-            if("CustomSubagentModel_2".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
+            if("CustomSubagentModelBranch2".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
             {
                 result.CustomSubagentModelBranch2 = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelBranch2();
+            }
+            else if("CustomSubagentModelWrapper".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
+            {
+                result.CustomSubagentModelWrapper = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelWrapper();
             }
             else if("ModelRef".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
             {

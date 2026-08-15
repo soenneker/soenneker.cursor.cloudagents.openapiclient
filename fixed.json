@@ -2,7 +2,7 @@
   "openapi": "3.0.4",
   "info": {
     "title": "Cursor Cloud Agents API",
-    "description": "\u0022Programmatically create and manage Cursor Cloud Agents that work\nautonomously on your repositories. v1 separates a durable agent\nfrom one or more runs: each prompt submission creates a run on the\nagent. Streaming and cancellation are scoped to the active run.\n\u0022",
+    "description": "Programmatically create and manage Cursor Cloud Agents that work\nautonomously on your repositories. v1 separates a durable agent\nfrom one or more runs: each prompt submission creates a run on the\nagent. Streaming and cancellation are scoped to the active run.\n",
     "contact": {
       "email": "hi@cursor.com"
     },
@@ -27,7 +27,8 @@
                 "$ref": "#/components/schemas/CreateAgentRequest"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
@@ -226,7 +227,8 @@
                 "$ref": "#/components/schemas/CreateRunRequest"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
@@ -385,6 +387,14 @@
         "responses": {
           "200": {
             "description": "SSE stream of run events.",
+            "headers": {
+              "X-Cursor-Stream-Retention-Seconds": {
+                "description": "Server-side stream retention window in seconds.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
             "content": {
               "text/event-stream": {
                 "schema": {
@@ -799,7 +809,8 @@
                 }
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -1028,7 +1039,7 @@
             "example": "github"
           },
           "type": {
-            "$ref": "#/components/schemas/StdioMcpServerType"
+            "$ref": "#/components/schemas/StdioType"
           },
           "command": {
             "minLength": 1,
@@ -1081,9 +1092,6 @@
         "additionalProperties": false
       },
       "McpServer": {
-        "required": [
-          "type"
-        ],
         "type": "object",
         "oneOf": [
           {
@@ -1094,16 +1102,39 @@
           }
         ],
         "properties": {
-          "type": {
+          "name": {
+            "minLength": 1,
             "type": "string",
-            "description": "Union discriminator"
-          }
-        },
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "StdioMcpServer": "#/components/schemas/StdioMcpServer",
-            "RemoteMcpServer": "#/components/schemas/RemoteMcpServer"
+            "description": "MCP server name exposed to the agent.",
+            "example": "github"
+          },
+          "command": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Command to start inside the cloud agent VM.",
+            "example": "npx"
+          },
+          "args": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Command arguments."
+          },
+          "env": {
+            "$ref": "#/components/schemas/StdioMcpServerEnvProperty"
+          },
+          "url": {
+            "type": "string",
+            "description": "HTTP or HTTPS URL for the remote MCP server. Userinfo in the URL is not allowed.",
+            "format": "uri",
+            "example": "https://mcp.linear.app/sse"
+          },
+          "headers": {
+            "$ref": "#/components/schemas/RemoteMcpServerHeadersProperty"
+          },
+          "auth": {
+            "$ref": "#/components/schemas/McpAuth"
           }
         }
       },
@@ -1342,9 +1373,6 @@
         "additionalProperties": false
       },
       "JsonValue": {
-        "required": [
-          "type"
-        ],
         "type": "object",
         "oneOf": [
           {
@@ -1363,22 +1391,7 @@
             "$ref": "#/components/schemas/JsonValueBranch5"
           }
         ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "description": "Union discriminator"
-          }
-        },
-        "description": "Any JSON value.",
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "JsonValue_1": "#/components/schemas/JsonValueBranch1",
-            "JsonValue_2": "#/components/schemas/JsonValueBranch2",
-            "JsonValue_3": "#/components/schemas/JsonValueBranch3",
-            "JsonValue_5": "#/components/schemas/JsonValueBranch5"
-          }
-        }
+        "description": "Any JSON value."
       },
       "RunStreamToolCallData": {
         "required": [
@@ -1423,7 +1436,7 @@
         "type": "object",
         "properties": {
           "event": {
-            "$ref": "#/components/schemas/RunStreamToolCallEventEvent"
+            "$ref": "#/components/schemas/ToolCallEvent"
           },
           "id": {
             "type": "string",
@@ -1504,7 +1517,7 @@
             "items": {
               "$ref": "#/components/schemas/RepoConfig"
             },
-            "description": "\u0022Repository configuration. Mutually exclusive with a named cloud environment. Omit both \u0060repos\u0060 and \u0060env\u0060 (or pass \u0060repos: []\u0060) to start a no-repo agent.\u0022"
+            "description": "Repository configuration. Mutually exclusive with a named cloud environment. Omit both \u0060repos\u0060 and \u0060env\u0060 (or pass \u0060repos: []\u0060) to start a no-repo agent."
           },
           "workOnCurrentBranch": {
             "type": "boolean",
@@ -2193,9 +2206,6 @@
         }
       },
       "CustomSubagentModel": {
-        "required": [
-          "type"
-        ],
         "type": "object",
         "oneOf": [
           {
@@ -2209,16 +2219,18 @@
           }
         ],
         "properties": {
-          "type": {
+          "id": {
+            "minLength": 1,
             "type": "string",
-            "description": "Union discriminator"
-          }
-        },
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "CustomSubagentModel_2": "#/components/schemas/CustomSubagentModelBranch2",
-            "ModelRef": "#/components/schemas/ModelRef"
+            "description": "Explicit model ID returned by GET /v1/models. Omit \u0060model\u0060 from the request to use the configured default.",
+            "example": "composer-2"
+          },
+          "params": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModelRefParamsItem"
+            },
+            "description": "Per-model parameters such as reasoning effort or max mode. Use only parameters supported by the selected model."
           }
         }
       },
@@ -2389,7 +2401,7 @@
           "minLength": 1,
           "type": "string"
         },
-        "description": "\u0022Session-scoped environment variables for the cloud agent.\nValues are encrypted at rest, injected into the agent\u0027s\nshell, and deleted with the agent. Names must be non-empty,\n255 bytes or less, and cannot start with \u0060CURSOR_\u0060. Values\nmust be non-empty and 4096 bytes or less. Cannot be\ncombined with a client-supplied \u0060agentId\u0060.\n\nBeta: \u0060envVars\u0060 is rolling out. If it isn\u0027t enabled for\nyour account yet, the field is silently ignored on create\nrather than failing the request \u2014 verify the values are\npresent on a first run before relying on them in\nproduction.\n\u0022"
+        "description": "Session-scoped environment variables for the cloud agent.\nValues are encrypted at rest, injected into the agent\u0027s\nshell, and deleted with the agent. Names must be non-empty,\n255 bytes or less, and cannot start with \u0060CURSOR_\u0060. Values\nmust be non-empty and 4096 bytes or less. Cannot be\ncombined with a client-supplied \u0060agentId\u0060.\n\nBeta: \u0060envVars\u0060 is rolling out. If it isn\u0027t enabled for\nyour account yet, the field is silently ignored on create\nrather than failing the request \u2014 verify the values are\npresent on a first run before relying on them in\nproduction.\n"
       },
       "CreateRunRequestPrompt": {
         "required": [
@@ -2467,10 +2479,7 @@
         "type": "object",
         "properties": {
           "value": {
-            "$ref": "#/components/schemas/CustomSubagentModelWrapperValue"
-          },
-          "type": {
-            "type": "string"
+            "$ref": "#/components/schemas/InheritValue"
           }
         }
       },
@@ -2484,6 +2493,10 @@
             "$ref": "#/components/schemas/AgentMode"
           }
         }
+      },
+      "ExamplePayload": {
+        "type": "object",
+        "description": "Placeholder schema for path example refs"
       },
       "JsonValueBranch1": {
         "required": [
@@ -2546,10 +2559,6 @@
           }
         }
       },
-      "ExamplePayload": {
-        "type": "object",
-        "description": "Placeholder schema for path example refs"
-      },
       "StreamRun200EventStreamResponseSchema": {
         "type": "string"
       },
@@ -2574,7 +2583,7 @@
           "minLength": 1,
           "type": "string"
         },
-        "description": "\u0022Session-scoped environment variables for the cloud agent.\nValues are encrypted at rest, injected into the agent\u0027s\nshell, and deleted with the agent. Names must be non-empty,\n255 bytes or less, and cannot start with \u0060CURSOR_\u0060. Values\nmust be non-empty and 4096 bytes or less. Cannot be\ncombined with a client-supplied \u0060agentId\u0060.\n\nBeta: \u0060envVars\u0060 is rolling out. If it isn\u0027t enabled for\nyour account yet, the field is silently ignored on create\nrather than failing the request \u2014 verify the values are\npresent on a first run before relying on them in\nproduction.\n\u0022"
+        "description": "Session-scoped environment variables for the cloud agent.\nValues are encrypted at rest, injected into the agent\u0027s\nshell, and deleted with the agent. Names must be non-empty,\n255 bytes or less, and cannot start with \u0060CURSOR_\u0060. Values\nmust be non-empty and 4096 bytes or less. Cannot be\ncombined with a client-supplied \u0060agentId\u0060.\n\nBeta: \u0060envVars\u0060 is rolling out. If it isn\u0027t enabled for\nyour account yet, the field is silently ignored on create\nrather than failing the request \u2014 verify the values are\npresent on a first run before relying on them in\nproduction.\n"
       },
       "JsonValueBranch5ValueItem": {
         "type": "object"
@@ -2608,7 +2617,7 @@
           ]
         }
       },
-      "StdioMcpServerType": {
+      "StdioType": {
         "enum": [
           "stdio"
         ],
@@ -2617,7 +2626,7 @@
         "description": "Stdio MCP server. Defaults to \u0060stdio\u0060 when \u0060command\u0060 is provided.",
         "example": "stdio",
         "x-ms-enum": {
-          "name": "StdioMcpServerType",
+          "name": "StdioType",
           "modelAsString": false,
           "values": [
             {
@@ -2741,14 +2750,14 @@
           ]
         }
       },
-      "RunStreamToolCallEventEvent": {
+      "ToolCallEvent": {
         "enum": [
           "tool_call"
         ],
         "type": "string",
         "additionalProperties": false,
         "x-ms-enum": {
-          "name": "RunStreamToolCallEventEvent",
+          "name": "ToolCallEvent",
           "modelAsString": false,
           "values": [
             {
@@ -2758,7 +2767,7 @@
           ]
         }
       },
-      "CustomSubagentModelWrapperValue": {
+      "InheritValue": {
         "enum": [
           "inherit"
         ],
@@ -2766,7 +2775,7 @@
         "additionalProperties": false,
         "description": "Use the parent agent\u0027s model selection.",
         "x-ms-enum": {
-          "name": "CustomSubagentModelWrapperValue",
+          "name": "InheritValue",
           "modelAsString": false,
           "values": [
             {
@@ -2891,12 +2900,6 @@
         "type": "http",
         "description": "API key from Cursor Dashboard, supplied via\n\u0060Authorization: Bearer \u003Ckey\u003E\u0060. Equivalent to Basic Auth.\n",
         "scheme": "bearer"
-      },
-      "assets_jwt": {
-        "type": "http",
-        "description": "JWT used for assets upload",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
       }
     }
   },

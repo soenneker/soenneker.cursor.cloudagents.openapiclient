@@ -8,7 +8,7 @@ using System;
 namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
     /// <summary>
-    /// &quot;Session-scoped environment variables for the cloud agent.Values are encrypted at rest, injected into the agent&apos;sshell, and deleted with the agent. Names must be non-empty,255 bytes or less, and cannot start with `CURSOR_`. Valuesmust be non-empty and 4096 bytes or less. Cannot becombined with a client-supplied `agentId`.Beta: `envVars` is rolling out. If it isn&apos;t enabled foryour account yet, the field is silently ignored on createrather than failing the request — verify the values arepresent on a first run before relying on them inproduction.&quot;
+    /// Session-scoped environment variables for the cloud agent.Values are encrypted at rest, injected into the agent&apos;sshell, and deleted with the agent. Names must be non-empty,255 bytes or less, and cannot start with `CURSOR_`. Valuesmust be non-empty and 4096 bytes or less. Cannot becombined with a client-supplied `agentId`.Beta: `envVars` is rolling out. If it isn&apos;t enabled foryour account yet, the field is silently ignored on createrather than failing the request — verify the values arepresent on a first run before relying on them inproduction.
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class CreateAgentRequestEnvVarsProperty : IAdditionalDataHolder, IParsable
