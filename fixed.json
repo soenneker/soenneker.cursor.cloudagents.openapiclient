@@ -992,7 +992,7 @@
           "name": {
             "minLength": 1,
             "type": "string",
-            "description": "Named Cursor-hosted environment, self-hosted pool, or self-hosted machine name.",
+            "description": "Named Cursor-hosted environment, Team Pool, or self-hosted machine name. For \u0060type: pool\u0060, this is the pool name (defaults to \u0060default\u0060 when omitted). Unknown pool names return \u0060400\u0060. Omit \u0060repos\u0060 with \u0060type: pool\u0060 to target a repo-less pool.",
             "example": "Release workspace"
           }
         }
