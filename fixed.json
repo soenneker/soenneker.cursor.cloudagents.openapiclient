@@ -992,7 +992,7 @@
           "name": {
             "minLength": 1,
             "type": "string",
-            "description": "Named Cursor-hosted environment, Team Pool, or self-hosted machine name. For \u0060type: pool\u0060, this is the pool name (defaults to \u0060default\u0060 when omitted). Unknown pool names return \u0060400\u0060. Omit \u0060repos\u0060 with \u0060type: pool\u0060 to target a repo-less pool.",
+            "description": "Named Cursor-hosted environment, Team Pool, or self-hosted machine name. For \u0060type: pool\u0060, this is the pool name (defaults to \u0060default\u0060 when omitted). Unknown pool names return \u0060400\u0060. Omit \u0060repos\u0060 with \u0060type: pool\u0060 to target a repo-less pool. Name an any-repo pool to send more than one entry in \u0060repos\u0060.",
             "example": "Release workspace"
           }
         }
@@ -1517,7 +1517,7 @@
             "items": {
               "$ref": "#/components/schemas/RepoConfig"
             },
-            "description": "Repository configuration. Mutually exclusive with a named cloud environment. Omit both \u0060repos\u0060 and \u0060env\u0060 (or pass \u0060repos: []\u0060) to start a no-repo agent."
+            "description": "Repository configuration. Mutually exclusive with a named cloud environment. Omit both \u0060repos\u0060 and \u0060env\u0060 (or pass \u0060repos: []\u0060) to start a no-repo agent. On self-hosted targets, only a named any-repo pool takes more than one entry. \u0060machine\u0060, the \u0060default\u0060 pool, and repo-backed pools take one and return \u0060400\u0060 for more."
           },
           "workOnCurrentBranch": {
             "type": "boolean",
