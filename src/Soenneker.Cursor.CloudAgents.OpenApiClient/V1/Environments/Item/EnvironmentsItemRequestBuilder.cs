@@ -4,71 +4,42 @@ using Microsoft.Kiota.Abstractions.Extensions;
 using Microsoft.Kiota.Abstractions.Serialization;
 using Microsoft.Kiota.Abstractions;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.Models;
-using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Archive;
-using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Artifacts;
-using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Runs;
-using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Unarchive;
-using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Usage;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
-namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item
+namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item
 {
     /// <summary>
-    /// Builds and executes requests for operations under \v1\agents\{id}
+    /// Builds and executes requests for operations under \v1\environments\{id}
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    public partial class AgentsItemRequestBuilder : BaseRequestBuilder
+    public partial class EnvironmentsItemRequestBuilder : BaseRequestBuilder
     {
-        /// <summary>The archive property</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Archive.ArchiveRequestBuilder Archive
-        {
-            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Archive.ArchiveRequestBuilder(PathParameters, RequestAdapter);
-        }
-        /// <summary>The artifacts property</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Artifacts.ArtifactsRequestBuilder Artifacts
-        {
-            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Artifacts.ArtifactsRequestBuilder(PathParameters, RequestAdapter);
-        }
-        /// <summary>The runs property</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Runs.RunsRequestBuilder Runs
-        {
-            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Runs.RunsRequestBuilder(PathParameters, RequestAdapter);
-        }
-        /// <summary>The unarchive property</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Unarchive.UnarchiveRequestBuilder Unarchive
-        {
-            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Unarchive.UnarchiveRequestBuilder(PathParameters, RequestAdapter);
-        }
-        /// <summary>The usage property</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Usage.UsageRequestBuilder Usage
-        {
-            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Usage.UsageRequestBuilder(PathParameters, RequestAdapter);
-        }
         /// <summary>
-        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.AgentsItemRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.EnvironmentsItemRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public AgentsItemRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/agents/{id}", pathParameters)
+        public EnvironmentsItemRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/environments/{id}", pathParameters)
         {
         }
         /// <summary>
-        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.AgentsItemRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.EnvironmentsItemRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public AgentsItemRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/agents/{id}", rawUrl)
+        public EnvironmentsItemRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/environments/{id}", rawUrl)
         {
         }
         /// <summary>
-        /// Permanently delete an agent. This action is irreversible. Use POST /v1/agents/{id}/archive for reversible removal.
+        /// Permanently delete a saved environment. This action is irreversible.
         /// </summary>
         /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.IdResponse"/></returns>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
+        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 400 status code</exception>
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 403 status code</exception>
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 404 status code</exception>
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 429 status code</exception>
@@ -85,6 +56,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item
             var requestInfo = ToDeleteRequestInformation(requestConfiguration);
             var errorMapping = new Dictionary<string, ParsableFactory<IParsable>>
             {
+                { "400", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
                 { "403", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
                 { "404", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
                 { "429", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
@@ -93,36 +65,38 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item
             return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.IdResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.IdResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
-        /// Retrieve durable metadata for an agent. Execution status lives on runs.
+        /// Retrieve a saved environment and its latest saved configuration. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`.
         /// </summary>
-        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Agent"/></returns>
+        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.GetEnvironmentResponse"/></returns>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
+        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 400 status code</exception>
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 403 status code</exception>
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 404 status code</exception>
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 429 status code</exception>
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 500 status code</exception>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Agent?> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.GetEnvironmentResponse?> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #nullable restore
 #else
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Agent> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.GetEnvironmentResponse> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #endif
             var requestInfo = ToGetRequestInformation(requestConfiguration);
             var errorMapping = new Dictionary<string, ParsableFactory<IParsable>>
             {
+                { "400", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
                 { "403", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
                 { "404", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
                 { "429", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
                 { "500", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Agent>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Agent.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.GetEnvironmentResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.GetEnvironmentResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
-        /// Permanently delete an agent. This action is irreversible. Use POST /v1/agents/{id}/archive for reversible removal.
+        /// Permanently delete a saved environment. This action is irreversible.
         /// </summary>
         /// <returns>A <see cref="RequestInformation"/></returns>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
@@ -141,7 +115,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item
             return requestInfo;
         }
         /// <summary>
-        /// Retrieve durable metadata for an agent. Execution status lives on runs.
+        /// Retrieve a saved environment and its latest saved configuration. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`.
         /// </summary>
         /// <returns>A <see cref="RequestInformation"/></returns>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
@@ -162,11 +136,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item
         /// <summary>
         /// Returns a request builder with the provided arbitrary URL. Using this method means any other path or query parameters are ignored.
         /// </summary>
-        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.AgentsItemRequestBuilder"/></returns>
+        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.EnvironmentsItemRequestBuilder"/></returns>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.AgentsItemRequestBuilder WithUrl(string rawUrl)
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.EnvironmentsItemRequestBuilder WithUrl(string rawUrl)
         {
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.AgentsItemRequestBuilder(rawUrl, RequestAdapter);
+            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.EnvironmentsItemRequestBuilder(rawUrl, RequestAdapter);
         }
     }
 }

@@ -6,6 +6,7 @@ info:
     autonomously on your repositories. v1 separates a durable agent
     from one or more runs: each prompt submission creates a run on the
     agent. Streaming and cancellation are scoped to the active run.
+    Environment endpoints manage the saved environments agents run in.
   version: 1.0.0
   contact:
     email: hi@cursor.com
@@ -835,6 +836,129 @@ components:
           items:
             $ref: '#/components/schemas/RunUsage'
 
+    EnvironmentRepo:
+      type: object
+      additionalProperties: false
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          minLength: 1
+          description: Repository URL.
+          example: 'https://github.com/your-org/your-repo'
+
+    EnvironmentRepoFile:
+      type: object
+      additionalProperties: false
+      description: The file in a repository that an environment reads its configuration from.
+      required:
+        - url
+        - path
+      properties:
+        url:
+          type: string
+          minLength: 1
+          description: URL of the repository that holds the configuration file.
+          example: 'https://github.com/your-org/your-repo'
+        path:
+          type: string
+          minLength: 1
+          description: Path of the configuration file in the repository.
+          example: '.cursor/environment.json'
+
+    Environment:
+      type: object
+      required:
+        - id
+        - owner
+        - repos
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique environment identifier.
+          example: '8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c'
+        name:
+          type: string
+          minLength: 1
+          description: Display name. Omitted when the environment has no name.
+          example: 'Web app'
+        owner:
+          type: string
+          enum: ['personal', 'team']
+          description: '`personal` for an environment that belongs to one user, or `team` for an environment shared with the team.'
+        repos:
+          type: array
+          description: Repositories in the environment.
+          items:
+            $ref: '#/components/schemas/EnvironmentRepo'
+        createdAt:
+          type: string
+          format: date-time
+          description: When the environment was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: When the environment was last updated.
+
+    CreateEnvironmentResponse:
+      allOf:
+        - $ref: '#/components/schemas/Environment'
+        - type: object
+          required:
+            - name
+
+    GetEnvironmentResponse:
+      allOf:
+        - $ref: '#/components/schemas/Environment'
+        - type: object
+          properties:
+            repoFile:
+              $ref: '#/components/schemas/EnvironmentRepoFile'
+            environmentJson:
+              type: string
+              description: The environment's latest saved configuration, its `environment.json`, as a JSON-encoded string.
+              example: '{"install": "pnpm install", "start": "sudo service docker start"}'
+            versionId:
+              type: string
+              minLength: 1
+              description: ID of the latest saved environment version. Omitted when no version has been saved.
+              example: 'c9f0f895-fb98-4b91-8f3e-2a1b0c9d8e7f'
+
+    CreateEnvironmentRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - owner
+        - name
+        - repos
+        - environmentJson
+      properties:
+        owner:
+          type: string
+          enum: ['personal', 'team']
+          description: '`personal` creates an environment for the API key''s user, and `team` creates one for the team.'
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Display name. It must differ from the names of the owner's other environments; a name the owner already uses returns `409 environment_name_conflict`.
+          example: 'Web app'
+        repos:
+          type: array
+          maxItems: 50
+          description: Repositories for the environment, or an empty array for an environment without repositories. Cursor must be able to reach each one through your source control integration; otherwise the request returns `400 repository_access`.
+          items:
+            $ref: '#/components/schemas/EnvironmentRepo'
+        environmentJson:
+          type: string
+          minLength: 1
+          description: The environment's `environment.json`, as a JSON-encoded string, using the same schema as a `.cursor/environment.json` file. An invalid configuration returns `400 validation_error`.
+          example: '{"install": "pnpm install", "start": "sudo service docker start"}'
+
     ApiKeyInfo:
       type: object
       required:
@@ -1060,6 +1184,22 @@ components:
           description: Numeric ID of the service account's team.
           example: 456
 
+    AuthenticationError:
+      type: object
+      description: Body of a `401` response when the API key fails authentication.
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Error category, such as `error`.
+          example: 'error'
+        message:
+          type: string
+          description: Human-readable error message.
+          example: 'Invalid User API Key'
+
     Error:
       type: object
       required:
@@ -1082,7 +1222,9 @@ components:
                 `repository_required`, `repository_access`,
                 `pr_resolution_failed`, `artifact_not_found`,
                 `service_account_required`, `agent_not_found`,
-                `run_not_found`, `agent_busy`, `agent_archived`,
+                `run_not_found`, `environment_not_found`,
+                `team_admin_required`, `environment_name_conflict`,
+                `duplicate_json_key`, `agent_busy`, `agent_archived`,
                 `agent_id_conflict`, `run_not_cancellable`,
                 `rate_limit_exceeded`, `usage_limit_exceeded`,
                 `stream_expired`, `stream_unavailable`,
@@ -1100,6 +1242,11 @@ components:
               type: string
               minLength: 1
               description: Optional provider identifier. Populated for codes like `integration_not_connected`.
+            environmentId:
+              type: string
+              format: uuid
+              description: ID of the existing environment with the requested name, when an `environment_name_conflict` error returns it.
+              example: '8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c'
 
   parameters:
     AgentId:
@@ -1118,6 +1265,15 @@ components:
       schema:
         type: string
         example: 'run-00000000-0000-0000-0000-000000000001'
+    EnvironmentId:
+      name: id
+      in: path
+      required: true
+      description: Unique identifier for the environment.
+      schema:
+        type: string
+        format: uuid
+        example: '8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c'
 
   responses:
     BadRequest:
@@ -1127,11 +1283,13 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
     Unauthorized:
-      description: Invalid or missing API key.
+      description: Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level `code` and `message` instead of an `error` object.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            oneOf:
+              - $ref: '#/components/schemas/AuthenticationError'
+              - $ref: '#/components/schemas/Error'
     Forbidden:
       description: Authenticated but insufficient permissions, plan required, or feature unavailable.
       content:
@@ -1139,13 +1297,13 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
     NotFound:
-      description: Agent or run not found.
+      description: Resource not found.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
     Conflict:
-      description: Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, or `run_not_cancellable`).
+      description: Resource state conflict (`agent_busy`, `agent_archived`, `agent_id_conflict`, `run_not_cancellable`, or `environment_name_conflict`).
       content:
         application/json:
           schema:
@@ -1661,6 +1819,100 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DownloadArtifactResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/environments:
+    post:
+      summary: Create an environment
+      description: Create a saved environment. The `201` response is the new environment.
+      operationId: createEnvironment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEnvironmentRequest'
+      responses:
+        '201':
+          description: Environment created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateEnvironmentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+        '503':
+          description: Cursor couldn't reach your source control provider to check a repository (`upstream_error`). Retry after the number of seconds in `Retry-After`.
+          headers:
+            Retry-After:
+              description: Seconds to wait before retrying.
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /v1/environments/{id}:
+    get:
+      summary: Get an environment
+      description: Retrieve a saved environment and its latest saved configuration. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
+      operationId: getEnvironment
+      parameters:
+        - $ref: '#/components/parameters/EnvironmentId'
+      responses:
+        '200':
+          description: Environment retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEnvironmentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    delete:
+      summary: Delete an environment
+      description: Permanently delete a saved environment. This action is irreversible.
+      operationId: deleteEnvironment
+      parameters:
+        - $ref: '#/components/parameters/EnvironmentId'
+      responses:
+        '200':
+          description: Environment deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':

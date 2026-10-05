@@ -14,7 +14,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Machine-readable error code. Possible values include`unauthorized`, `api_key_not_found`, `plan_required`,`role_forbidden`, `feature_unavailable`,`integration_not_connected`, `validation_error`,`missing_body`, `invalid_model`, `invalid_branch_name`,`repository_required`, `repository_access`,`pr_resolution_failed`, `artifact_not_found`,`service_account_required`, `agent_not_found`,`run_not_found`, `agent_busy`, `agent_archived`,`agent_id_conflict`, `run_not_cancellable`,`rate_limit_exceeded`, `usage_limit_exceeded`,`stream_expired`, `stream_unavailable`,`invalid_last_event_id`, `client_cancelled`,`not_implemented`, `upstream_error`, and`internal_error`.</summary>
+        /// <summary>Machine-readable error code. Possible values include`unauthorized`, `api_key_not_found`, `plan_required`,`role_forbidden`, `feature_unavailable`,`integration_not_connected`, `validation_error`,`missing_body`, `invalid_model`, `invalid_branch_name`,`repository_required`, `repository_access`,`pr_resolution_failed`, `artifact_not_found`,`service_account_required`, `agent_not_found`,`run_not_found`, `environment_not_found`,`team_admin_required`, `environment_name_conflict`,`duplicate_json_key`, `agent_busy`, `agent_archived`,`agent_id_conflict`, `run_not_cancellable`,`rate_limit_exceeded`, `usage_limit_exceeded`,`stream_expired`, `stream_unavailable`,`invalid_last_event_id`, `client_cancelled`,`not_implemented`, `upstream_error`, and`internal_error`.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public string? Code { get; set; }
@@ -22,6 +22,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public string Code { get; set; }
 #endif
+        /// <summary>ID of the existing environment with the requested name, when an `environment_name_conflict` error returns it.</summary>
+        public Guid? EnvironmentId { get; set; }
         /// <summary>Optional follow-up link. Populated for codes like `integration_not_connected`.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -72,6 +74,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             return new Dictionary<string, Action<IParseNode>>
             {
                 { "code", n => { Code = n.GetStringValue(); } },
+                { "environmentId", n => { EnvironmentId = n.GetGuidValue(); } },
                 { "helpUrl", n => { HelpUrl = n.GetStringValue(); } },
                 { "message", n => { Message = n.GetStringValue(); } },
                 { "provider", n => { Provider = n.GetStringValue(); } },
@@ -85,6 +88,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteStringValue("code", Code);
+            writer.WriteGuidValue("environmentId", EnvironmentId);
             writer.WriteStringValue("helpUrl", HelpUrl);
             writer.WriteStringValue("message", Message);
             writer.WriteStringValue("provider", Provider);

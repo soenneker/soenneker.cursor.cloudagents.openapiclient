@@ -3,6 +3,7 @@
 using Microsoft.Kiota.Abstractions.Extensions;
 using Microsoft.Kiota.Abstractions;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents;
+using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Me;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.ModelsRequests;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Repositories;
@@ -23,6 +24,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.AgentsRequestBuilder Agents
         {
             get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.AgentsRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The environments property</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.EnvironmentsRequestBuilder Environments
+        {
+            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.EnvironmentsRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>The me property</summary>
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Me.MeRequestBuilder Me

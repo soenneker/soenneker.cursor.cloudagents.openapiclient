@@ -2,7 +2,7 @@
   "openapi": "3.0.4",
   "info": {
     "title": "Cursor Cloud Agents API",
-    "description": "Programmatically create and manage Cursor Cloud Agents that work\nautonomously on your repositories. v1 separates a durable agent\nfrom one or more runs: each prompt submission creates a run on the\nagent. Streaming and cancellation are scoped to the active run.\n",
+    "description": "Programmatically create and manage Cursor Cloud Agents that work\nautonomously on your repositories. v1 separates a durable agent\nfrom one or more runs: each prompt submission creates a run on the\nagent. Streaming and cancellation are scoped to the active run.\nEnvironment endpoints manage the saved environments agents run in.\n",
     "contact": {
       "email": "hi@cursor.com"
     },
@@ -674,6 +674,153 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DownloadArtifactResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/environments": {
+      "post": {
+        "summary": "Create an environment",
+        "description": "Create a saved environment. The \u0060201\u0060 response is the new environment.",
+        "operationId": "CreateEnvironment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEnvironmentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Environment created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateEnvironmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "description": "Cursor couldn\u0027t reach your source control provider to check a repository (\u0060upstream_error\u0060). Retry after the number of seconds in \u0060Retry-After\u0060.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/environments/{id}": {
+      "get": {
+        "summary": "Get an environment",
+        "description": "Retrieve a saved environment and its latest saved configuration. An environment that doesn\u0027t exist or isn\u0027t visible to the API key returns \u0060404 environment_not_found\u0060.",
+        "operationId": "GetEnvironment",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Environment retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetEnvironmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an environment",
+        "description": "Permanently delete a saved environment. This action is irreversible.",
+        "operationId": "DeleteEnvironment",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Environment deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResponse"
                 }
               }
             }
@@ -1829,6 +1976,227 @@
           }
         }
       },
+      "EnvironmentRepo": {
+        "required": [
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "url": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Repository URL.",
+            "example": "https://github.com/your-org/your-repo"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EnvironmentRepoFile": {
+        "required": [
+          "url",
+          "path"
+        ],
+        "type": "object",
+        "properties": {
+          "url": {
+            "minLength": 1,
+            "type": "string",
+            "description": "URL of the repository that holds the configuration file.",
+            "example": "https://github.com/your-org/your-repo"
+          },
+          "path": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Path of the configuration file in the repository.",
+            "example": ".cursor/environment.json"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The file in a repository that an environment reads its configuration from."
+      },
+      "Environment": {
+        "required": [
+          "id",
+          "owner",
+          "repos",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique environment identifier.",
+            "format": "uuid",
+            "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Display name. Omitted when the environment has no name.",
+            "example": "Web app"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/EnvironmentOwner"
+          },
+          "repos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EnvironmentRepo"
+            },
+            "description": "Repositories in the environment."
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the environment was created.",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "When the environment was last updated.",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateEnvironmentResponse": {
+        "required": [
+          "id",
+          "owner",
+          "repos",
+          "createdAt",
+          "updatedAt",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique environment identifier.",
+            "format": "uuid",
+            "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Display name. Omitted when the environment has no name.",
+            "example": "Web app"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/EnvironmentOwner"
+          },
+          "repos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EnvironmentRepo"
+            },
+            "description": "Repositories in the environment."
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the environment was created.",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "When the environment was last updated.",
+            "format": "date-time"
+          }
+        }
+      },
+      "GetEnvironmentResponse": {
+        "required": [
+          "id",
+          "owner",
+          "repos",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique environment identifier.",
+            "format": "uuid",
+            "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Display name. Omitted when the environment has no name.",
+            "example": "Web app"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/EnvironmentOwner"
+          },
+          "repos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EnvironmentRepo"
+            },
+            "description": "Repositories in the environment."
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the environment was created.",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "When the environment was last updated.",
+            "format": "date-time"
+          },
+          "repoFile": {
+            "$ref": "#/components/schemas/EnvironmentRepoFile"
+          },
+          "environmentJson": {
+            "type": "string",
+            "description": "The environment\u0027s latest saved configuration, its \u0060environment.json\u0060, as a JSON-encoded string.",
+            "example": "{\u0022install\u0022: \u0022pnpm install\u0022, \u0022start\u0022: \u0022sudo service docker start\u0022}"
+          },
+          "versionId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "ID of the latest saved environment version. Omitted when no version has been saved.",
+            "example": "c9f0f895-fb98-4b91-8f3e-2a1b0c9d8e7f"
+          }
+        }
+      },
+      "CreateEnvironmentRequest": {
+        "required": [
+          "owner",
+          "name",
+          "repos",
+          "environmentJson"
+        ],
+        "type": "object",
+        "properties": {
+          "owner": {
+            "$ref": "#/components/schemas/CreateEnvironmentRequestOwner"
+          },
+          "name": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string",
+            "description": "Display name. It must differ from the names of the owner\u0027s other environments; a name the owner already uses returns \u0060409 environment_name_conflict\u0060.",
+            "example": "Web app"
+          },
+          "repos": {
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EnvironmentRepo"
+            },
+            "description": "Repositories for the environment, or an empty array for an environment without repositories. Cursor must be able to reach each one through your source control integration; otherwise the request returns \u0060400 repository_access\u0060."
+          },
+          "environmentJson": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The environment\u0027s \u0060environment.json\u0060, as a JSON-encoded string, using the same schema as a \u0060.cursor/environment.json\u0060 file. An invalid configuration returns \u0060400 validation_error\u0060.",
+            "example": "{\u0022install\u0022: \u0022pnpm install\u0022, \u0022start\u0022: \u0022sudo service docker start\u0022}"
+          }
+        },
+        "additionalProperties": false
+      },
       "ApiKeyInfo": {
         "required": [
           "apiKeyName",
@@ -2116,12 +2484,58 @@
           }
         }
       },
+      "AuthenticationError": {
+        "required": [
+          "code",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error category, such as \u0060error\u0060.",
+            "example": "error"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message.",
+            "example": "Invalid User API Key"
+          }
+        },
+        "description": "Body of a \u0060401\u0060 response when the API key fails authentication."
+      },
       "Error": {
         "required": [
           "error"
         ],
         "type": "object",
         "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorError"
+          }
+        }
+      },
+      "UnauthorizedResponse": {
+        "type": "object",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/AuthenticationError"
+          },
+          {
+            "$ref": "#/components/schemas/Error"
+          }
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error category, such as \u0060error\u0060.",
+            "example": "error"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message.",
+            "example": "Invalid User API Key"
+          },
           "error": {
             "$ref": "#/components/schemas/ErrorError"
           }
@@ -2332,6 +2746,25 @@
         },
         "description": "Token usage summed across the returned runs."
       },
+      "GetEnvironmentResponseAllOf2": {
+        "type": "object",
+        "properties": {
+          "repoFile": {
+            "$ref": "#/components/schemas/EnvironmentRepoFile"
+          },
+          "environmentJson": {
+            "type": "string",
+            "description": "The environment\u0027s latest saved configuration, its \u0060environment.json\u0060, as a JSON-encoded string.",
+            "example": "{\u0022install\u0022: \u0022pnpm install\u0022, \u0022start\u0022: \u0022sudo service docker start\u0022}"
+          },
+          "versionId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "ID of the latest saved environment version. Omitted when no version has been saved.",
+            "example": "c9f0f895-fb98-4b91-8f3e-2a1b0c9d8e7f"
+          }
+        }
+      },
       "ModelRefParamsItem": {
         "required": [
           "id",
@@ -2451,7 +2884,7 @@
         "properties": {
           "code": {
             "type": "string",
-            "description": "Machine-readable error code. Possible values include\n\u0060unauthorized\u0060, \u0060api_key_not_found\u0060, \u0060plan_required\u0060,\n\u0060role_forbidden\u0060, \u0060feature_unavailable\u0060,\n\u0060integration_not_connected\u0060, \u0060validation_error\u0060,\n\u0060missing_body\u0060, \u0060invalid_model\u0060, \u0060invalid_branch_name\u0060,\n\u0060repository_required\u0060, \u0060repository_access\u0060,\n\u0060pr_resolution_failed\u0060, \u0060artifact_not_found\u0060,\n\u0060service_account_required\u0060, \u0060agent_not_found\u0060,\n\u0060run_not_found\u0060, \u0060agent_busy\u0060, \u0060agent_archived\u0060,\n\u0060agent_id_conflict\u0060, \u0060run_not_cancellable\u0060,\n\u0060rate_limit_exceeded\u0060, \u0060usage_limit_exceeded\u0060,\n\u0060stream_expired\u0060, \u0060stream_unavailable\u0060,\n\u0060invalid_last_event_id\u0060, \u0060client_cancelled\u0060,\n\u0060not_implemented\u0060, \u0060upstream_error\u0060, and\n\u0060internal_error\u0060.\n"
+            "description": "Machine-readable error code. Possible values include\n\u0060unauthorized\u0060, \u0060api_key_not_found\u0060, \u0060plan_required\u0060,\n\u0060role_forbidden\u0060, \u0060feature_unavailable\u0060,\n\u0060integration_not_connected\u0060, \u0060validation_error\u0060,\n\u0060missing_body\u0060, \u0060invalid_model\u0060, \u0060invalid_branch_name\u0060,\n\u0060repository_required\u0060, \u0060repository_access\u0060,\n\u0060pr_resolution_failed\u0060, \u0060artifact_not_found\u0060,\n\u0060service_account_required\u0060, \u0060agent_not_found\u0060,\n\u0060run_not_found\u0060, \u0060environment_not_found\u0060,\n\u0060team_admin_required\u0060, \u0060environment_name_conflict\u0060,\n\u0060duplicate_json_key\u0060, \u0060agent_busy\u0060, \u0060agent_archived\u0060,\n\u0060agent_id_conflict\u0060, \u0060run_not_cancellable\u0060,\n\u0060rate_limit_exceeded\u0060, \u0060usage_limit_exceeded\u0060,\n\u0060stream_expired\u0060, \u0060stream_unavailable\u0060,\n\u0060invalid_last_event_id\u0060, \u0060client_cancelled\u0060,\n\u0060not_implemented\u0060, \u0060upstream_error\u0060, and\n\u0060internal_error\u0060.\n"
           },
           "message": {
             "type": "string",
@@ -2466,6 +2899,12 @@
             "minLength": 1,
             "type": "string",
             "description": "Optional provider identifier. Populated for codes like \u0060integration_not_connected\u0060."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "ID of the existing environment with the requested name, when an \u0060environment_name_conflict\u0060 error returns it.",
+            "format": "uuid",
+            "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
           }
         }
       },
@@ -2767,6 +3206,52 @@
           ]
         }
       },
+      "EnvironmentOwner": {
+        "enum": [
+          "personal",
+          "team"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "\u0060personal\u0060 for an environment that belongs to one user, or \u0060team\u0060 for an environment shared with the team.",
+        "x-ms-enum": {
+          "name": "EnvironmentOwner",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "personal",
+              "name": "Personal"
+            },
+            {
+              "value": "team",
+              "name": "Team"
+            }
+          ]
+        }
+      },
+      "CreateEnvironmentRequestOwner": {
+        "enum": [
+          "personal",
+          "team"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "\u0060personal\u0060 creates an environment for the API key\u0027s user, and \u0060team\u0060 creates one for the team.",
+        "x-ms-enum": {
+          "name": "CreateEnvironmentRequestOwner",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "personal",
+              "name": "Personal"
+            },
+            {
+              "value": "team",
+              "name": "Team"
+            }
+          ]
+        }
+      },
       "InheritValue": {
         "enum": [
           "inherit"
@@ -2798,11 +3283,11 @@
         }
       },
       "Unauthorized": {
-        "description": "Invalid or missing API key.",
+        "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/Error"
+              "$ref": "#/components/schemas/UnauthorizedResponse"
             }
           }
         }
@@ -2818,7 +3303,7 @@
         }
       },
       "NotFound": {
-        "description": "Agent or run not found.",
+        "description": "Resource not found.",
         "content": {
           "application/json": {
             "schema": {
@@ -2828,7 +3313,7 @@
         }
       },
       "Conflict": {
-        "description": "Resource state conflict (\u0060agent_busy\u0060, \u0060agent_archived\u0060, \u0060agent_id_conflict\u0060, or \u0060run_not_cancellable\u0060).",
+        "description": "Resource state conflict (\u0060agent_busy\u0060, \u0060agent_archived\u0060, \u0060agent_id_conflict\u0060, \u0060run_not_cancellable\u0060, or \u0060environment_name_conflict\u0060).",
         "content": {
           "application/json": {
             "schema": {
@@ -2887,6 +3372,17 @@
         "schema": {
           "type": "string",
           "example": "run-00000000-0000-0000-0000-000000000001"
+        }
+      },
+      "EnvironmentId": {
+        "name": "id",
+        "in": "path",
+        "description": "Unique identifier for the environment.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
         }
       }
     },
