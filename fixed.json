@@ -846,6 +846,145 @@
         }
       }
     },
+    "/v1/environments/{id}/builds": {
+      "get": {
+        "summary": "List environment builds",
+        "description": "List an environment\u0027s builds, newest first, up to 10 per page. An environment that doesn\u0027t exist or isn\u0027t visible to the API key returns \u0060404 environment_not_found\u0060.",
+        "operationId": "ListEnvironmentBuilds",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentId"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pagination cursor from \u0060nextCursor\u0060 on the previous response.",
+            "schema": {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Builds retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListEnvironmentBuildsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/environments/{id}/builds/active": {
+      "get": {
+        "summary": "Get the active build",
+        "description": "Find out what an agent you start on this environment boots from, one of its builds or Cursor\u0027s default image. An environment that doesn\u0027t exist or isn\u0027t visible to the API key returns \u0060404 environment_not_found\u0060.",
+        "operationId": "GetActiveEnvironmentBuild",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Active build retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnvironmentActiveBuild"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/environments/{id}/builds/{buildId}": {
+      "get": {
+        "summary": "Get an environment build",
+        "description": "Retrieve one of an environment\u0027s builds. An environment that doesn\u0027t exist or isn\u0027t visible to the API key returns \u0060404 environment_not_found\u0060, and a build ID that isn\u0027t one of the environment\u0027s builds returns \u0060404 build_not_found\u0060.",
+        "operationId": "GetEnvironmentBuild",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentId"
+          },
+          {
+            "$ref": "#/components/parameters/EnvironmentBuildId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Build retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnvironmentBuild"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
     "/v1/me": {
       "get": {
         "summary": "API key info",
@@ -2181,7 +2320,7 @@
             "example": "Web app"
           },
           "repos": {
-            "maxItems": 50,
+            "maxItems": 100,
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/EnvironmentRepo"
@@ -2196,6 +2335,173 @@
           }
         },
         "additionalProperties": false
+      },
+      "EnvironmentBuildId": {
+        "pattern": "^[bB][lL][dD]-[0-9]{8}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+        "type": "string",
+        "description": "Unique build identifier, in the form \u0060bld-YYYYMMDD-\u003Cuuid\u003E\u0060.",
+        "example": "bld-20260930-3c59dc04-8a1d-4b6e-9f2a-7e5d1c0b9a8f"
+      },
+      "EnvironmentBuildFailure": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/EnvironmentBuildFailureType"
+          },
+          "code": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Machine-readable cause of the failure, when there is one.",
+            "example": "environment_json_invalid"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Why a failed build failed."
+      },
+      "EnvironmentBuild": {
+        "required": [
+          "id",
+          "environmentId",
+          "status",
+          "trigger",
+          "draft",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^[bB][lL][dD]-[0-9]{8}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            "type": "string",
+            "description": "Unique build identifier, in the form \u0060bld-YYYYMMDD-\u003Cuuid\u003E\u0060."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "ID of the environment the build belongs to.",
+            "format": "uuid",
+            "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+          },
+          "status": {
+            "$ref": "#/components/schemas/EnvironmentBuildStatus"
+          },
+          "trigger": {
+            "$ref": "#/components/schemas/EnvironmentBuildTrigger"
+          },
+          "draft": {
+            "type": "boolean",
+            "description": "\u0060true\u0060 for a draft build. Agents don\u0027t start from a draft build until it\u0027s activated."
+          },
+          "failure": {
+            "$ref": "#/components/schemas/EnvironmentBuildFailure"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the build was created.",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "When the build was last updated.",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": "string",
+            "description": "When the build finished. Omitted while it\u0027s in progress.",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ListEnvironmentBuildsResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EnvironmentBuild"
+            },
+            "description": "Up to 10 builds for this environment, newest first."
+          },
+          "nextCursor": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Cursor for fetching the next page of results. Omitted (not \u0060null\u0060) when there are no more pages."
+          }
+        },
+        "additionalProperties": false
+      },
+      "EnvironmentActiveBuild": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/EnvironmentActiveBuildFromBuild"
+          },
+          {
+            "$ref": "#/components/schemas/EnvironmentActiveBuildFromUniversalImage"
+          }
+        ],
+        "properties": {
+          "buildId": {
+            "pattern": "^[bB][lL][dD]-[0-9]{8}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            "type": "string",
+            "description": "Unique build identifier, in the form \u0060bld-YYYYMMDD-\u003Cuuid\u003E\u0060."
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "description": "What an agent you start on this environment boots from, one of its builds or Cursor\u0027s default image.",
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "build": "#/components/schemas/EnvironmentActiveBuildFromBuild",
+            "universal_image": "#/components/schemas/EnvironmentActiveBuildFromUniversalImage",
+            "EnvironmentActiveBuildFromBuild": "#/components/schemas/EnvironmentActiveBuildFromBuild",
+            "EnvironmentActiveBuildFromUniversalImage": "#/components/schemas/EnvironmentActiveBuildFromUniversalImage"
+          }
+        }
+      },
+      "EnvironmentActiveBuildFromBuild": {
+        "required": [
+          "type",
+          "buildId"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/BuildType"
+          },
+          "buildId": {
+            "pattern": "^[bB][lL][dD]-[0-9]{8}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            "type": "string",
+            "description": "Unique build identifier, in the form \u0060bld-YYYYMMDD-\u003Cuuid\u003E\u0060."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The agent starts from one of the environment\u0027s builds."
+      },
+      "EnvironmentActiveBuildFromUniversalImage": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/UniversalImageType"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The agent starts on Cursor\u0027s default image."
       },
       "ApiKeyInfo": {
         "required": [
@@ -2884,7 +3190,7 @@
         "properties": {
           "code": {
             "type": "string",
-            "description": "Machine-readable error code. Possible values include\n\u0060unauthorized\u0060, \u0060api_key_not_found\u0060, \u0060plan_required\u0060,\n\u0060role_forbidden\u0060, \u0060feature_unavailable\u0060,\n\u0060integration_not_connected\u0060, \u0060validation_error\u0060,\n\u0060missing_body\u0060, \u0060invalid_model\u0060, \u0060invalid_branch_name\u0060,\n\u0060repository_required\u0060, \u0060repository_access\u0060,\n\u0060pr_resolution_failed\u0060, \u0060artifact_not_found\u0060,\n\u0060service_account_required\u0060, \u0060agent_not_found\u0060,\n\u0060run_not_found\u0060, \u0060environment_not_found\u0060,\n\u0060team_admin_required\u0060, \u0060environment_name_conflict\u0060,\n\u0060duplicate_json_key\u0060, \u0060agent_busy\u0060, \u0060agent_archived\u0060,\n\u0060agent_id_conflict\u0060, \u0060run_not_cancellable\u0060,\n\u0060rate_limit_exceeded\u0060, \u0060usage_limit_exceeded\u0060,\n\u0060stream_expired\u0060, \u0060stream_unavailable\u0060,\n\u0060invalid_last_event_id\u0060, \u0060client_cancelled\u0060,\n\u0060not_implemented\u0060, \u0060upstream_error\u0060, and\n\u0060internal_error\u0060.\n"
+            "description": "Machine-readable error code. Possible values include\n\u0060unauthorized\u0060, \u0060api_key_not_found\u0060, \u0060plan_required\u0060,\n\u0060role_forbidden\u0060, \u0060feature_unavailable\u0060,\n\u0060integration_not_connected\u0060, \u0060validation_error\u0060,\n\u0060missing_body\u0060, \u0060invalid_model\u0060, \u0060invalid_branch_name\u0060,\n\u0060repository_required\u0060, \u0060repository_access\u0060,\n\u0060pr_resolution_failed\u0060, \u0060artifact_not_found\u0060,\n\u0060service_account_required\u0060, \u0060agent_not_found\u0060,\n\u0060run_not_found\u0060, \u0060environment_not_found\u0060, \u0060build_not_found\u0060,\n\u0060team_admin_required\u0060, \u0060environment_name_conflict\u0060,\n\u0060duplicate_json_key\u0060, \u0060agent_busy\u0060, \u0060agent_archived\u0060,\n\u0060agent_id_conflict\u0060, \u0060run_not_cancellable\u0060,\n\u0060rate_limit_exceeded\u0060, \u0060usage_limit_exceeded\u0060,\n\u0060stream_expired\u0060, \u0060stream_unavailable\u0060,\n\u0060invalid_last_event_id\u0060, \u0060client_cancelled\u0060,\n\u0060not_implemented\u0060, \u0060upstream_error\u0060, and\n\u0060internal_error\u0060.\n"
           },
           "message": {
             "type": "string",
@@ -3252,6 +3558,129 @@
           ]
         }
       },
+      "EnvironmentBuildFailureType": {
+        "enum": [
+          "INSTALL_FAILED",
+          "TERMINAL_FAILURE"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "\u0060INSTALL_FAILED\u0060 when the \u0060install\u0060 command failed, or \u0060TERMINAL_FAILURE\u0060 for other failures.",
+        "x-ms-enum": {
+          "name": "EnvironmentBuildFailureType",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "INSTALL_FAILED",
+              "name": "InstallFailed"
+            },
+            {
+              "value": "TERMINAL_FAILURE",
+              "name": "TerminalFailure"
+            }
+          ]
+        }
+      },
+      "EnvironmentBuildStatus": {
+        "enum": [
+          "IN_PROGRESS",
+          "SUCCEEDED",
+          "FAILED",
+          "CANCELLED",
+          "SKIPPED"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "Build status. A skipped build found nothing to rebuild.",
+        "x-ms-enum": {
+          "name": "EnvironmentBuildStatus",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "IN_PROGRESS",
+              "name": "InProgress"
+            },
+            {
+              "value": "SUCCEEDED",
+              "name": "Succeeded"
+            },
+            {
+              "value": "FAILED",
+              "name": "Failed"
+            },
+            {
+              "value": "CANCELLED",
+              "name": "Cancelled"
+            },
+            {
+              "value": "SKIPPED",
+              "name": "Skipped"
+            }
+          ]
+        }
+      },
+      "EnvironmentBuildTrigger": {
+        "enum": [
+          "RECURRING",
+          "CONFIG_CHANGE",
+          "MANUAL"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "What started the build. \u0060RECURRING\u0060 for a scheduled build, \u0060CONFIG_CHANGE\u0060 after a configuration or secrets change, or \u0060MANUAL\u0060 for one started on request.",
+        "x-ms-enum": {
+          "name": "EnvironmentBuildTrigger",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "RECURRING",
+              "name": "Recurring"
+            },
+            {
+              "value": "CONFIG_CHANGE",
+              "name": "ConfigChange"
+            },
+            {
+              "value": "MANUAL",
+              "name": "Manual"
+            }
+          ]
+        }
+      },
+      "BuildType": {
+        "enum": [
+          "build"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "x-ms-enum": {
+          "name": "BuildType",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "build",
+              "name": "Build"
+            }
+          ]
+        }
+      },
+      "UniversalImageType": {
+        "enum": [
+          "universal_image"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "x-ms-enum": {
+          "name": "UniversalImageType",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "universal_image",
+              "name": "UniversalImage"
+            }
+          ]
+        }
+      },
       "InheritValue": {
         "enum": [
           "inherit"
@@ -3383,6 +3812,17 @@
           "type": "string",
           "format": "uuid",
           "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+        }
+      },
+      "EnvironmentBuildId": {
+        "name": "buildId",
+        "in": "path",
+        "description": "Unique identifier for the build.",
+        "required": true,
+        "schema": {
+          "pattern": "^[bB][lL][dD]-[0-9]{8}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+          "type": "string",
+          "description": "Unique build identifier, in the form \u0060bld-YYYYMMDD-\u003Cuuid\u003E\u0060."
         }
       }
     },

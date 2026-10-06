@@ -4,6 +4,7 @@ using Microsoft.Kiota.Abstractions.Extensions;
 using Microsoft.Kiota.Abstractions.Serialization;
 using Microsoft.Kiota.Abstractions;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.Models;
+using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Builds;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,6 +18,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class EnvironmentsItemRequestBuilder : BaseRequestBuilder
     {
+        /// <summary>The builds property</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Builds.BuildsRequestBuilder Builds
+        {
+            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Builds.BuildsRequestBuilder(PathParameters, RequestAdapter);
+        }
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.EnvironmentsItemRequestBuilder"/> and sets the default values.
         /// </summary>

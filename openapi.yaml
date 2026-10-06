@@ -949,7 +949,7 @@ components:
           example: 'Web app'
         repos:
           type: array
-          maxItems: 50
+          maxItems: 100
           description: Repositories for the environment, or an empty array for an environment without repositories. Cursor must be able to reach each one through your source control integration; otherwise the request returns `400 repository_access`.
           items:
             $ref: '#/components/schemas/EnvironmentRepo'
@@ -958,6 +958,127 @@ components:
           minLength: 1
           description: The environment's `environment.json`, as a JSON-encoded string, using the same schema as a `.cursor/environment.json` file. An invalid configuration returns `400 validation_error`.
           example: '{"install": "pnpm install", "start": "sudo service docker start"}'
+
+    EnvironmentBuildId:
+      type: string
+      pattern: '^[bB][lL][dD]-[0-9]{8}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      description: Unique build identifier, in the form `bld-YYYYMMDD-<uuid>`.
+      example: 'bld-20260930-3c59dc04-8a1d-4b6e-9f2a-7e5d1c0b9a8f'
+
+    EnvironmentBuildFailure:
+      type: object
+      additionalProperties: false
+      description: Why a failed build failed.
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum: ['INSTALL_FAILED', 'TERMINAL_FAILURE']
+          description: '`INSTALL_FAILED` when the `install` command failed, or `TERMINAL_FAILURE` for other failures.'
+        code:
+          type: string
+          minLength: 1
+          description: Machine-readable cause of the failure, when there is one.
+          example: 'environment_json_invalid'
+
+    EnvironmentBuild:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - environmentId
+        - status
+        - trigger
+        - draft
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          $ref: '#/components/schemas/EnvironmentBuildId'
+        environmentId:
+          type: string
+          format: uuid
+          description: ID of the environment the build belongs to.
+          example: '8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c'
+        status:
+          type: string
+          enum: ['IN_PROGRESS', 'SUCCEEDED', 'FAILED', 'CANCELLED', 'SKIPPED']
+          description: Build status. A skipped build found nothing to rebuild.
+        trigger:
+          type: string
+          enum: ['RECURRING', 'CONFIG_CHANGE', 'MANUAL']
+          description: What started the build. `RECURRING` for a scheduled build, `CONFIG_CHANGE` after a configuration or secrets change, or `MANUAL` for one started on request.
+        draft:
+          type: boolean
+          description: '`true` for a draft build. Agents don''t start from a draft build until it''s activated.'
+        failure:
+          $ref: '#/components/schemas/EnvironmentBuildFailure'
+        createdAt:
+          type: string
+          format: date-time
+          description: When the build was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: When the build was last updated.
+        completedAt:
+          type: string
+          format: date-time
+          description: When the build finished. Omitted while it's in progress.
+
+    ListEnvironmentBuildsResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          maxItems: 10
+          description: Up to 10 builds for this environment, newest first.
+          items:
+            $ref: '#/components/schemas/EnvironmentBuild'
+        nextCursor:
+          type: string
+          minLength: 1
+          description: Cursor for fetching the next page of results. Omitted (not `null`) when there are no more pages.
+
+    EnvironmentActiveBuild:
+      description: What an agent you start on this environment boots from, one of its builds or Cursor's default image.
+      oneOf:
+        - $ref: '#/components/schemas/EnvironmentActiveBuildFromBuild'
+        - $ref: '#/components/schemas/EnvironmentActiveBuildFromUniversalImage'
+      discriminator:
+        propertyName: type
+        mapping:
+          build: '#/components/schemas/EnvironmentActiveBuildFromBuild'
+          universal_image: '#/components/schemas/EnvironmentActiveBuildFromUniversalImage'
+
+    EnvironmentActiveBuildFromBuild:
+      type: object
+      additionalProperties: false
+      description: The agent starts from one of the environment's builds.
+      required:
+        - type
+        - buildId
+      properties:
+        type:
+          type: string
+          enum: ['build']
+        buildId:
+          $ref: '#/components/schemas/EnvironmentBuildId'
+
+    EnvironmentActiveBuildFromUniversalImage:
+      type: object
+      additionalProperties: false
+      description: The agent starts on Cursor's default image.
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum: ['universal_image']
 
     ApiKeyInfo:
       type: object
@@ -1222,7 +1343,7 @@ components:
                 `repository_required`, `repository_access`,
                 `pr_resolution_failed`, `artifact_not_found`,
                 `service_account_required`, `agent_not_found`,
-                `run_not_found`, `environment_not_found`,
+                `run_not_found`, `environment_not_found`, `build_not_found`,
                 `team_admin_required`, `environment_name_conflict`,
                 `duplicate_json_key`, `agent_busy`, `agent_archived`,
                 `agent_id_conflict`, `run_not_cancellable`,
@@ -1274,6 +1395,13 @@ components:
         type: string
         format: uuid
         example: '8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c'
+    EnvironmentBuildId:
+      name: buildId
+      in: path
+      required: true
+      description: Unique identifier for the build.
+      schema:
+        $ref: '#/components/schemas/EnvironmentBuildId'
 
   responses:
     BadRequest:
@@ -1913,6 +2041,96 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/IdResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/environments/{id}/builds:
+    get:
+      summary: List environment builds
+      description: List an environment's builds, newest first, up to 10 per page. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
+      operationId: listEnvironmentBuilds
+      parameters:
+        - $ref: '#/components/parameters/EnvironmentId'
+        - name: cursor
+          in: query
+          required: false
+          description: Pagination cursor from `nextCursor` on the previous response.
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 512
+      responses:
+        '200':
+          description: Builds retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvironmentBuildsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/environments/{id}/builds/active:
+    get:
+      summary: Get the active build
+      description: Find out what an agent you start on this environment boots from, one of its builds or Cursor's default image. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`.
+      operationId: getActiveEnvironmentBuild
+      parameters:
+        - $ref: '#/components/parameters/EnvironmentId'
+      responses:
+        '200':
+          description: Active build retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentActiveBuild'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/environments/{id}/builds/{buildId}:
+    get:
+      summary: Get an environment build
+      description: Retrieve one of an environment's builds. An environment that doesn't exist or isn't visible to the API key returns `404 environment_not_found`, and a build ID that isn't one of the environment's builds returns `404 build_not_found`.
+      operationId: getEnvironmentBuild
+      parameters:
+        - $ref: '#/components/parameters/EnvironmentId'
+        - $ref: '#/components/parameters/EnvironmentBuildId'
+      responses:
+        '200':
+          description: Build retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentBuild'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
