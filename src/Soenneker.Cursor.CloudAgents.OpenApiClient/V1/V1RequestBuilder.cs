@@ -7,7 +7,9 @@ using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Me;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.ModelsRequests;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Repositories;
+using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Secrets;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.SubTokens;
+using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Team;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -45,10 +47,20 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1
         {
             get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Repositories.RepositoriesRequestBuilder(PathParameters, RequestAdapter);
         }
+        /// <summary>The secrets property</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Secrets.SecretsRequestBuilder Secrets
+        {
+            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Secrets.SecretsRequestBuilder(PathParameters, RequestAdapter);
+        }
         /// <summary>The subTokens property</summary>
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.SubTokens.SubTokensRequestBuilder SubTokens
         {
             get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.SubTokens.SubTokensRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The team property</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Team.TeamRequestBuilder Team
+        {
+            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Team.TeamRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.V1RequestBuilder"/> and sets the default values.

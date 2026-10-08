@@ -5,6 +5,8 @@ using Microsoft.Kiota.Abstractions.Serialization;
 using Microsoft.Kiota.Abstractions;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.Models;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Builds;
+using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.History;
+using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Secrets;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -22,6 +24,16 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Builds.BuildsRequestBuilder Builds
         {
             get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Builds.BuildsRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The history property</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.History.HistoryRequestBuilder History
+        {
+            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.History.HistoryRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The secrets property</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Secrets.SecretsRequestBuilder Secrets
+        {
+            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Secrets.SecretsRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.EnvironmentsItemRequestBuilder"/> and sets the default values.
@@ -102,6 +114,40 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item
             return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.GetEnvironmentResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.GetEnvironmentResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
+        /// Rename an environment, replace its configuration, or both. A request with both fields applies them together, so either both change or neither does. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`.
+        /// </summary>
+        /// <param name="body">Send `name`, `environmentJson`, or both. A request with both applies them together, so either both change or neither does.</param>
+        /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
+        /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
+        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 400 status code</exception>
+        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 403 status code</exception>
+        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 404 status code</exception>
+        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 409 status code</exception>
+        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 429 status code</exception>
+        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 500 status code</exception>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public async Task PatchAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentRequest body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
+        {
+#nullable restore
+#else
+        public async Task PatchAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentRequest body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
+        {
+#endif
+            if(ReferenceEquals(body, null)) throw new ArgumentNullException(nameof(body));
+            var requestInfo = ToPatchRequestInformation(body, requestConfiguration);
+            var errorMapping = new Dictionary<string, ParsableFactory<IParsable>>
+            {
+                { "400", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
+                { "403", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
+                { "404", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
+                { "409", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
+                { "429", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
+                { "500", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
+            };
+            await RequestAdapter.SendNoContentAsync(requestInfo, errorMapping, cancellationToken).ConfigureAwait(false);
+        }
+        /// <summary>
         /// Permanently delete a saved environment. This action is irreversible.
         /// </summary>
         /// <returns>A <see cref="RequestInformation"/></returns>
@@ -137,6 +183,28 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item
             var requestInfo = new RequestInformation(Method.GET, UrlTemplate, PathParameters);
             requestInfo.Configure(requestConfiguration);
             requestInfo.Headers.TryAdd("Accept", "application/json");
+            return requestInfo;
+        }
+        /// <summary>
+        /// Rename an environment, replace its configuration, or both. A request with both fields applies them together, so either both change or neither does. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`.
+        /// </summary>
+        /// <returns>A <see cref="RequestInformation"/></returns>
+        /// <param name="body">Send `name`, `environmentJson`, or both. A request with both applies them together, so either both change or neither does.</param>
+        /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public RequestInformation ToPatchRequestInformation(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentRequest body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default)
+        {
+#nullable restore
+#else
+        public RequestInformation ToPatchRequestInformation(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentRequest body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default)
+        {
+#endif
+            if(ReferenceEquals(body, null)) throw new ArgumentNullException(nameof(body));
+            var requestInfo = new RequestInformation(Method.PATCH, UrlTemplate, PathParameters);
+            requestInfo.Configure(requestConfiguration);
+            requestInfo.Headers.TryAdd("Accept", "application/json");
+            requestInfo.SetContentFromParsable(RequestAdapter, "application/json", body);
             return requestInfo;
         }
         /// <summary>

@@ -700,6 +700,60 @@
       }
     },
     "/v1/environments": {
+      "get": {
+        "summary": "List environments",
+        "description": "List the saved environments the API key can access, most recently\nupdated first: the user\u0027s personal environments and the team\u0027s\nenvironments. Team admins don\u0027t see members\u0027 personal environments\nhere.\n\nTeam admins and service account API keys see every team\nenvironment. Other callers see a team environment only when they\ncan access all of its repositories. When those checks run out of\ntime, a response can leave out team environments it hasn\u0027t\nverified yet, or stop before the end of the list; they show up in\nlater requests. A service account API key limited to specific\nrepositories, and user-scoped tokens minted with it, only list\nenvironments that have repositories, all within that limit. Drafts\nand deleted environments aren\u0027t included.\n\nAn environment that changes during a walk moves to the front, so a\nlater page can leave it out and repeat another. List items omit\n\u0060environmentJson\u0060 and \u0060versionId\u0060; call GET /v1/environments/{id}\nto load an environment\u0027s configuration.\n",
+        "operationId": "ListEnvironments",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of environments to return.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pagination cursor from the previous response.",
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Environments retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListEnvironmentsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
       "post": {
         "summary": "Create an environment",
         "description": "Create a saved environment. The \u0060201\u0060 response is the new environment.",
@@ -805,6 +859,52 @@
           }
         }
       },
+      "patch": {
+        "summary": "Update an environment",
+        "description": "Rename an environment, replace its configuration, or both. A request with both fields applies them together, so either both change or neither does. An environment that doesn\u0027t exist or isn\u0027t visible to the API key returns \u0060404 environment_not_found\u0060.",
+        "operationId": "UpdateEnvironment",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEnvironmentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Environment updated. The response has no body."
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
       "delete": {
         "summary": "Delete an environment",
         "description": "Permanently delete a saved environment. This action is irreversible.",
@@ -821,6 +921,68 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/IdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/environments/{id}/history": {
+      "get": {
+        "summary": "List environment history",
+        "description": "List the changes to an environment, newest first, as its History tab in the dashboard shows them. An environment that doesn\u0027t exist or isn\u0027t visible to the API key returns \u0060404 environment_not_found\u0060.",
+        "operationId": "ListEnvironmentHistory",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentId"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of events to return.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pagination cursor from \u0060nextCursor\u0060 on the previous response.",
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "History retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListEnvironmentHistoryResponse"
                 }
               }
             }
@@ -1013,6 +1175,70 @@
         }
       }
     },
+    "/v1/environments/{id}/secrets": {
+      "get": {
+        "summary": "List environment secrets",
+        "description": "List an environment\u0027s Cloud Agents secrets, one item per version,\nsorted by name. No item includes a value. The list isn\u0027t paginated\nyet, so \u0060nextCursor\u0060 is always \u0060null\u0060.\n\nA service account API key can list its team\u0027s environments, and\na user API key or user-scoped token its user\u0027s personal\nenvironments too. An API key limited to certain repositories can\nlist only environments whose repositories all sit inside its\nlimit. Every other environment returns \u0060404 environment_not_found\u0060.\n\nSee https://cursor.com/docs/cloud-agent/api/endpoints#list-environment-secrets.\n",
+        "operationId": "ListEnvironmentSecrets",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Environment ID.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The environment\u0027s secret versions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListSecretsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "description": "Plan or role not allowed, the environments API isn\u0027t enabled for\nyour account (\u0060feature_unavailable\u0060), or a \u0060grok_\u0060 API key\n(\u0060key_not_supported\u0060).\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The environment doesn\u0027t exist or your API key can\u0027t list its secrets, including an environment outside its repository limit (\u0060environment_not_found\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
     "/v1/models": {
       "get": {
         "summary": "List models",
@@ -1041,6 +1267,191 @@
         }
       }
     },
+    "/v1/environments/{id}/secrets/{name}": {
+      "put": {
+        "summary": "Set an environment secret",
+        "description": "Create an environment secret, rotate its value, or change its type or repositories. With \u0060?id=\u0060, the request changes that version. Without \u0060?id=\u0060, a name with no version gets one (\u0060201\u0060), a name with one version has it changed in place (\u0060200\u0060), and a name with several versions returns \u0060409 secret_name_ambiguous\u0060. A \u0060PUT\u0060 never adds a second version to a name that has one, and an omitted \u0060type\u0060 or \u0060repos\u0060 keeps the current one. Build Secrets can\u0027t be set or changed through the API yet. See https://cursor.com/docs/cloud-agent/api/endpoints#set-an-environment-secret.\n",
+        "operationId": "SetEnvironmentSecret",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The \u0060id\u0060 of the version to change.",
+            "schema": {
+              "type": "string",
+              "example": "secv_3qKx9mT2bV7nR1cW5yZ8aQ"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetSecretRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The version was changed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SecretVersion"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "The version was created. \u0060id\u0060 and \u0060createdAt\u0060 are left out when the new version isn\u0027t readable yet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SecretVersion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "description": "Plan or role not allowed, the environments API isn\u0027t enabled for your account (\u0060feature_unavailable\u0060), a \u0060grok_\u0060 API key (\u0060key_not_supported\u0060), or a team that lets only admins change secrets (\u0060team_admin_required\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The environment doesn\u0027t exist or your API key can\u0027t change its secrets, including an environment outside its repository limit (\u0060environment_not_found\u0060), or \u0060?id=\u0060 isn\u0027t a version of this name here (\u0060secret_not_found\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The name has several versions and no \u0060?id=\u0060 (\u0060secret_name_ambiguous\u0060, with \u0060versions\u0060), differs from an existing name only in case (\u0060secret_name_conflict\u0060), overlaps another version\u0027s repositories (\u0060secret_scope_conflict\u0060), the environment has 1,000 secrets (\u0060secret_limit_reached\u0060), or another request changed the secret at the same moment (\u0060secret_changed\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetEnvironmentSecret409Response"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an environment secret",
+        "description": "Delete one version of an environment secret. This action is irreversible. With \u0060?id=\u0060, the request deletes that version. Without \u0060?id=\u0060, a name with one version has it deleted, a name with no version returns \u0060404 secret_not_found\u0060, and a name with several versions returns \u0060409 secret_name_ambiguous\u0060 and deletes nothing. \u0060{name}\u0060 must match a listed name exactly, letter case included. Every type can be deleted, Build Secrets included. See https://cursor.com/docs/cloud-agent/api/endpoints#delete-an-environment-secret.\n",
+        "operationId": "DeleteEnvironmentSecret",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The \u0060id\u0060 of the version to delete.",
+            "schema": {
+              "type": "string",
+              "example": "secv_3qKx9mT2bV7nR1cW5yZ8aQ"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The version was deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSecretResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "description": "Plan or role not allowed, the environments API isn\u0027t enabled for your account (\u0060feature_unavailable\u0060), a \u0060grok_\u0060 API key (\u0060key_not_supported\u0060), or a team that lets only admins change secrets (\u0060team_admin_required\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The environment doesn\u0027t exist or your API key can\u0027t change its secrets, including an environment outside its repository limit (\u0060environment_not_found\u0060), or the name or \u0060?id=\u0060 isn\u0027t a version here (\u0060secret_not_found\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The name has several versions and no \u0060?id=\u0060 (\u0060secret_name_ambiguous\u0060, with \u0060versions\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SecretNameAmbiguousError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "Environment ID.",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+          }
+        },
+        {
+          "name": "name",
+          "in": "path",
+          "description": "Secret name, such as \u0060NPM_TOKEN\u0060.",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "NPM_TOKEN"
+          }
+        }
+      ]
+    },
     "/v1/repositories": {
       "get": {
         "summary": "List GitHub repositories",
@@ -1068,6 +1479,180 @@
           }
         }
       }
+    },
+    "/v1/team/secrets/{name}": {
+      "put": {
+        "summary": "Set a team secret",
+        "description": "Create a secret for the team the API key works in, rotate its value, or change its type or repositories. With \u0060?id=\u0060, the request changes that version. Without \u0060?id=\u0060, a name with no version gets one (\u0060201\u0060), a name with one version has it changed in place (\u0060200\u0060), and a name with several versions returns \u0060409 secret_name_ambiguous\u0060. A \u0060PUT\u0060 never adds a second version to a name that has one, and an omitted \u0060type\u0060 or \u0060repos\u0060 keeps the current one. Build Secrets can\u0027t be set or changed through the API yet. See https://cursor.com/docs/cloud-agent/api/endpoints#set-a-team-secret.\n",
+        "operationId": "SetTeamSecret",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The \u0060id\u0060 of the version to change, from the team\u0027s secrets list.",
+            "schema": {
+              "type": "string",
+              "example": "secv_Ub4rJ7nD2kX9qM5wL1sE8Q"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetSecretRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The version was changed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SecretVersion"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "The version was created. \u0060id\u0060 and \u0060createdAt\u0060 are left out when the new version isn\u0027t readable yet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SecretVersion"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "description": "Plan or role not allowed, the environments API isn\u0027t enabled for your account (\u0060feature_unavailable\u0060), a \u0060grok_\u0060 API key (\u0060key_not_supported\u0060), an API key limited to certain repositories (\u0060repository_access\u0060), a team that lets only admins change secrets (\u0060team_admin_required\u0060), or an API key that isn\u0027t working in a team or whose user isn\u0027t a team member (\u0060team_membership_required\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "\u0060?id=\u0060 isn\u0027t a version of this name in the team (\u0060secret_not_found\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The name has several versions and no \u0060?id=\u0060 (\u0060secret_name_ambiguous\u0060, with \u0060versions\u0060), differs from an existing name only in case (\u0060secret_name_conflict\u0060), overlaps another version\u0027s repositories (\u0060secret_scope_conflict\u0060), the team has 1,000 secrets (\u0060secret_limit_reached\u0060), or another request changed the secret at the same moment (\u0060secret_changed\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetTeamSecret409Response"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a team secret",
+        "description": "Delete one version of a secret from the team the API key works in. This action is irreversible. With \u0060?id=\u0060, the request deletes that version. Without \u0060?id=\u0060, a name with one version has it deleted, a name with no version returns \u0060404 secret_not_found\u0060, and a name with several versions returns \u0060409 secret_name_ambiguous\u0060 and deletes nothing. \u0060{name}\u0060 must match a listed name exactly, letter case included. Every type can be deleted, Build Secrets included. See https://cursor.com/docs/cloud-agent/api/endpoints#delete-a-team-secret.\n",
+        "operationId": "DeleteTeamSecret",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The \u0060id\u0060 of the version to delete, from the team\u0027s secrets list.",
+            "schema": {
+              "type": "string",
+              "example": "secv_Ub4rJ7nD2kX9qM5wL1sE8Q"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The version was deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSecretResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "description": "Plan or role not allowed, the environments API isn\u0027t enabled for your account (\u0060feature_unavailable\u0060), a \u0060grok_\u0060 API key (\u0060key_not_supported\u0060), an API key limited to certain repositories (\u0060repository_access\u0060), a team that lets only admins change secrets (\u0060team_admin_required\u0060), or an API key that isn\u0027t working in a team or whose user isn\u0027t a team member (\u0060team_membership_required\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The name or \u0060?id=\u0060 isn\u0027t a version in the team (\u0060secret_not_found\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The name has several versions and no \u0060?id=\u0060 (\u0060secret_name_ambiguous\u0060, with \u0060versions\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SecretNameAmbiguousError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "name",
+          "in": "path",
+          "description": "Secret name, such as \u0060NPM_TOKEN\u0060.",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "NPM_TOKEN"
+          }
+        }
+      ]
     },
     "/v1/sub-tokens": {
       "post": {
@@ -1126,6 +1711,157 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/team/secrets": {
+      "get": {
+        "summary": "List team secrets",
+        "description": "List the Cloud Agents secrets of the team the API key works in, one\nitem per version, sorted by name. No item includes a value. The\nlist isn\u0027t paginated yet, so \u0060nextCursor\u0060 is always \u0060null\u0060.\n\nAny team member can list, as can the team\u0027s service account API\nkeys. An API key limited to certain repositories gets\n\u0060403 repository_access\u0060, because team secrets reach every\nrepository.\n\nSee https://cursor.com/docs/cloud-agent/api/endpoints#list-team-secrets.\n",
+        "operationId": "ListTeamSecrets",
+        "responses": {
+          "200": {
+            "description": "The team\u0027s secret versions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListSecretsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "description": "Plan or role not allowed, the environments API isn\u0027t enabled for\nyour account (\u0060feature_unavailable\u0060), a \u0060grok_\u0060 API key\n(\u0060key_not_supported\u0060), an API key limited to certain\nrepositories (\u0060repository_access\u0060), or an API key that isn\u0027t\nworking in a team or whose user isn\u0027t a team member\n(\u0060team_membership_required\u0060).\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/secrets": {
+      "get": {
+        "summary": "List secrets",
+        "description": "List every Cloud Agents secret the API key can list, one item per\nversion, with the owner that holds it. No item includes a value.\n\nWithout \u0060scope\u0060 or \u0060environmentId\u0060, the list includes the team\u0027s\nsecrets and the user\u0027s personal secrets for an API key with no\nrepository limit, and the secrets of the environments the key can\nlist. A team admin using their own user API key without \u0060repo\u0060 also\ngets the other members\u0027 personal secrets and their personal\nenvironments\u0027 secrets, without \u0060repos\u0060.\n\nKeep paging until \u0060nextCursor\u0060 is \u0060null\u0060, and send the same filters\nwith each \u0060cursor\u0060.\n\nSee https://cursor.com/docs/cloud-agent/api/endpoints#list-secrets.\n",
+        "operationId": "ListSecrets",
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "description": "\u0060team\u0060 lists only the team\u0027s secrets, \u0060user\u0060 only the user\u0027s\npersonal secrets, and \u0060environment\u0060 only environment secrets.\n",
+            "schema": {
+              "$ref": "#/components/schemas/ListSecretsScopeParameter"
+            }
+          },
+          {
+            "name": "environmentId",
+            "in": "query",
+            "description": "List only this environment\u0027s secrets. Can\u0027t be combined with\n\u0060scope=team\u0060 or \u0060scope=user\u0060.\n",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Only versions with this name, ignoring case.",
+            "schema": {
+              "minLength": 1,
+              "type": "string",
+              "example": "NPM_TOKEN"
+            }
+          },
+          {
+            "name": "repo",
+            "in": "query",
+            "description": "Only the versions an agent on this repository gets: versions for\nthat repository and versions for every repository.\n",
+            "schema": {
+              "type": "string",
+              "example": "github.com/acme/api"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum items per page.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "default": 100
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "\u0060nextCursor\u0060 from the previous page.",
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of secret versions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListSecretInventoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "description": "Plan or role not allowed, the environments API isn\u0027t enabled for\nyour account (\u0060feature_unavailable\u0060), or a \u0060grok_\u0060 API key\n(\u0060key_not_supported\u0060). With \u0060scope=team\u0060, an API key limited to\ncertain repositories (\u0060repository_access\u0060) or one that isn\u0027t\nworking in a team or whose user isn\u0027t a team member\n(\u0060team_membership_required\u0060). With \u0060scope=user\u0060, an API key\nlimited to certain repositories (\u0060repository_access\u0060) or one\nthat doesn\u0027t act for a user (\u0060user_required\u0060).\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "\u0060environmentId\u0060 names an environment that doesn\u0027t exist or that your API key can\u0027t list (\u0060environment_not_found\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"
@@ -2300,6 +3036,26 @@
           }
         }
       },
+      "ListEnvironmentsResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListEnvironmentsResponseItemsItem"
+            },
+            "description": "Environments, most recently updated first. List items omit \u0060environmentJson\u0060 and \u0060versionId\u0060."
+          },
+          "nextCursor": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Cursor for fetching the next page of results. A page can hold fewer items than \u0060limit\u0060, so keep paging until it\u0027s absent. Omitted (not \u0060null\u0060) when there are no more pages."
+          }
+        }
+      },
       "CreateEnvironmentRequest": {
         "required": [
           "owner",
@@ -2335,6 +3091,26 @@
           }
         },
         "additionalProperties": false
+      },
+      "UpdateEnvironmentRequest": {
+        "minProperties": 1,
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string",
+            "description": "New display name. It must differ from the names of the owner\u0027s other environments; a name the owner already uses returns \u0060409 environment_name_conflict\u0060.",
+            "example": "Web app (staging)"
+          },
+          "environmentJson": {
+            "type": "string",
+            "description": "Replacement \u0060environment.json\u0060, as a JSON-encoded string, using the same schema as a \u0060.cursor/environment.json\u0060 file. It replaces the whole configuration. An invalid configuration returns \u0060400 validation_error\u0060.",
+            "example": "{\u0022install\u0022: \u0022pnpm install --frozen-lockfile\u0022, \u0022start\u0022: \u0022sudo service docker start\u0022}"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Send \u0060name\u0060, \u0060environmentJson\u0060, or both. A request with both applies them together, so either both change or neither does."
       },
       "EnvironmentBuildId": {
         "pattern": "^[bB][lL][dD]-[0-9]{8}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
@@ -2502,6 +3278,77 @@
         },
         "additionalProperties": false,
         "description": "The agent starts on Cursor\u0027s default image."
+      },
+      "EnvironmentHistoryEvent": {
+        "required": [
+          "id",
+          "createdAt",
+          "kind",
+          "title",
+          "description",
+          "current"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Unique event identifier.",
+            "example": "3b7e1f2a-9c4d-4e8b-a1f6-5d2c8e9b0a17"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the change was made.",
+            "format": "date-time"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/EnvironmentHistoryEventKind"
+          },
+          "title": {
+            "type": "string",
+            "description": "The event\u0027s summary, as the History tab shows it.",
+            "example": "Team environment updated"
+          },
+          "description": {
+            "type": "string",
+            "description": "The event\u0027s details, as the History tab shows them.",
+            "example": "Install script changed."
+          },
+          "source": {
+            "$ref": "#/components/schemas/EnvironmentHistoryEventSource"
+          },
+          "current": {
+            "type": "boolean",
+            "description": "\u0060true\u0060 for the event that saved the environment\u0027s current configuration."
+          },
+          "environmentJson": {
+            "type": "string",
+            "description": "The \u0060environment.json\u0060 the event saved, as a JSON-encoded string.",
+            "example": "{\u0022install\u0022: \u0022pnpm install\u0022, \u0022start\u0022: \u0022sudo service docker start\u0022}"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ListEnvironmentHistoryResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EnvironmentHistoryEvent"
+            },
+            "description": "History events, newest first."
+          },
+          "nextCursor": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Cursor for fetching the next page of results. Omitted (not \u0060null\u0060) when there are no more pages."
+          }
+        },
+        "additionalProperties": false
       },
       "ApiKeyInfo": {
         "required": [
@@ -2686,6 +3533,44 @@
           }
         }
       },
+      "SecretVersion": {
+        "required": [
+          "name",
+          "type",
+          "repos"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^secv_[A-Za-z0-9_-]{22}$",
+            "type": "string",
+            "description": "Opaque version ID. A version keeps its \u0060id\u0060 through changes to\nits value, type, or repositories. Always present in lists; a\n\u0060201\u0060 from a \u0060PUT\u0060 leaves it out when the new version isn\u0027t\nreadable yet.\n",
+            "example": "secv_3qKx9mT2bV7nR1cW5yZ8aQ"
+          },
+          "name": {
+            "type": "string",
+            "description": "Environment variable name agents see.",
+            "example": "NPM_TOKEN"
+          },
+          "type": {
+            "$ref": "#/components/schemas/SecretVersionType"
+          },
+          "repos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The only repositories that get this version, lowercase and\nsorted, with repository URLs reduced to \u0060host/owner/repo\u0060.\nEmpty when every repository gets it.\n"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the version was created. Always present in lists; a\n\u0060201\u0060 from a \u0060PUT\u0060 leaves it out when the new version isn\u0027t\nreadable yet.\n",
+            "format": "date-time",
+            "example": "2026-10-01T09:15:42.000Z"
+          }
+        },
+        "description": "One version of a Cloud Agents secret. A name can have several\nversions in one environment or team, each for repositories the\nothers don\u0027t cover. Responses never include a secret\u0027s value.\n"
+      },
       "Repository": {
         "required": [
           "url"
@@ -2700,6 +3585,114 @@
           }
         }
       },
+      "ListSecretsResponse": {
+        "required": [
+          "items",
+          "nextCursor"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListSecretsResponseItemsItem"
+            },
+            "description": "Secret versions, sorted by name. A name with versions for\ndifferent repositories appears once per version.\n"
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Cursor for the next page. Always \u0060null\u0060 for now, because the\nlist isn\u0027t paginated yet.\n",
+            "nullable": true,
+            "example": null
+          }
+        }
+      },
+      "SecretInventoryOwner": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/SecretInventoryOwnerType"
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The environment, for an \u0060environment\u0060 owner.",
+            "format": "uuid",
+            "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+          },
+          "user": {
+            "$ref": "#/components/schemas/SecretInventoryOwnerUser"
+          }
+        },
+        "description": "Who holds a secret version: \u0060team\u0060 for the team the API key works\nin, \u0060user\u0060 for a user\u0027s personal secrets, or \u0060environment\u0060 for an\nenvironment\u0027s secrets.\n"
+      },
+      "InventorySecretVersion": {
+        "required": [
+          "id",
+          "name",
+          "type",
+          "createdAt",
+          "owner"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^secv_[A-Za-z0-9_-]{22}$",
+            "type": "string",
+            "description": "The version ID its owner\u0027s own list shows.",
+            "example": "secv_3qKx9mT2bV7nR1cW5yZ8aQ"
+          },
+          "name": {
+            "type": "string",
+            "description": "Environment variable name agents see.",
+            "example": "NPM_TOKEN"
+          },
+          "type": {
+            "$ref": "#/components/schemas/InventorySecretVersionType"
+          },
+          "repos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The only repositories that get this version, or empty when every\nrepository gets it. Absent on other members\u0027 versions, which only\na team admin\u0027s list includes.\n"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the version was created.",
+            "format": "date-time",
+            "example": "2026-10-01T09:15:42.000Z"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/SecretInventoryOwner"
+          }
+        },
+        "description": "A secret version with the owner that holds it. Responses never\ninclude a secret\u0027s value.\n"
+      },
+      "ListSecretInventoryResponse": {
+        "required": [
+          "items",
+          "nextCursor"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InventorySecretVersion"
+            },
+            "description": "Secret versions with their owners, not sorted by name. Other\nmembers\u0027 versions come after the rest.\n"
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Cursor for the next page, or \u0060null\u0060 on the last page. A page can\nhold fewer than \u0060limit\u0060 items, or none, and still have one.\n",
+            "nullable": true,
+            "example": null
+          }
+        }
+      },
       "ListRepositoriesResponse": {
         "required": [
           "items"
@@ -2711,6 +3704,65 @@
             "items": {
               "$ref": "#/components/schemas/Repository"
             }
+          }
+        }
+      },
+      "SetSecretRequest": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The secret\u0027s value, 1 to 4,096 bytes of UTF-8 text. No\nresponse or error message includes it.\n",
+            "example": "npm_example_token"
+          },
+          "type": {
+            "$ref": "#/components/schemas/SetSecretRequestType"
+          },
+          "repos": {
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "description": "The only repositories that get this version, such as\n\u0060acme/api\u0060, \u0060https://github.com/acme/api.git\u0060, or\n\u0060gitlab.com/group/subgroup/project\u0060. An empty array, or\nomitting \u0060repos\u0060 on a new version, gives it every repository.\nA change without \u0060repos\u0060 keeps the version\u0027s repositories.\n"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SecretVersionSummary": {
+        "required": [
+          "id",
+          "repos"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The version\u0027s \u0060id\u0060. Pass it as \u0060?id=\u0060 to pick this version.",
+            "example": "secv_3qKx9mT2bV7nR1cW5yZ8aQ"
+          },
+          "repos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The only repositories that get this version."
+          }
+        }
+      },
+      "SecretNameAmbiguousError": {
+        "required": [
+          "error"
+        ],
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/SecretNameAmbiguousErrorError"
           }
         }
       },
@@ -2756,6 +3808,19 @@
           }
         },
         "description": "Provide exactly one active team member identifier."
+      },
+      "DeleteSecretResponse": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the deleted secret.",
+            "example": "NPM_TOKEN"
+          }
+        }
       },
       "CreateSubTokenResponse": {
         "required": [
@@ -3071,6 +4136,100 @@
           }
         }
       },
+      "ListEnvironmentsResponseItemsItem": {
+        "required": [
+          "id",
+          "owner",
+          "repos",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique environment identifier.",
+            "format": "uuid",
+            "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Display name. Omitted when the environment has no name.",
+            "example": "Web app"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/EnvironmentOwner"
+          },
+          "repos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EnvironmentRepo"
+            },
+            "description": "Repositories in the environment."
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the environment was created.",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "When the environment was last updated.",
+            "format": "date-time"
+          },
+          "repoFile": {
+            "$ref": "#/components/schemas/EnvironmentRepoFile"
+          }
+        }
+      },
+      "ListSecretsResponseItemsItem": {
+        "required": [
+          "name",
+          "type",
+          "repos",
+          "id",
+          "createdAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^secv_[A-Za-z0-9_-]{22}$",
+            "type": "string",
+            "description": "Opaque version ID. A version keeps its \u0060id\u0060 through changes to\nits value, type, or repositories. Always present in lists; a\n\u0060201\u0060 from a \u0060PUT\u0060 leaves it out when the new version isn\u0027t\nreadable yet.\n",
+            "example": "secv_3qKx9mT2bV7nR1cW5yZ8aQ"
+          },
+          "name": {
+            "type": "string",
+            "description": "Environment variable name agents see.",
+            "example": "NPM_TOKEN"
+          },
+          "type": {
+            "$ref": "#/components/schemas/SecretVersionType"
+          },
+          "repos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The only repositories that get this version, lowercase and\nsorted, with repository URLs reduced to \u0060host/owner/repo\u0060.\nEmpty when every repository gets it.\n"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the version was created. Always present in lists; a\n\u0060201\u0060 from a \u0060PUT\u0060 leaves it out when the new version isn\u0027t\nreadable yet.\n",
+            "format": "date-time",
+            "example": "2026-10-01T09:15:42.000Z"
+          }
+        }
+      },
+      "ListEnvironmentsResponseItemsItemAllOf2": {
+        "type": "object",
+        "properties": {
+          "repoFile": {
+            "$ref": "#/components/schemas/EnvironmentRepoFile"
+          }
+        }
+      },
       "ModelRefParamsItem": {
         "required": [
           "id",
@@ -3181,6 +4340,45 @@
           }
         }
       },
+      "SecretInventoryOwnerUser": {
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The user\u0027s email, or \u0060null\u0060 when the user has none on file.",
+            "nullable": true,
+            "example": "ada@acme.com"
+          }
+        },
+        "description": "The user who owns the secrets, for a \u0060user\u0060 owner and a personal\nenvironment. Absent for the team and its environments.\n"
+      },
+      "SecretNameAmbiguousErrorError": {
+        "required": [
+          "code",
+          "message",
+          "versions"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/SecretNameAmbiguousCode"
+          },
+          "message": {
+            "type": "string",
+            "example": "NPM_TOKEN has 2 versions, each for different repos. Pass the id of one as ?id= to pick it."
+          },
+          "versions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SecretVersionSummary"
+            },
+            "description": "Every version of the name, in list order."
+          }
+        }
+      },
       "ErrorError": {
         "required": [
           "code",
@@ -3216,6 +4414,28 @@
       },
       "StreamRun200EventStreamResponse": {
         "type": "string"
+      },
+      "SetEnvironmentSecret409Response": {
+        "type": "object",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/SecretNameAmbiguousError"
+          },
+          {
+            "$ref": "#/components/schemas/Error"
+          }
+        ]
+      },
+      "SetTeamSecret409Response": {
+        "type": "object",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/SecretNameAmbiguousError"
+          },
+          {
+            "$ref": "#/components/schemas/Error"
+          }
+        ]
       },
       "CustomSubagentModelWrapper": {
         "required": [
@@ -3681,6 +4901,217 @@
           ]
         }
       },
+      "EnvironmentHistoryEventKind": {
+        "enum": [
+          "created",
+          "updated",
+          "deleted",
+          "backfilled",
+          "changed"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "x-ms-enum": {
+          "name": "EnvironmentHistoryEventKind",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "created",
+              "name": "Created"
+            },
+            {
+              "value": "updated",
+              "name": "Updated"
+            },
+            {
+              "value": "deleted",
+              "name": "Deleted"
+            },
+            {
+              "value": "backfilled",
+              "name": "Backfilled"
+            },
+            {
+              "value": "changed",
+              "name": "Changed"
+            }
+          ]
+        }
+      },
+      "EnvironmentHistoryEventSource": {
+        "enum": [
+          "dashboard",
+          "setup_flow",
+          "restore",
+          "api",
+          "agent_run",
+          "repo_file",
+          "request_override"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "Where the change came from.",
+        "x-ms-enum": {
+          "name": "EnvironmentHistoryEventSource",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "dashboard",
+              "name": "Dashboard"
+            },
+            {
+              "value": "setup_flow",
+              "name": "SetupFlow"
+            },
+            {
+              "value": "restore",
+              "name": "Restore"
+            },
+            {
+              "value": "api",
+              "name": "Api"
+            },
+            {
+              "value": "agent_run",
+              "name": "AgentRun"
+            },
+            {
+              "value": "repo_file",
+              "name": "RepoFile"
+            },
+            {
+              "value": "request_override",
+              "name": "RequestOverride"
+            }
+          ]
+        }
+      },
+      "SecretVersionType": {
+        "enum": [
+          "runtime_secret",
+          "environment_variable",
+          "build_secret"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "\u0060runtime_secret\u0060 for a Runtime Secret, \u0060environment_variable\u0060\nfor an Environment Variable, or \u0060build_secret\u0060 for a Build\nSecret, which only the Docker build gets.\n",
+        "example": "runtime_secret",
+        "x-ms-enum": {
+          "name": "SecretVersionType",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "runtime_secret",
+              "name": "RuntimeSecret"
+            },
+            {
+              "value": "environment_variable",
+              "name": "EnvironmentVariable"
+            },
+            {
+              "value": "build_secret",
+              "name": "BuildSecret"
+            }
+          ]
+        }
+      },
+      "SecretInventoryOwnerType": {
+        "enum": [
+          "team",
+          "user",
+          "environment"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "example": "environment",
+        "x-ms-enum": {
+          "name": "SecretInventoryOwnerType",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "team",
+              "name": "Team"
+            },
+            {
+              "value": "user",
+              "name": "User"
+            },
+            {
+              "value": "environment",
+              "name": "Environment"
+            }
+          ]
+        }
+      },
+      "InventorySecretVersionType": {
+        "enum": [
+          "runtime_secret",
+          "environment_variable",
+          "build_secret"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "example": "runtime_secret",
+        "x-ms-enum": {
+          "name": "InventorySecretVersionType",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "runtime_secret",
+              "name": "RuntimeSecret"
+            },
+            {
+              "value": "environment_variable",
+              "name": "EnvironmentVariable"
+            },
+            {
+              "value": "build_secret",
+              "name": "BuildSecret"
+            }
+          ]
+        }
+      },
+      "SetSecretRequestType": {
+        "enum": [
+          "runtime_secret",
+          "environment_variable"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "description": "A new version defaults to \u0060runtime_secret\u0060. A change without\n\u0060type\u0060 keeps the version\u0027s type. Build Secrets can\u0027t be set\nthrough the API yet.\n",
+        "example": "runtime_secret",
+        "x-ms-enum": {
+          "name": "SetSecretRequestType",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "runtime_secret",
+              "name": "RuntimeSecret"
+            },
+            {
+              "value": "environment_variable",
+              "name": "EnvironmentVariable"
+            }
+          ]
+        }
+      },
+      "SecretNameAmbiguousCode": {
+        "enum": [
+          "secret_name_ambiguous"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "x-ms-enum": {
+          "name": "SecretNameAmbiguousCode",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "secret_name_ambiguous",
+              "name": "SecretNameAmbiguous"
+            }
+          ]
+        }
+      },
       "InheritValue": {
         "enum": [
           "inherit"
@@ -3695,6 +5126,33 @@
             {
               "value": "inherit",
               "name": "Inherit"
+            }
+          ]
+        }
+      },
+      "ListSecretsScopeParameter": {
+        "enum": [
+          "team",
+          "user",
+          "environment"
+        ],
+        "type": "string",
+        "additionalProperties": false,
+        "x-ms-enum": {
+          "name": "ListSecretsScopeParameter",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "team",
+              "name": "Team"
+            },
+            {
+              "value": "user",
+              "name": "User"
+            },
+            {
+              "value": "environment",
+              "name": "Environment"
             }
           ]
         }
