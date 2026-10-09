@@ -1465,6 +1465,7 @@ components:
         - id
         - name
         - type
+        - repos
         - createdAt
         - owner
       properties:
@@ -1490,8 +1491,8 @@ components:
             type: string
           description: |
             The only repositories that get this version, or empty when every
-            repository gets it. Absent on other members' versions, which only
-            a team admin's list includes.
+            repository gets it. Every version has it, including other
+            members' versions in a team admin's list.
           example:
             - 'github.com/acme/api'
         createdAt:
@@ -3107,7 +3108,7 @@ paths:
         repository limit, and the secrets of the environments the key can
         list. A team admin using their own user API key without `repo` also
         gets the other members' personal secrets and their personal
-        environments' secrets, without `repos`.
+        environments' secrets, with their `repos`.
 
         Keep paging until `nextCursor` is `null`, and send the same filters
         with each `cursor`.
@@ -3121,18 +3122,25 @@ paths:
           description: |
             `team` lists only the team's secrets, `user` only the user's
             personal secrets, and `environment` only environment secrets.
+            `members` lists the user's personal secrets and, for an explicit
+            team admin using their own user API key or session, every other
+            current member's personal secrets after them, but none of their
+            personal environments' secrets. For everyone else it returns the
+            same response or refusal as `user`.
           schema:
             type: string
             enum:
               - team
               - user
+              - members
               - environment
         - name: environmentId
           in: query
           required: false
           description: |
-            List only this environment's secrets. Can't be combined with
-            `scope=team` or `scope=user`.
+            List only this environment's secrets. Combining it with
+            `scope=team`, `scope=user`, or `scope=members` returns
+            `400 validation_error`.
           schema:
             type: string
             format: uuid
@@ -3150,7 +3158,8 @@ paths:
           required: false
           description: |
             Only the versions an agent on this repository gets: versions for
-            that repository and versions for every repository.
+            that repository and versions for every repository. Combining it
+            with `scope=members` returns `400 validation_error`.
           schema:
             type: string
             example: 'github.com/acme/api'
@@ -3188,9 +3197,10 @@ paths:
             (`key_not_supported`). With `scope=team`, an API key limited to
             certain repositories (`repository_access`) or one that isn't
             working in a team or whose user isn't a team member
-            (`team_membership_required`). With `scope=user`, an API key
-            limited to certain repositories (`repository_access`) or one
-            that doesn't act for a user (`user_required`).
+            (`team_membership_required`). With `scope=user` or
+            `scope=members`, an API key limited to certain repositories
+            (`repository_access`) or one that doesn't act for a user
+            (`user_required`).
           content:
             application/json:
               schema:

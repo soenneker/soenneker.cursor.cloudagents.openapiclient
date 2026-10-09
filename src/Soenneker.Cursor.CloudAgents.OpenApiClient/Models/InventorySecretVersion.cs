@@ -41,7 +41,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.SecretInventoryOwner Owner { get; set; }
 #endif
-        /// <summary>The only repositories that get this version, or empty when everyrepository gets it. Absent on other members&apos; versions, which onlya team admin&apos;s list includes.</summary>
+        /// <summary>The only repositories that get this version, or empty when everyrepository gets it. Every version has it, including othermembers&apos; versions in a team admin&apos;s list.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public List<string>? Repos { get; set; }

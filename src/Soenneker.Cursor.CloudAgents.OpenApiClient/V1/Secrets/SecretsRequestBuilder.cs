@@ -34,7 +34,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Secrets
         {
         }
         /// <summary>
-        /// List every Cloud Agents secret the API key can list, one item perversion, with the owner that holds it. No item includes a value.Without `scope` or `environmentId`, the list includes the team&apos;ssecrets and the user&apos;s personal secrets for an API key with norepository limit, and the secrets of the environments the key canlist. A team admin using their own user API key without `repo` alsogets the other members&apos; personal secrets and their personalenvironments&apos; secrets, without `repos`.Keep paging until `nextCursor` is `null`, and send the same filterswith each `cursor`.See https://cursor.com/docs/cloud-agent/api/endpoints#list-secrets.
+        /// List every Cloud Agents secret the API key can list, one item perversion, with the owner that holds it. No item includes a value.Without `scope` or `environmentId`, the list includes the team&apos;ssecrets and the user&apos;s personal secrets for an API key with norepository limit, and the secrets of the environments the key canlist. A team admin using their own user API key without `repo` alsogets the other members&apos; personal secrets and their personalenvironments&apos; secrets, with their `repos`.Keep paging until `nextCursor` is `null`, and send the same filterswith each `cursor`.See https://cursor.com/docs/cloud-agent/api/endpoints#list-secrets.
         /// </summary>
         /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListSecretInventoryResponse"/></returns>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
@@ -65,7 +65,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Secrets
             return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListSecretInventoryResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListSecretInventoryResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
-        /// List every Cloud Agents secret the API key can list, one item perversion, with the owner that holds it. No item includes a value.Without `scope` or `environmentId`, the list includes the team&apos;ssecrets and the user&apos;s personal secrets for an API key with norepository limit, and the secrets of the environments the key canlist. A team admin using their own user API key without `repo` alsogets the other members&apos; personal secrets and their personalenvironments&apos; secrets, without `repos`.Keep paging until `nextCursor` is `null`, and send the same filterswith each `cursor`.See https://cursor.com/docs/cloud-agent/api/endpoints#list-secrets.
+        /// List every Cloud Agents secret the API key can list, one item perversion, with the owner that holds it. No item includes a value.Without `scope` or `environmentId`, the list includes the team&apos;ssecrets and the user&apos;s personal secrets for an API key with norepository limit, and the secrets of the environments the key canlist. A team admin using their own user API key without `repo` alsogets the other members&apos; personal secrets and their personalenvironments&apos; secrets, with their `repos`.Keep paging until `nextCursor` is `null`, and send the same filterswith each `cursor`.See https://cursor.com/docs/cloud-agent/api/endpoints#list-secrets.
         /// </summary>
         /// <returns>A <see cref="RequestInformation"/></returns>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
@@ -93,7 +93,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Secrets
             return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Secrets.SecretsRequestBuilder(rawUrl, RequestAdapter);
         }
         /// <summary>
-        /// List every Cloud Agents secret the API key can list, one item perversion, with the owner that holds it. No item includes a value.Without `scope` or `environmentId`, the list includes the team&apos;ssecrets and the user&apos;s personal secrets for an API key with norepository limit, and the secrets of the environments the key canlist. A team admin using their own user API key without `repo` alsogets the other members&apos; personal secrets and their personalenvironments&apos; secrets, without `repos`.Keep paging until `nextCursor` is `null`, and send the same filterswith each `cursor`.See https://cursor.com/docs/cloud-agent/api/endpoints#list-secrets.
+        /// List every Cloud Agents secret the API key can list, one item perversion, with the owner that holds it. No item includes a value.Without `scope` or `environmentId`, the list includes the team&apos;ssecrets and the user&apos;s personal secrets for an API key with norepository limit, and the secrets of the environments the key canlist. A team admin using their own user API key without `repo` alsogets the other members&apos; personal secrets and their personalenvironments&apos; secrets, with their `repos`.Keep paging until `nextCursor` is `null`, and send the same filterswith each `cursor`.See https://cursor.com/docs/cloud-agent/api/endpoints#list-secrets.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
         public partial class SecretsRequestBuilderGetQueryParameters 
@@ -108,7 +108,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Secrets
             [QueryParameter("cursor")]
             public string Cursor { get; set; }
 #endif
-            /// <summary>List only this environment&apos;s secrets. Can&apos;t be combined with`scope=team` or `scope=user`.</summary>
+            /// <summary>List only this environment&apos;s secrets. Combining it with`scope=team`, `scope=user`, or `scope=members` returns`400 validation_error`.</summary>
             [QueryParameter("environmentId")]
             public Guid? EnvironmentId { get; set; }
             /// <summary>Maximum items per page.</summary>
@@ -124,7 +124,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Secrets
             [QueryParameter("name")]
             public string Name { get; set; }
 #endif
-            /// <summary>Only the versions an agent on this repository gets: versions forthat repository and versions for every repository.</summary>
+            /// <summary>Only the versions an agent on this repository gets: versions forthat repository and versions for every repository. Combining itwith `scope=members` returns `400 validation_error`.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
             [QueryParameter("repo")]
@@ -134,7 +134,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Secrets
             [QueryParameter("repo")]
             public string Repo { get; set; }
 #endif
-            /// <summary>`team` lists only the team&apos;s secrets, `user` only the user&apos;spersonal secrets, and `environment` only environment secrets.</summary>
+            /// <summary>`team` lists only the team&apos;s secrets, `user` only the user&apos;spersonal secrets, and `environment` only environment secrets.`members` lists the user&apos;s personal secrets and, for an explicitteam admin using their own user API key or session, every othercurrent member&apos;s personal secrets after them, but none of theirpersonal environments&apos; secrets. For everyone else it returns thesame response or refusal as `user`.</summary>
             [QueryParameter("scope")]
             public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListSecretsScopeParameter? Scope { get; set; }
         }

@@ -1765,13 +1765,13 @@
     "/v1/secrets": {
       "get": {
         "summary": "List secrets",
-        "description": "List every Cloud Agents secret the API key can list, one item per\nversion, with the owner that holds it. No item includes a value.\n\nWithout \u0060scope\u0060 or \u0060environmentId\u0060, the list includes the team\u0027s\nsecrets and the user\u0027s personal secrets for an API key with no\nrepository limit, and the secrets of the environments the key can\nlist. A team admin using their own user API key without \u0060repo\u0060 also\ngets the other members\u0027 personal secrets and their personal\nenvironments\u0027 secrets, without \u0060repos\u0060.\n\nKeep paging until \u0060nextCursor\u0060 is \u0060null\u0060, and send the same filters\nwith each \u0060cursor\u0060.\n\nSee https://cursor.com/docs/cloud-agent/api/endpoints#list-secrets.\n",
+        "description": "List every Cloud Agents secret the API key can list, one item per\nversion, with the owner that holds it. No item includes a value.\n\nWithout \u0060scope\u0060 or \u0060environmentId\u0060, the list includes the team\u0027s\nsecrets and the user\u0027s personal secrets for an API key with no\nrepository limit, and the secrets of the environments the key can\nlist. A team admin using their own user API key without \u0060repo\u0060 also\ngets the other members\u0027 personal secrets and their personal\nenvironments\u0027 secrets, with their \u0060repos\u0060.\n\nKeep paging until \u0060nextCursor\u0060 is \u0060null\u0060, and send the same filters\nwith each \u0060cursor\u0060.\n\nSee https://cursor.com/docs/cloud-agent/api/endpoints#list-secrets.\n",
         "operationId": "ListSecrets",
         "parameters": [
           {
             "name": "scope",
             "in": "query",
-            "description": "\u0060team\u0060 lists only the team\u0027s secrets, \u0060user\u0060 only the user\u0027s\npersonal secrets, and \u0060environment\u0060 only environment secrets.\n",
+            "description": "\u0060team\u0060 lists only the team\u0027s secrets, \u0060user\u0060 only the user\u0027s\npersonal secrets, and \u0060environment\u0060 only environment secrets.\n\u0060members\u0060 lists the user\u0027s personal secrets and, for an explicit\nteam admin using their own user API key or session, every other\ncurrent member\u0027s personal secrets after them, but none of their\npersonal environments\u0027 secrets. For everyone else it returns the\nsame response or refusal as \u0060user\u0060.\n",
             "schema": {
               "$ref": "#/components/schemas/ListSecretsScopeParameter"
             }
@@ -1779,7 +1779,7 @@
           {
             "name": "environmentId",
             "in": "query",
-            "description": "List only this environment\u0027s secrets. Can\u0027t be combined with\n\u0060scope=team\u0060 or \u0060scope=user\u0060.\n",
+            "description": "List only this environment\u0027s secrets. Combining it with\n\u0060scope=team\u0060, \u0060scope=user\u0060, or \u0060scope=members\u0060 returns\n\u0060400 validation_error\u0060.\n",
             "schema": {
               "type": "string",
               "format": "uuid",
@@ -1799,7 +1799,7 @@
           {
             "name": "repo",
             "in": "query",
-            "description": "Only the versions an agent on this repository gets: versions for\nthat repository and versions for every repository.\n",
+            "description": "Only the versions an agent on this repository gets: versions for\nthat repository and versions for every repository. Combining it\nwith \u0060scope=members\u0060 returns \u0060400 validation_error\u0060.\n",
             "schema": {
               "type": "string",
               "example": "github.com/acme/api"
@@ -1844,7 +1844,7 @@
             "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "description": "Plan or role not allowed, the environments API isn\u0027t enabled for\nyour account (\u0060feature_unavailable\u0060), or a \u0060grok_\u0060 API key\n(\u0060key_not_supported\u0060). With \u0060scope=team\u0060, an API key limited to\ncertain repositories (\u0060repository_access\u0060) or one that isn\u0027t\nworking in a team or whose user isn\u0027t a team member\n(\u0060team_membership_required\u0060). With \u0060scope=user\u0060, an API key\nlimited to certain repositories (\u0060repository_access\u0060) or one\nthat doesn\u0027t act for a user (\u0060user_required\u0060).\n",
+            "description": "Plan or role not allowed, the environments API isn\u0027t enabled for\nyour account (\u0060feature_unavailable\u0060), or a \u0060grok_\u0060 API key\n(\u0060key_not_supported\u0060). With \u0060scope=team\u0060, an API key limited to\ncertain repositories (\u0060repository_access\u0060) or one that isn\u0027t\nworking in a team or whose user isn\u0027t a team member\n(\u0060team_membership_required\u0060). With \u0060scope=user\u0060 or\n\u0060scope=members\u0060, an API key limited to certain repositories\n(\u0060repository_access\u0060) or one that doesn\u0027t act for a user\n(\u0060user_required\u0060).\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -3633,6 +3633,7 @@
           "id",
           "name",
           "type",
+          "repos",
           "createdAt",
           "owner"
         ],
@@ -3657,7 +3658,7 @@
             "items": {
               "type": "string"
             },
-            "description": "The only repositories that get this version, or empty when every\nrepository gets it. Absent on other members\u0027 versions, which only\na team admin\u0027s list includes.\n"
+            "description": "The only repositories that get this version, or empty when every\nrepository gets it. Every version has it, including other\nmembers\u0027 versions in a team admin\u0027s list.\n"
           },
           "createdAt": {
             "type": "string",
@@ -5134,6 +5135,7 @@
         "enum": [
           "team",
           "user",
+          "members",
           "environment"
         ],
         "type": "string",
@@ -5149,6 +5151,10 @@
             {
               "value": "user",
               "name": "User"
+            },
+            {
+              "value": "members",
+              "name": "Members"
             },
             {
               "value": "environment",

@@ -16,6 +16,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         #pragma warning disable CS1591
         User,
         #pragma warning restore CS1591
+        [EnumMember(Value = "members")]
+        #pragma warning disable CS1591
+        Members,
+        #pragma warning restore CS1591
         [EnumMember(Value = "environment")]
         #pragma warning disable CS1591
         Environment,
