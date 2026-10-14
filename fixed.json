@@ -2534,7 +2534,7 @@
             "$ref": "#/components/schemas/AgentEnv"
           },
           "repos": {
-            "maxItems": 20,
+            "maxItems": 300,
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RepoConfig"
@@ -3076,7 +3076,7 @@
             "example": "Web app"
           },
           "repos": {
-            "maxItems": 100,
+            "maxItems": 300,
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/EnvironmentRepo"
