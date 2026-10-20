@@ -114,9 +114,9 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item
             return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.GetEnvironmentResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.GetEnvironmentResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
-        /// Rename an environment, replace its configuration, or both. A request with both fields applies them together, so either both change or neither does. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`.
+        /// Rename an environment, replace its configuration, replace its repositories, or any combination. A request applies every field it sends together, so either all of them change or none do. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`.
         /// </summary>
-        /// <param name="body">Send `name`, `environmentJson`, or both. A request with both applies them together, so either both change or neither does.</param>
+        /// <param name="body">Send `name`, `environmentJson`, `repos`, or any combination. `repos` requires `environmentJson`. A request applies every field it sends together, so either all of them change or none do.</param>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 400 status code</exception>
@@ -125,6 +125,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 409 status code</exception>
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 429 status code</exception>
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 500 status code</exception>
+        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 503 status code</exception>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public async Task PatchAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentRequest body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
@@ -144,6 +145,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item
                 { "409", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
                 { "429", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
                 { "500", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
+                { "503", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
             };
             await RequestAdapter.SendNoContentAsync(requestInfo, errorMapping, cancellationToken).ConfigureAwait(false);
         }
@@ -186,10 +188,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item
             return requestInfo;
         }
         /// <summary>
-        /// Rename an environment, replace its configuration, or both. A request with both fields applies them together, so either both change or neither does. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`.
+        /// Rename an environment, replace its configuration, replace its repositories, or any combination. A request applies every field it sends together, so either all of them change or none do. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`.
         /// </summary>
         /// <returns>A <see cref="RequestInformation"/></returns>
-        /// <param name="body">Send `name`, `environmentJson`, or both. A request with both applies them together, so either both change or neither does.</param>
+        /// <param name="body">Send `name`, `environmentJson`, `repos`, or any combination. `repos` requires `environmentJson`. A request applies every field it sends together, so either all of them change or none do.</param>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable

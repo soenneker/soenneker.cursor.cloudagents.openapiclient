@@ -8,7 +8,7 @@ using System;
 namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
     /// <summary>
-    /// Send `name`, `environmentJson`, or both. A request with both applies them together, so either both change or neither does.
+    /// Send `name`, `environmentJson`, `repos`, or any combination. `repos` requires `environmentJson`. A request applies every field it sends together, so either all of them change or none do.
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class UpdateEnvironmentRequest : IParsable
@@ -28,6 +28,14 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #nullable restore
 #else
         public string Name { get; set; }
+#endif
+        /// <summary>The environment&apos;s full list of repositories, replacing thecurrent list. It follows the same rules as `repos` onPOST /v1/environments. Send `environmentJson` with it, because arepository change saves the whole configuration; `repos` without`environmentJson` returns `400 validation_error`. To keep thecurrent configuration, send the `environmentJson` fromGET /v1/environments/{id}.Only environments with two or more repositories can change them,and they must keep at least two. Sending the current listunchanged doesn&apos;t count as a change. Otherwise an environmentwithout repositories, a single-repository environment, or a listwith fewer than two returns `409 environment_repo_edit_blocked`.When the environment reads its configuration from a repositoryfile (`repoFile` on GET /v1/environments/{id}), the file stays theconfiguration source. The list must keep the `repoFile.url`repository, or the request returns `409 repo_file_repo_removed`.Repositories are compared by identity, so a trailing `.git` orslash, a missing scheme, a leading `www.`, or GitHub letter casestill match. When the list names that repository in several forms,the first entry is kept and the others dropped. For BitbucketServer, send the URL GET returns. An environment whoseonly repository holds its configuration file returns`409 repo_file_environment_locked` for any `repos`. Storedrepositories Cursor can&apos;t read return`400 stored_repos_unreadable`.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo>? Repos { get; set; }
+#nullable restore
+#else
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo> Repos { get; set; }
 #endif
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
@@ -49,6 +57,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             {
                 { "environmentJson", n => { EnvironmentJson = n.GetStringValue(); } },
                 { "name", n => { Name = n.GetStringValue(); } },
+                { "repos", n => { Repos = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo.CreateFromDiscriminatorValue)?.AsList(); } },
             };
         }
         /// <summary>
@@ -60,6 +69,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteStringValue("environmentJson", EnvironmentJson);
             writer.WriteStringValue("name", Name);
+            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo>("repos", Repos);
         }
     }
 }

@@ -861,7 +861,7 @@
       },
       "patch": {
         "summary": "Update an environment",
-        "description": "Rename an environment, replace its configuration, or both. A request with both fields applies them together, so either both change or neither does. An environment that doesn\u0027t exist or isn\u0027t visible to the API key returns \u0060404 environment_not_found\u0060.",
+        "description": "Rename an environment, replace its configuration, replace its repositories, or any combination. A request applies every field it sends together, so either all of them change or none do. An environment that doesn\u0027t exist or isn\u0027t visible to the API key returns \u0060404 environment_not_found\u0060.",
         "operationId": "UpdateEnvironment",
         "parameters": [
           {
@@ -883,7 +883,14 @@
             "description": "Environment updated. The response has no body."
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "Validation error or malformed request body (\u0060validation_error\u0060), a repository Cursor can\u0027t reach (\u0060repository_access\u0060), or stored repositories Cursor can\u0027t read when the request sends \u0060repos\u0060 (\u0060stored_repos_unreadable\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
@@ -895,13 +902,38 @@
             "$ref": "#/components/responses/NotFound"
           },
           "409": {
-            "$ref": "#/components/responses/Conflict"
+            "description": "The name is taken (\u0060environment_name_conflict\u0060), the environment can\u0027t make this repository change (\u0060environment_repo_edit_blocked\u0060), \u0060repos\u0060 leaves out the repository that holds the configuration file (\u0060repo_file_repo_removed\u0060), or the environment is locked to its configuration file (\u0060repo_file_environment_locked\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "description": "Cursor couldn\u0027t reach your source control provider to check a repository (\u0060upstream_error\u0060). Retry after the number of seconds in \u0060Retry-After\u0060.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -3107,10 +3139,18 @@
             "type": "string",
             "description": "Replacement \u0060environment.json\u0060, as a JSON-encoded string, using the same schema as a \u0060.cursor/environment.json\u0060 file. It replaces the whole configuration. An invalid configuration returns \u0060400 validation_error\u0060.",
             "example": "{\u0022install\u0022: \u0022pnpm install --frozen-lockfile\u0022, \u0022start\u0022: \u0022sudo service docker start\u0022}"
+          },
+          "repos": {
+            "maxItems": 500,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EnvironmentRepo"
+            },
+            "description": "The environment\u0027s full list of repositories, replacing the\ncurrent list. It follows the same rules as \u0060repos\u0060 on\nPOST /v1/environments. Send \u0060environmentJson\u0060 with it, because a\nrepository change saves the whole configuration; \u0060repos\u0060 without\n\u0060environmentJson\u0060 returns \u0060400 validation_error\u0060. To keep the\ncurrent configuration, send the \u0060environmentJson\u0060 from\nGET /v1/environments/{id}.\n\nOnly environments with two or more repositories can change them,\nand they must keep at least two. Sending the current list\nunchanged doesn\u0027t count as a change. Otherwise an environment\nwithout repositories, a single-repository environment, or a list\nwith fewer than two returns \u0060409 environment_repo_edit_blocked\u0060.\n\nWhen the environment reads its configuration from a repository\nfile (\u0060repoFile\u0060 on GET /v1/environments/{id}), the file stays the\nconfiguration source. The list must keep the \u0060repoFile.url\u0060\nrepository, or the request returns \u0060409 repo_file_repo_removed\u0060.\nRepositories are compared by identity, so a trailing \u0060.git\u0060 or\nslash, a missing scheme, a leading \u0060www.\u0060, or GitHub letter case\nstill match. When the list names that repository in several forms,\nthe first entry is kept and the others dropped. For Bitbucket\nServer, send the URL GET returns. An environment whose\nonly repository holds its configuration file returns\n\u0060409 repo_file_environment_locked\u0060 for any \u0060repos\u0060. Stored\nrepositories Cursor can\u0027t read return\n\u0060400 stored_repos_unreadable\u0060.\n"
           }
         },
         "additionalProperties": false,
-        "description": "Send \u0060name\u0060, \u0060environmentJson\u0060, or both. A request with both applies them together, so either both change or neither does."
+        "description": "Send \u0060name\u0060, \u0060environmentJson\u0060, \u0060repos\u0060, or any combination. \u0060repos\u0060 requires \u0060environmentJson\u0060. A request applies every field it sends together, so either all of them change or none do."
       },
       "EnvironmentBuildId": {
         "pattern": "^[bB][lL][dD]-[0-9]{8}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
@@ -4389,7 +4429,7 @@
         "properties": {
           "code": {
             "type": "string",
-            "description": "Machine-readable error code. Possible values include\n\u0060unauthorized\u0060, \u0060api_key_not_found\u0060, \u0060plan_required\u0060,\n\u0060role_forbidden\u0060, \u0060feature_unavailable\u0060,\n\u0060integration_not_connected\u0060, \u0060validation_error\u0060,\n\u0060missing_body\u0060, \u0060invalid_model\u0060, \u0060invalid_branch_name\u0060,\n\u0060repository_required\u0060, \u0060repository_access\u0060,\n\u0060pr_resolution_failed\u0060, \u0060artifact_not_found\u0060,\n\u0060service_account_required\u0060, \u0060agent_not_found\u0060,\n\u0060run_not_found\u0060, \u0060environment_not_found\u0060, \u0060build_not_found\u0060,\n\u0060team_admin_required\u0060, \u0060environment_name_conflict\u0060,\n\u0060duplicate_json_key\u0060, \u0060agent_busy\u0060, \u0060agent_archived\u0060,\n\u0060agent_id_conflict\u0060, \u0060run_not_cancellable\u0060,\n\u0060rate_limit_exceeded\u0060, \u0060usage_limit_exceeded\u0060,\n\u0060stream_expired\u0060, \u0060stream_unavailable\u0060,\n\u0060invalid_last_event_id\u0060, \u0060client_cancelled\u0060,\n\u0060not_implemented\u0060, \u0060upstream_error\u0060, and\n\u0060internal_error\u0060.\n"
+            "description": "Machine-readable error code. Possible values include\n\u0060unauthorized\u0060, \u0060api_key_not_found\u0060, \u0060plan_required\u0060,\n\u0060role_forbidden\u0060, \u0060feature_unavailable\u0060,\n\u0060integration_not_connected\u0060, \u0060validation_error\u0060,\n\u0060missing_body\u0060, \u0060invalid_model\u0060, \u0060invalid_branch_name\u0060,\n\u0060repository_required\u0060, \u0060repository_access\u0060,\n\u0060pr_resolution_failed\u0060, \u0060artifact_not_found\u0060,\n\u0060service_account_required\u0060, \u0060agent_not_found\u0060,\n\u0060run_not_found\u0060, \u0060environment_not_found\u0060, \u0060build_not_found\u0060,\n\u0060team_admin_required\u0060, \u0060environment_name_conflict\u0060,\n\u0060environment_repo_edit_blocked\u0060, \u0060repo_file_repo_removed\u0060,\n\u0060repo_file_environment_locked\u0060, \u0060stored_repos_unreadable\u0060,\n\u0060duplicate_json_key\u0060, \u0060agent_busy\u0060, \u0060agent_archived\u0060,\n\u0060agent_id_conflict\u0060, \u0060run_not_cancellable\u0060,\n\u0060rate_limit_exceeded\u0060, \u0060usage_limit_exceeded\u0060,\n\u0060stream_expired\u0060, \u0060stream_unavailable\u0060,\n\u0060invalid_last_event_id\u0060, \u0060client_cancelled\u0060,\n\u0060not_implemented\u0060, \u0060upstream_error\u0060, and\n\u0060internal_error\u0060.\n"
           },
           "message": {
             "type": "string",
