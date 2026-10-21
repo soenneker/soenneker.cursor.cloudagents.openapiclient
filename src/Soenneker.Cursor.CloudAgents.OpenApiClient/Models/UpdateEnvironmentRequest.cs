@@ -8,12 +8,20 @@ using System;
 namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
     /// <summary>
-    /// Send `name`, `environmentJson`, `repos`, or any combination. `repos` requires `environmentJson`. A request applies every field it sends together, so either all of them change or none do.
+    /// Send `name`, `environmentJson`, `repos`, or any combination. `repos` requires `environmentJson`. A request applies every field it sends together, so either all of them change or none do. Send `buildSettings` on its own; a request that also sends `name`, `environmentJson`, or `repos` returns `400 validation_error`.
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class UpdateEnvironmentRequest : IParsable
     {
-        /// <summary>Replacement `environment.json`, as a JSON-encoded string, using the same schema as a `.cursor/environment.json` file. It replaces the whole configuration. An invalid configuration returns `400 validation_error`.</summary>
+        /// <summary>New values for any of the build settings GET /v1/environments/{id} returns. Fields you leave out stay unchanged, and `null` resets a field to its default.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettings? BuildSettings { get; set; }
+#nullable restore
+#else
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettings BuildSettings { get; set; }
+#endif
+        /// <summary>Replacement `environment.json`, as a JSON-encoded string, using the same schema as a `.cursor/environment.json` file. It replaces the whole configuration. An invalid configuration returns `400 validation_error`. If the environment reads its configuration from a file in its only repository, the request returns `409 repo_file_environment_locked`.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public string? EnvironmentJson { get; set; }
@@ -55,6 +63,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
+                { "buildSettings", n => { BuildSettings = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettings>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettings.CreateFromDiscriminatorValue); } },
                 { "environmentJson", n => { EnvironmentJson = n.GetStringValue(); } },
                 { "name", n => { Name = n.GetStringValue(); } },
                 { "repos", n => { Repos = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo.CreateFromDiscriminatorValue)?.AsList(); } },
@@ -67,6 +76,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
+            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettings>("buildSettings", BuildSettings);
             writer.WriteStringValue("environmentJson", EnvironmentJson);
             writer.WriteStringValue("name", Name);
             writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo>("repos", Repos);

@@ -12,7 +12,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     public partial class ListEnvironmentBuildsResponse : IParsable
     #pragma warning restore CS1591
     {
-        /// <summary>Up to 10 builds for this environment, newest first.</summary>
+        /// <summary>Up to `limit` builds for this environment, newest first.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuild>? Items { get; set; }

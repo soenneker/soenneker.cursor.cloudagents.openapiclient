@@ -41,7 +41,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Builds
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public BuildsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/environments/{id}/builds{?cursor*}", pathParameters)
+        public BuildsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/environments/{id}/builds{?createdAfter*,createdBefore*,cursor*,limit*,status*}", pathParameters)
         {
         }
         /// <summary>
@@ -49,11 +49,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Builds
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public BuildsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/environments/{id}/builds{?cursor*}", rawUrl)
+        public BuildsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/environments/{id}/builds{?createdAfter*,createdBefore*,cursor*,limit*,status*}", rawUrl)
         {
         }
         /// <summary>
-        /// List an environment&apos;s builds, newest first, up to 10 per page. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`.
+        /// List an environment&apos;s builds, newest first. Filter them by status or creation time. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`.
         /// </summary>
         /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListEnvironmentBuildsResponse"/></returns>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
@@ -84,7 +84,42 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Builds
             return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListEnvironmentBuildsResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListEnvironmentBuildsResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
-        /// List an environment&apos;s builds, newest first, up to 10 per page. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`.
+        /// Start a build of the environment. Access follows PATCH /v1/environments/{id}, except that a draft build on a team environment needs only read access, and service account API keys and repository-limited tokens are refused. Service account API keys get `403 key_not_supported`. A user-scoped token minted by an API key limited to certain repositories gets `404 environment_not_found` when the environment has no repositories or any repository outside the limit, and `403 key_not_supported` otherwise. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`. Reading the new build right away can briefly return `404`.
+        /// </summary>
+        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildResponse"/></returns>
+        /// <param name="body">Send no body, or `{}`, for a non-draft build of every repository&apos;s default branch.</param>
+        /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
+        /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
+        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 400 status code</exception>
+        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 403 status code</exception>
+        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 404 status code</exception>
+        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 429 status code</exception>
+        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 500 status code</exception>
+        /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 503 status code</exception>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildResponse?> PostAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRequest body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
+        {
+#nullable restore
+#else
+        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildResponse> PostAsync(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRequest body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
+        {
+#endif
+            if(ReferenceEquals(body, null)) throw new ArgumentNullException(nameof(body));
+            var requestInfo = ToPostRequestInformation(body, requestConfiguration);
+            var errorMapping = new Dictionary<string, ParsableFactory<IParsable>>
+            {
+                { "400", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
+                { "403", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
+                { "404", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
+                { "429", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
+                { "500", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
+                { "503", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
+            };
+            return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+        }
+        /// <summary>
+        /// List an environment&apos;s builds, newest first. Filter them by status or creation time. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`.
         /// </summary>
         /// <returns>A <see cref="RequestInformation"/></returns>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
@@ -103,6 +138,28 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Builds
             return requestInfo;
         }
         /// <summary>
+        /// Start a build of the environment. Access follows PATCH /v1/environments/{id}, except that a draft build on a team environment needs only read access, and service account API keys and repository-limited tokens are refused. Service account API keys get `403 key_not_supported`. A user-scoped token minted by an API key limited to certain repositories gets `404 environment_not_found` when the environment has no repositories or any repository outside the limit, and `403 key_not_supported` otherwise. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`. Reading the new build right away can briefly return `404`.
+        /// </summary>
+        /// <returns>A <see cref="RequestInformation"/></returns>
+        /// <param name="body">Send no body, or `{}`, for a non-draft build of every repository&apos;s default branch.</param>
+        /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public RequestInformation ToPostRequestInformation(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRequest body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default)
+        {
+#nullable restore
+#else
+        public RequestInformation ToPostRequestInformation(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRequest body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default)
+        {
+#endif
+            if(ReferenceEquals(body, null)) throw new ArgumentNullException(nameof(body));
+            var requestInfo = new RequestInformation(Method.POST, UrlTemplate, PathParameters);
+            requestInfo.Configure(requestConfiguration);
+            requestInfo.Headers.TryAdd("Accept", "application/json");
+            requestInfo.SetContentFromParsable(RequestAdapter, "application/json", body);
+            return requestInfo;
+        }
+        /// <summary>
         /// Returns a request builder with the provided arbitrary URL. Using this method means any other path or query parameters are ignored.
         /// </summary>
         /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Builds.BuildsRequestBuilder"/></returns>
@@ -112,12 +169,18 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Builds
             return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Builds.BuildsRequestBuilder(rawUrl, RequestAdapter);
         }
         /// <summary>
-        /// List an environment&apos;s builds, newest first, up to 10 per page. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`.
+        /// List an environment&apos;s builds, newest first. Filter them by status or creation time. An environment that doesn&apos;t exist or isn&apos;t visible to the API key returns `404 environment_not_found`.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
         public partial class BuildsRequestBuilderGetQueryParameters 
         {
-            /// <summary>Pagination cursor from `nextCursor` on the previous response.</summary>
+            /// <summary>Only builds created at or after this time. Use an ISO 8601 timestamp with `Z` or a UTC offset and at most millisecond precision.</summary>
+            [QueryParameter("createdAfter")]
+            public DateTimeOffset? CreatedAfter { get; set; }
+            /// <summary>Only builds created before this time, in the same format as `createdAfter`. It must be later than `createdAfter`.</summary>
+            [QueryParameter("createdBefore")]
+            public DateTimeOffset? CreatedBefore { get; set; }
+            /// <summary>Pagination cursor from `nextCursor` on the previous response. Send the same filters with it.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
             [QueryParameter("cursor")]
@@ -127,6 +190,12 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.Item.Builds
             [QueryParameter("cursor")]
             public string Cursor { get; set; }
 #endif
+            /// <summary>Number of builds to return.</summary>
+            [QueryParameter("limit")]
+            public int? Limit { get; set; }
+            /// <summary>Only builds with this status.</summary>
+            [QueryParameter("status")]
+            public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListEnvironmentBuildsStatusParameter? Status { get; set; }
         }
     }
 }

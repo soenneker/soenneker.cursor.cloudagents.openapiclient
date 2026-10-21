@@ -8,7 +8,7 @@ using System;
 namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
     /// <summary>
-    /// One version of a Cloud Agents secret. A name can have severalversions in one environment or team, each for repositories theothers don&apos;t cover. Responses never include a secret&apos;s value.
+    /// One version of a Cloud Agents secret. A name can have severalversions in one environment, team, or user&apos;s personal secrets,each for repositories the others don&apos;t cover. Responses neverinclude a secret&apos;s value.
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class SecretVersion : IAdditionalDataHolder, IParsable

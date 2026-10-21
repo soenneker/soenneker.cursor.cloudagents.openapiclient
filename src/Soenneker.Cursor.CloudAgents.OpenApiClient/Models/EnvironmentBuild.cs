@@ -36,6 +36,26 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public string Id { get; set; }
 #endif
+        /// <summary>Repository commits returned for the build, when available. An API key limited to certain repositories sees only entries inside its limit.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRepoCommit>? RepoCommits { get; set; }
+#nullable restore
+#else
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRepoCommit> RepoCommits { get; set; }
+#endif
+        /// <summary>Branches, tags, or commits the build was asked to use instead of a repository&apos;s default branch. Repositories without an entry use their default branch. An API key limited to certain repositories sees only entries for repositories inside its limit.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRequestedRef>? RequestedRefs { get; set; }
+#nullable restore
+#else
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRequestedRef> RequestedRefs { get; set; }
+#endif
+        /// <summary>State of the build&apos;s snapshot. Omitted if the build didn&apos;t create a snapshot.</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSnapshotState? SnapshotState { get; set; }
+        /// <summary>Where the build was started from. `SYSTEM` (Cursor on its own), `WEBSITE` (the dashboard), `API`, or `AGENT` (a cloud agent).</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSource? Source { get; set; }
         /// <summary>Build status. A skipped build found nothing to rebuild.</summary>
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildStatus? Status { get; set; }
         /// <summary>What started the build. `RECURRING` for a scheduled build, `CONFIG_CHANGE` after a configuration or secrets change, or `MANUAL` for one started on request.</summary>
@@ -66,6 +86,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
                 { "environmentId", n => { EnvironmentId = n.GetGuidValue(); } },
                 { "failure", n => { Failure = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildFailure>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildFailure.CreateFromDiscriminatorValue); } },
                 { "id", n => { Id = n.GetStringValue(); } },
+                { "repoCommits", n => { RepoCommits = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRepoCommit>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRepoCommit.CreateFromDiscriminatorValue)?.AsList(); } },
+                { "requestedRefs", n => { RequestedRefs = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRequestedRef>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRequestedRef.CreateFromDiscriminatorValue)?.AsList(); } },
+                { "snapshotState", n => { SnapshotState = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSnapshotState>(); } },
+                { "source", n => { Source = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSource>(); } },
                 { "status", n => { Status = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildStatus>(); } },
                 { "trigger", n => { Trigger = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildTrigger>(); } },
                 { "updatedAt", n => { UpdatedAt = n.GetDateTimeOffsetValue(); } },
@@ -84,6 +108,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteGuidValue("environmentId", EnvironmentId);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildFailure>("failure", Failure);
             writer.WriteStringValue("id", Id);
+            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRepoCommit>("repoCommits", RepoCommits);
+            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRequestedRef>("requestedRefs", RequestedRefs);
+            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSnapshotState>("snapshotState", SnapshotState);
+            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSource>("source", Source);
             writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildStatus>("status", Status);
             writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildTrigger>("trigger", Trigger);
             writer.WriteDateTimeOffsetValue("updatedAt", UpdatedAt);

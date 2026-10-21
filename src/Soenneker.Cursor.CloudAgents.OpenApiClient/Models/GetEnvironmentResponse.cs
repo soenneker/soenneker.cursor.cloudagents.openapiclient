@@ -14,6 +14,14 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
+        /// <summary>The environment&apos;s build settings. Whether agents pull the latest code when they start, and how long a build&apos;s install step can run.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSettings? BuildSettings { get; set; }
+#nullable restore
+#else
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSettings BuildSettings { get; set; }
+#endif
         /// <summary>When the environment was created.</summary>
         public DateTimeOffset? CreatedAt { get; set; }
         /// <summary>The environment&apos;s latest saved configuration, its `environment.json`, as a JSON-encoded string.</summary>
@@ -87,6 +95,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
+                { "buildSettings", n => { BuildSettings = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSettings>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSettings.CreateFromDiscriminatorValue); } },
                 { "createdAt", n => { CreatedAt = n.GetDateTimeOffsetValue(); } },
                 { "environmentJson", n => { EnvironmentJson = n.GetStringValue(); } },
                 { "id", n => { Id = n.GetGuidValue(); } },
@@ -105,6 +114,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
+            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSettings>("buildSettings", BuildSettings);
             writer.WriteDateTimeOffsetValue("createdAt", CreatedAt);
             writer.WriteStringValue("environmentJson", EnvironmentJson);
             writer.WriteGuidValue("id", Id);

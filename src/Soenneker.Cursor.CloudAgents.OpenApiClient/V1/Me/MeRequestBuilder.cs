@@ -4,6 +4,7 @@ using Microsoft.Kiota.Abstractions.Extensions;
 using Microsoft.Kiota.Abstractions.Serialization;
 using Microsoft.Kiota.Abstractions;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.Models;
+using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Me.Secrets;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,6 +18,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Me
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class MeRequestBuilder : BaseRequestBuilder
     {
+        /// <summary>The secrets property</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Me.Secrets.SecretsRequestBuilder Secrets
+        {
+            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Me.Secrets.SecretsRequestBuilder(PathParameters, RequestAdapter);
+        }
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Me.MeRequestBuilder"/> and sets the default values.
         /// </summary>

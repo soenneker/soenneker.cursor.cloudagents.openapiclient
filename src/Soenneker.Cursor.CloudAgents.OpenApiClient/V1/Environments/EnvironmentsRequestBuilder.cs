@@ -35,7 +35,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public EnvironmentsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/environments{?cursor*,limit*}", pathParameters)
+        public EnvironmentsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/environments{?cursor*,limit*,named*,owner*,query*,repo*}", pathParameters)
         {
         }
         /// <summary>
@@ -43,11 +43,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public EnvironmentsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/environments{?cursor*,limit*}", rawUrl)
+        public EnvironmentsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/environments{?cursor*,limit*,named*,owner*,query*,repo*}", rawUrl)
         {
         }
         /// <summary>
-        /// List the saved environments the API key can access, most recentlyupdated first: the user&apos;s personal environments and the team&apos;senvironments. Team admins don&apos;t see members&apos; personal environmentshere.Team admins and service account API keys see every teamenvironment. Other callers see a team environment only when theycan access all of its repositories. When those checks run out oftime, a response can leave out team environments it hasn&apos;tverified yet, or stop before the end of the list; they show up inlater requests. A service account API key limited to specificrepositories, and user-scoped tokens minted with it, only listenvironments that have repositories, all within that limit. Draftsand deleted environments aren&apos;t included.An environment that changes during a walk moves to the front, so alater page can leave it out and repeat another. List items omit`environmentJson` and `versionId`; call GET /v1/environments/{id}to load an environment&apos;s configuration.
+        /// List the saved environments the API key can access, most recentlyupdated first: the user&apos;s personal environments and the team&apos;senvironments. Team admins don&apos;t see members&apos; personal environmentshere.Team admins and service account API keys see every teamenvironment. Other callers see a team environment only when theycan access all of its repositories. When those checks run out oftime, a response can leave out team environments it hasn&apos;tverified yet, or stop before the end of the list; they show up inlater requests. A service account API key limited to specificrepositories, and user-scoped tokens minted with it, only listenvironments that have repositories, all within that limit. Draftsand deleted environments aren&apos;t included.Filters combine: the list keeps only environments that match everyfilter in the request. An invalid filter value returns`400 validation_error`.An environment that changes during a walk moves to the front, so alater page can leave it out and repeat another. List items omit`environmentJson`, `versionId`, and `buildSettings`; callGET /v1/environments/{id} to load them.
         /// </summary>
         /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListEnvironmentsResponse"/></returns>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
@@ -111,7 +111,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments
             return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateEnvironmentResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateEnvironmentResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
-        /// List the saved environments the API key can access, most recentlyupdated first: the user&apos;s personal environments and the team&apos;senvironments. Team admins don&apos;t see members&apos; personal environmentshere.Team admins and service account API keys see every teamenvironment. Other callers see a team environment only when theycan access all of its repositories. When those checks run out oftime, a response can leave out team environments it hasn&apos;tverified yet, or stop before the end of the list; they show up inlater requests. A service account API key limited to specificrepositories, and user-scoped tokens minted with it, only listenvironments that have repositories, all within that limit. Draftsand deleted environments aren&apos;t included.An environment that changes during a walk moves to the front, so alater page can leave it out and repeat another. List items omit`environmentJson` and `versionId`; call GET /v1/environments/{id}to load an environment&apos;s configuration.
+        /// List the saved environments the API key can access, most recentlyupdated first: the user&apos;s personal environments and the team&apos;senvironments. Team admins don&apos;t see members&apos; personal environmentshere.Team admins and service account API keys see every teamenvironment. Other callers see a team environment only when theycan access all of its repositories. When those checks run out oftime, a response can leave out team environments it hasn&apos;tverified yet, or stop before the end of the list; they show up inlater requests. A service account API key limited to specificrepositories, and user-scoped tokens minted with it, only listenvironments that have repositories, all within that limit. Draftsand deleted environments aren&apos;t included.Filters combine: the list keeps only environments that match everyfilter in the request. An invalid filter value returns`400 validation_error`.An environment that changes during a walk moves to the front, so alater page can leave it out and repeat another. List items omit`environmentJson`, `versionId`, and `buildSettings`; callGET /v1/environments/{id} to load them.
         /// </summary>
         /// <returns>A <see cref="RequestInformation"/></returns>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
@@ -161,12 +161,12 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments
             return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments.EnvironmentsRequestBuilder(rawUrl, RequestAdapter);
         }
         /// <summary>
-        /// List the saved environments the API key can access, most recentlyupdated first: the user&apos;s personal environments and the team&apos;senvironments. Team admins don&apos;t see members&apos; personal environmentshere.Team admins and service account API keys see every teamenvironment. Other callers see a team environment only when theycan access all of its repositories. When those checks run out oftime, a response can leave out team environments it hasn&apos;tverified yet, or stop before the end of the list; they show up inlater requests. A service account API key limited to specificrepositories, and user-scoped tokens minted with it, only listenvironments that have repositories, all within that limit. Draftsand deleted environments aren&apos;t included.An environment that changes during a walk moves to the front, so alater page can leave it out and repeat another. List items omit`environmentJson` and `versionId`; call GET /v1/environments/{id}to load an environment&apos;s configuration.
+        /// List the saved environments the API key can access, most recentlyupdated first: the user&apos;s personal environments and the team&apos;senvironments. Team admins don&apos;t see members&apos; personal environmentshere.Team admins and service account API keys see every teamenvironment. Other callers see a team environment only when theycan access all of its repositories. When those checks run out oftime, a response can leave out team environments it hasn&apos;tverified yet, or stop before the end of the list; they show up inlater requests. A service account API key limited to specificrepositories, and user-scoped tokens minted with it, only listenvironments that have repositories, all within that limit. Draftsand deleted environments aren&apos;t included.Filters combine: the list keeps only environments that match everyfilter in the request. An invalid filter value returns`400 validation_error`.An environment that changes during a walk moves to the front, so alater page can leave it out and repeat another. List items omit`environmentJson`, `versionId`, and `buildSettings`; callGET /v1/environments/{id} to load them.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
         public partial class EnvironmentsRequestBuilderGetQueryParameters 
         {
-            /// <summary>Pagination cursor from the previous response.</summary>
+            /// <summary>Pagination cursor from the previous response. Send the same filters with each `cursor`.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
             [QueryParameter("cursor")]
@@ -179,6 +179,32 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments
             /// <summary>Number of environments to return.</summary>
             [QueryParameter("limit")]
             public int? Limit { get; set; }
+            /// <summary>`true` for only environments with a `name`, or `false` for only environments without one.</summary>
+            [QueryParameter("named")]
+            public bool? Named { get; set; }
+            /// <summary>Only environments with this `owner`.</summary>
+            [QueryParameter("owner")]
+            public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListEnvironmentsOwnerParameter? Owner { get; set; }
+            /// <summary>Only environments whose name contains this text, ignoring case.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+            [QueryParameter("query")]
+            public string? Query { get; set; }
+#nullable restore
+#else
+            [QueryParameter("query")]
+            public string Query { get; set; }
+#endif
+            /// <summary>Only environments that include this repository. Repeat it, up to100 times, to list environments that include any of therepositories.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+            [QueryParameter("repo")]
+            public string[]? Repo { get; set; }
+#nullable restore
+#else
+            [QueryParameter("repo")]
+            public string[] Repo { get; set; }
+#endif
         }
     }
 }
