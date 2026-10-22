@@ -702,7 +702,7 @@
     "/v1/environments": {
       "get": {
         "summary": "List environments",
-        "description": "List the saved environments the API key can access, most recently\nupdated first: the user\u0027s personal environments and the team\u0027s\nenvironments. Team admins don\u0027t see members\u0027 personal environments\nhere.\n\nTeam admins and service account API keys see every team\nenvironment. Other callers see a team environment only when they\ncan access all of its repositories. When those checks run out of\ntime, a response can leave out team environments it hasn\u0027t\nverified yet, or stop before the end of the list; they show up in\nlater requests. A service account API key limited to specific\nrepositories, and user-scoped tokens minted with it, only list\nenvironments that have repositories, all within that limit. Drafts\nand deleted environments aren\u0027t included.\n\nFilters combine: the list keeps only environments that match every\nfilter in the request. An invalid filter value returns\n\u0060400 validation_error\u0060.\n\nAn environment that changes during a walk moves to the front, so a\nlater page can leave it out and repeat another. List items omit\n\u0060environmentJson\u0060, \u0060versionId\u0060, and \u0060buildSettings\u0060; call\nGET /v1/environments/{id} to load them.\n",
+        "description": "List the saved environments the API key can access, most recently\nupdated first. Without \u0060userId\u0060, the list includes the user\u0027s\npersonal environments and the team\u0027s environments. Team admins can\nlist another current member\u0027s personal environments only by passing\nthat member\u0027s \u0060userId\u0060.\n\nTeam admins and service account API keys see every team\nenvironment. Other callers see a team environment only when they\ncan access all of its repositories. When those checks run out of\ntime, a response can leave out team environments it hasn\u0027t\nverified yet, or stop before the end of the list; they show up in\nlater requests. A service account API key limited to specific\nrepositories, and user-scoped tokens minted with it, only list\nenvironments that have repositories, all within that limit. Drafts\nand deleted environments aren\u0027t included.\n\nFilters combine: the list keeps only environments that match every\nfilter in the request. An invalid filter value returns\n\u0060400 validation_error\u0060.\n\nAn environment that changes during a walk moves to the front, so a\nlater page can leave it out and repeat another. List items omit\n\u0060environmentJson\u0060, \u0060versionId\u0060, and \u0060buildSettings\u0060; call\nGET /v1/environments/{id} to load them.\n",
         "operationId": "ListEnvironments",
         "parameters": [
           {
@@ -743,6 +743,16 @@
                 "type": "string",
                 "example": "github.com/acme/api"
               }
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "Only one user\u0027s personal environments, by the numeric \u0060userId\u0060\nfrom GET /v1/me or the \u0060user_\u0060 ID from the Admin API\u0027s team\nmembers list. Your own ID lists your personal environments. A\nteam admin\u0027s user API key can also pass a current team member\u0027s\nID, and gets that member\u0027s personal environments that have at\nleast one repository, all of which the admin can read. A valid ID\nfor a user you aren\u0027t allowed to list returns \u0060items: []\u0060 with no\n\u0060nextCursor\u0060, not an error. Combining \u0060userId\u0060 with \u0060owner=team\u0060\nreturns \u0060400 validation_error\u0060.\n",
+            "schema": {
+              "minLength": 1,
+              "type": "string",
+              "example": "user_PDSPmvukpYgZEDXsoNirw3CFhy"
             }
           },
           {
@@ -3479,7 +3489,7 @@
           "nextCursor": {
             "minLength": 1,
             "type": "string",
-            "description": "Cursor for fetching the next page of results. A page can hold fewer items than \u0060limit\u0060, so keep paging until it\u0027s absent. Omitted (not \u0060null\u0060) when there are no more pages."
+            "description": "Cursor for fetching the next page of results. A page can hold fewer items than \u0060limit\u0060, even none, so keep paging until it\u0027s absent. Omitted (not \u0060null\u0060) when there are no more pages."
           }
         }
       },
