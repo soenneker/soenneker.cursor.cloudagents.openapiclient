@@ -8,27 +8,13 @@ using System;
 namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
     /// <summary>
-    /// Composed type wrapper for classes <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelBranch2"/>, <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelWrapper"/>, <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef"/>
+    /// Composed type wrapper for classes <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelOneOf1"/>, <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef"/>, <see cref="string"/>
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class CustomSubagentModel : IComposedTypeWrapper, IParsable
     {
-        /// <summary>Composed type representation for type <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelBranch2"/></summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelBranch2? CustomSubagentModelBranch2 { get; set; }
-#nullable restore
-#else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelBranch2 CustomSubagentModelBranch2 { get; set; }
-#endif
-        /// <summary>Composed type representation for type <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelWrapper"/></summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelWrapper? CustomSubagentModelWrapper { get; set; }
-#nullable restore
-#else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelWrapper CustomSubagentModelWrapper { get; set; }
-#endif
+        /// <summary>Composed type representation for type <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelOneOf1"/></summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelOneOf1? CustomSubagentModelOneOf1 { get; set; }
         /// <summary>Composed type representation for type <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef"/></summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -36,6 +22,14 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #nullable restore
 #else
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef ModelRef { get; set; }
+#endif
+        /// <summary>Composed type representation for type <see cref="string"/></summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? String { get; set; }
+#nullable restore
+#else
+        public string String { get; set; }
 #endif
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
@@ -47,17 +41,17 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
             var mappingValue = parseNode.GetChildNode("")?.GetStringValue();
             var result = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModel();
-            if("CustomSubagentModelBranch2".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
+            if(parseNode.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelOneOf1>() is global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelOneOf1 customSubagentModelOneOf1Value)
             {
-                result.CustomSubagentModelBranch2 = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelBranch2();
-            }
-            else if("CustomSubagentModelWrapper".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
-            {
-                result.CustomSubagentModelWrapper = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelWrapper();
+                result.CustomSubagentModelOneOf1 = customSubagentModelOneOf1Value;
             }
             else if("ModelRef".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
             {
                 result.ModelRef = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef();
+            }
+            else if(parseNode.GetStringValue() is string stringValue)
+            {
+                result.String = stringValue;
             }
             return result;
         }
@@ -67,15 +61,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         /// <returns>A IDictionary&lt;string, Action&lt;IParseNode&gt;&gt;</returns>
         public virtual IDictionary<string, Action<IParseNode>> GetFieldDeserializers()
         {
-            if(CustomSubagentModelBranch2 != null)
-            {
-                return CustomSubagentModelBranch2.GetFieldDeserializers();
-            }
-            else if(CustomSubagentModelWrapper != null)
-            {
-                return CustomSubagentModelWrapper.GetFieldDeserializers();
-            }
-            else if(ModelRef != null)
+            if(ModelRef != null)
             {
                 return ModelRef.GetFieldDeserializers();
             }
@@ -88,17 +74,17 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-            if(CustomSubagentModelBranch2 != null)
+            if(CustomSubagentModelOneOf1 != null)
             {
-                writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelBranch2>(null, CustomSubagentModelBranch2);
-            }
-            else if(CustomSubagentModelWrapper != null)
-            {
-                writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelWrapper>(null, CustomSubagentModelWrapper);
+                writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagentModelOneOf1>(null, CustomSubagentModelOneOf1);
             }
             else if(ModelRef != null)
             {
                 writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>(null, ModelRef);
+            }
+            else if(String != null)
+            {
+                writer.WriteStringValue(null, String);
             }
         }
     }

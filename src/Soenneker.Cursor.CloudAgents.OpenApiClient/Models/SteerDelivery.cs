@@ -3,13 +3,14 @@ using System.Runtime.Serialization;
 using System;
 namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
-    /// <summary>Use the parent agent&apos;s model selection.</summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    public enum InheritValue
+    #pragma warning disable CS1591
+    public enum SteerDelivery
+    #pragma warning restore CS1591
     {
-        [EnumMember(Value = "inherit")]
+        [EnumMember(Value = "steer")]
         #pragma warning disable CS1591
-        Inherit,
+        Steer,
         #pragma warning restore CS1591
     }
 }

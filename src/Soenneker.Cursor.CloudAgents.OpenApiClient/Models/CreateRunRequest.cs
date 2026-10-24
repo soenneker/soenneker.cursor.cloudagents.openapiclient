@@ -7,38 +7,28 @@ using System.IO;
 using System;
 namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
+    /// <summary>
+    /// Composed type wrapper for classes <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequest"/>, <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.SteerRunRequest"/>
+    /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    #pragma warning disable CS1591
-    public partial class CreateRunRequest : IAdditionalDataHolder, IParsable
-    #pragma warning restore CS1591
+    public partial class CreateRunRequest : IComposedTypeWrapper, IParsable
     {
-        /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
-        public IDictionary<string, object> AdditionalData { get; set; }
-        /// <summary>Inline MCP server definitions for this follow-up run. When provided, these definitions replace any create-time inline MCP servers for this run.</summary>
+        /// <summary>Composed type representation for type <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequest"/></summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>? McpServers { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequest? FollowupRunRequest { get; set; }
 #nullable restore
 #else
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer> McpServers { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequest FollowupRunRequest { get; set; }
 #endif
-        /// <summary>Conversation mode. `plan` explores and drafts a plan before coding; `agent` implements changes directly. On follow-up runs, omit to keep the conversation&apos;s current mode; set explicitly to switch modes for that run.</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode? Mode { get; set; }
-        /// <summary>The prompt property</summary>
+        /// <summary>Composed type representation for type <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.SteerRunRequest"/></summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateRunRequestPrompt? Prompt { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.SteerRunRequest? SteerRunRequest { get; set; }
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateRunRequestPrompt Prompt { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.SteerRunRequest SteerRunRequest { get; set; }
 #endif
-        /// <summary>
-        /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateRunRequest"/> and sets the default values.
-        /// </summary>
-        public CreateRunRequest()
-        {
-            AdditionalData = new Dictionary<string, object>();
-        }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
@@ -47,7 +37,17 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateRunRequest CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateRunRequest();
+            var mappingValue = parseNode.GetChildNode("")?.GetStringValue();
+            var result = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateRunRequest();
+            if("FollowupRunRequest".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
+            {
+                result.FollowupRunRequest = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequest();
+            }
+            else if("SteerRunRequest".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
+            {
+                result.SteerRunRequest = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.SteerRunRequest();
+            }
+            return result;
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -55,12 +55,15 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         /// <returns>A IDictionary&lt;string, Action&lt;IParseNode&gt;&gt;</returns>
         public virtual IDictionary<string, Action<IParseNode>> GetFieldDeserializers()
         {
-            return new Dictionary<string, Action<IParseNode>>
+            if(FollowupRunRequest != null)
             {
-                { "mcpServers", n => { McpServers = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer.CreateFromDiscriminatorValue)?.AsList(); } },
-                { "mode", n => { Mode = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode>(); } },
-                { "prompt", n => { Prompt = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateRunRequestPrompt>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateRunRequestPrompt.CreateFromDiscriminatorValue); } },
-            };
+                return FollowupRunRequest.GetFieldDeserializers();
+            }
+            else if(SteerRunRequest != null)
+            {
+                return SteerRunRequest.GetFieldDeserializers();
+            }
+            return new Dictionary<string, Action<IParseNode>>();
         }
         /// <summary>
         /// Serializes information the current object
@@ -69,10 +72,14 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>("mcpServers", McpServers);
-            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode>("mode", Mode);
-            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateRunRequestPrompt>("prompt", Prompt);
-            writer.WriteAdditionalData(AdditionalData);
+            if(FollowupRunRequest != null)
+            {
+                writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequest>(null, FollowupRunRequest);
+            }
+            else if(SteerRunRequest != null)
+            {
+                writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.SteerRunRequest>(null, SteerRunRequest);
+            }
         }
     }
 }

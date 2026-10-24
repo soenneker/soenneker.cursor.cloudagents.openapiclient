@@ -43,7 +43,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             {
                 result.EnvironmentActiveBuildFromBuild = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentActiveBuildFromBuild();
             }
-            else if("EnvironmentActiveBuildFromUniversalImage".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
+            else if("universal_image".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
             {
                 result.EnvironmentActiveBuildFromUniversalImage = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentActiveBuildFromUniversalImage();
             }

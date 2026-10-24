@@ -141,7 +141,14 @@
         "operationId": "GetAgent",
         "parameters": [
           {
-            "$ref": "#/components/parameters/AgentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
           }
         ],
         "responses": {
@@ -178,7 +185,14 @@
         "operationId": "DeleteAgent",
         "parameters": [
           {
-            "$ref": "#/components/parameters/AgentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
           }
         ],
         "responses": {
@@ -213,11 +227,18 @@
     "/v1/agents/{id}/runs": {
       "post": {
         "summary": "Create a run",
-        "description": "Send a follow-up prompt to an existing active agent. The new\nrun uses the agent\u0027s current conversation and workspace state.\nOnly one run can be active per agent at a time.\n",
+        "description": "Send a follow-up prompt to an existing active agent. Without\n\u0060delivery\u0060, the prompt starts a new run that uses the agent\u0027s\ncurrent conversation and workspace state, and only one run can\nbe active per agent at a time. With \u0060delivery: steer\u0060, the\nagent\u0027s running turn takes the prompt when it can, and otherwise\nthe prompt becomes the agent\u0027s next follow-up. On success, a\nsteer returns \u0060202\u0060 without a run object or ID.\n",
         "operationId": "CreateRun",
         "parameters": [
           {
-            "$ref": "#/components/parameters/AgentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
           }
         ],
         "requestBody": {
@@ -232,7 +253,7 @@
         },
         "responses": {
           "201": {
-            "description": "Run created and enqueued.",
+            "description": "Run created and enqueued. Returned for a request without \u0060delivery\u0060.",
             "content": {
               "application/json": {
                 "schema": {
@@ -241,20 +262,65 @@
               }
             }
           },
+          "202": {
+            "description": "Steer accepted. Returned for \u0060delivery\u0060 set to \u0060steer\u0060.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SteerRunResponse"
+                },
+                "examples": {
+                  "steered": {
+                    "summary": "The running turn accepted the prompt",
+                    "value": {
+                      "delivery": "steered"
+                    }
+                  },
+                  "queued": {
+                    "summary": "The prompt becomes the next follow-up",
+                    "value": {
+                      "delivery": "queued"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "Validation error or malformed request body. Steering adds two \u0060validation_error\u0060 cases, a steer body with any top-level field besides \u0060prompt\u0060 and \u0060delivery\u0060 or a \u0060delivery\u0060 other than \u0060steer\u0060, and a steer that Cursor refuses. Cursor checks the body before it checks whether steering is available.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Forbidden"
+            "description": "Authenticated but insufficient permissions, plan required, or feature unavailable (\u0060feature_unavailable\u0060), including a steer when steering isn\u0027t available for your account.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
           },
           "409": {
-            "$ref": "#/components/responses/Conflict"
+            "description": "The agent already has an active run and the request has no \u0060delivery\u0060 (\u0060agent_busy\u0060), or the agent is archived (\u0060agent_archived\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"
@@ -270,7 +336,14 @@
         "operationId": "ListRuns",
         "parameters": [
           {
-            "$ref": "#/components/parameters/AgentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
           },
           {
             "name": "limit",
@@ -328,10 +401,24 @@
         "operationId": "GetRun",
         "parameters": [
           {
-            "$ref": "#/components/parameters/AgentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
           },
           {
-            "$ref": "#/components/parameters/RunId"
+            "name": "runId",
+            "in": "path",
+            "description": "Unique identifier for the run.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "run-00000000-0000-0000-0000-000000000001"
+            }
           }
         ],
         "responses": {
@@ -370,10 +457,24 @@
         "operationId": "StreamRun",
         "parameters": [
           {
-            "$ref": "#/components/parameters/AgentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
           },
           {
-            "$ref": "#/components/parameters/RunId"
+            "name": "runId",
+            "in": "path",
+            "description": "Unique identifier for the run.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "run-00000000-0000-0000-0000-000000000001"
+            }
           },
           {
             "name": "Last-Event-ID",
@@ -440,10 +541,24 @@
         "operationId": "CancelRun",
         "parameters": [
           {
-            "$ref": "#/components/parameters/AgentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
           },
           {
-            "$ref": "#/components/parameters/RunId"
+            "name": "runId",
+            "in": "path",
+            "description": "Unique identifier for the run.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "run-00000000-0000-0000-0000-000000000001"
+            }
           }
         ],
         "responses": {
@@ -485,7 +600,14 @@
         "operationId": "GetAgentUsage",
         "parameters": [
           {
-            "$ref": "#/components/parameters/AgentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
           },
           {
             "name": "runId",
@@ -536,7 +658,14 @@
         "operationId": "ArchiveAgent",
         "parameters": [
           {
-            "$ref": "#/components/parameters/AgentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
           }
         ],
         "responses": {
@@ -575,7 +704,14 @@
         "operationId": "UnarchiveAgent",
         "parameters": [
           {
-            "$ref": "#/components/parameters/AgentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
           }
         ],
         "responses": {
@@ -614,7 +750,14 @@
         "operationId": "ListArtifacts",
         "parameters": [
           {
-            "$ref": "#/components/parameters/AgentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
           }
         ],
         "responses": {
@@ -653,7 +796,14 @@
         "operationId": "DownloadArtifact",
         "parameters": [
           {
-            "$ref": "#/components/parameters/AgentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
           },
           {
             "name": "path",
@@ -875,7 +1025,15 @@
         "operationId": "GetEnvironment",
         "parameters": [
           {
-            "$ref": "#/components/parameters/EnvironmentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the environment.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+            }
           }
         ],
         "responses": {
@@ -915,7 +1073,15 @@
         "operationId": "UpdateEnvironment",
         "parameters": [
           {
-            "$ref": "#/components/parameters/EnvironmentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the environment.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+            }
           }
         ],
         "requestBody": {
@@ -993,7 +1159,15 @@
         "operationId": "DeleteEnvironment",
         "parameters": [
           {
-            "$ref": "#/components/parameters/EnvironmentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the environment.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+            }
           }
         ],
         "responses": {
@@ -1035,7 +1209,15 @@
         "operationId": "ListEnvironmentHistory",
         "parameters": [
           {
-            "$ref": "#/components/parameters/EnvironmentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the environment.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+            }
           },
           {
             "name": "limit",
@@ -1097,7 +1279,15 @@
         "operationId": "ListEnvironmentBuilds",
         "parameters": [
           {
-            "$ref": "#/components/parameters/EnvironmentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the environment.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+            }
           },
           {
             "name": "status",
@@ -1186,7 +1376,15 @@
         "operationId": "StartEnvironmentBuild",
         "parameters": [
           {
-            "$ref": "#/components/parameters/EnvironmentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the environment.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+            }
           }
         ],
         "requestBody": {
@@ -1268,7 +1466,15 @@
         "operationId": "GetActiveEnvironmentBuild",
         "parameters": [
           {
-            "$ref": "#/components/parameters/EnvironmentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the environment.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+            }
           }
         ],
         "responses": {
@@ -1310,10 +1516,27 @@
         "operationId": "GetEnvironmentBuild",
         "parameters": [
           {
-            "$ref": "#/components/parameters/EnvironmentId"
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the environment.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "8f14e45f-ceea-4e6b-9c3a-1d2e3f4a5b6c"
+            }
           },
           {
-            "$ref": "#/components/parameters/EnvironmentBuildId"
+            "name": "buildId",
+            "in": "path",
+            "description": "Unique identifier for the build.",
+            "required": true,
+            "schema": {
+              "pattern": "^[bB][lL][dD]-[0-9]{8}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+              "type": "string",
+              "description": "Unique build identifier, in the form \u0060bld-YYYYMMDD-\u003Cuuid\u003E\u0060.",
+              "example": "bld-20260930-3c59dc04-8a1d-4b6e-9f2a-7e5d1c0b9a8f"
+            }
           }
         ],
         "responses": {
@@ -2277,7 +2500,6 @@
               "data",
               "mimeType"
             ],
-            "type": "object",
             "not": {
               "required": [
                 "url"
@@ -2288,7 +2510,6 @@
             "required": [
               "url"
             ],
-            "type": "object",
             "not": {
               "anyOf": [
                 {
@@ -2417,7 +2638,10 @@
               "minLength": 1,
               "type": "string"
             },
-            "description": "OAuth scopes to request for the MCP server."
+            "description": "OAuth scopes to request for the MCP server.",
+            "example": [
+              "file_content:read"
+            ]
           }
         },
         "additionalProperties": false
@@ -2449,7 +2673,11 @@
             "items": {
               "type": "string"
             },
-            "description": "Command arguments."
+            "description": "Command arguments.",
+            "example": [
+              "-y",
+              "@modelcontextprotocol/server-github"
+            ]
           },
           "env": {
             "$ref": "#/components/schemas/StdioMcpServerEnvProperty"
@@ -2489,7 +2717,6 @@
         "additionalProperties": false
       },
       "McpServer": {
-        "type": "object",
         "oneOf": [
           {
             "$ref": "#/components/schemas/StdioMcpServer"
@@ -2497,43 +2724,7 @@
           {
             "$ref": "#/components/schemas/RemoteMcpServer"
           }
-        ],
-        "properties": {
-          "name": {
-            "minLength": 1,
-            "type": "string",
-            "description": "MCP server name exposed to the agent.",
-            "example": "github"
-          },
-          "command": {
-            "minLength": 1,
-            "type": "string",
-            "description": "Command to start inside the cloud agent VM.",
-            "example": "npx"
-          },
-          "args": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Command arguments."
-          },
-          "env": {
-            "$ref": "#/components/schemas/StdioMcpServerEnvProperty"
-          },
-          "url": {
-            "type": "string",
-            "description": "HTTP or HTTPS URL for the remote MCP server. Userinfo in the URL is not allowed.",
-            "format": "uri",
-            "example": "https://mcp.linear.app/sse"
-          },
-          "headers": {
-            "$ref": "#/components/schemas/RemoteMcpServerHeadersProperty"
-          },
-          "auth": {
-            "$ref": "#/components/schemas/McpAuth"
-          }
-        }
+        ]
       },
       "AgentSummary": {
         "required": [
@@ -2770,22 +2961,22 @@
         "additionalProperties": false
       },
       "JsonValue": {
-        "type": "object",
         "oneOf": [
           {
-            "$ref": "#/components/schemas/JsonValueBranch1"
+            "type": "string"
           },
           {
-            "$ref": "#/components/schemas/JsonValueBranch2"
+            "type": "number"
           },
           {
-            "$ref": "#/components/schemas/JsonValueBranch3"
+            "type": "boolean"
           },
           {
             "type": "object"
           },
           {
-            "$ref": "#/components/schemas/JsonValueBranch5"
+            "type": "array",
+            "items": {}
           }
         ],
         "description": "Any JSON value."
@@ -2956,13 +3147,49 @@
         }
       },
       "CreateRunRequest": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/FollowupRunRequest"
+          },
+          {
+            "$ref": "#/components/schemas/SteerRunRequest"
+          }
+        ],
+        "description": "An ordinary follow-up, which omits \u0060delivery\u0060, or a steer, which\nsets \u0060delivery\u0060 to \u0060steer\u0060.\n"
+      },
+      "RunPrompt": {
+        "required": [
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "text": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Follow-up instruction text.",
+            "example": "Also add troubleshooting steps"
+          },
+          "images": {
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Image"
+            },
+            "description": "Image inputs for the follow-up. Each entry must provide either \u0060data\u0060 (with required \u0060mimeType\u0060) or \u0060url\u0060. Maximum 5 images, 15 MB each."
+          }
+        }
+      },
+      "FollowupRunRequest": {
         "required": [
           "prompt"
         ],
         "type": "object",
         "properties": {
           "prompt": {
-            "$ref": "#/components/schemas/CreateRunRequestPrompt"
+            "$ref": "#/components/schemas/RunPrompt"
+          },
+          "model": {
+            "$ref": "#/components/schemas/ModelRef"
           },
           "mcpServers": {
             "maxItems": 50,
@@ -2972,10 +3199,32 @@
             },
             "description": "Inline MCP server definitions for this follow-up run. When provided, these definitions replace any create-time inline MCP servers for this run."
           },
+          "envVars": {
+            "$ref": "#/components/schemas/FollowupRunRequestEnvVarsProperty"
+          },
           "mode": {
             "$ref": "#/components/schemas/AgentMode"
           }
-        }
+        },
+        "additionalProperties": false,
+        "description": "An ordinary follow-up. It starts a new run and returns \u0060201\u0060, or\nreturns \u0060409 agent_busy\u0060 while another run is active.\n"
+      },
+      "SteerRunRequest": {
+        "required": [
+          "prompt",
+          "delivery"
+        ],
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "$ref": "#/components/schemas/RunPrompt"
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/SteerDelivery"
+          }
+        },
+        "additionalProperties": false,
+        "description": "A steer sends the prompt into the agent\u0027s running turn instead of\nstarting a new run, and returns \u0060202\u0060 with a \u0060SteerRunResponse\u0060.\nIt requires \u0060prompt\u0060 and \u0060delivery\u0060 and accepts no other top-level\nfields, so \u0060model\u0060, \u0060mcpServers\u0060, \u0060envVars\u0060, or \u0060mode\u0060 returns\n\u0060400 validation_error\u0060.\n"
       },
       "AgentMode": {
         "enum": [
@@ -2983,7 +3232,6 @@
           "plan"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "Conversation mode. \u0060plan\u0060 explores and drafts a plan before coding; \u0060agent\u0060 implements changes directly. On follow-up runs, omit to keep the conversation\u0027s current mode; set explicitly to switch modes for that run.\n",
         "x-ms-enum": {
           "name": "AgentMode",
@@ -3025,6 +3273,18 @@
             "$ref": "#/components/schemas/Run"
           }
         }
+      },
+      "SteerRunResponse": {
+        "required": [
+          "delivery"
+        ],
+        "type": "object",
+        "properties": {
+          "delivery": {
+            "$ref": "#/components/schemas/SteerRunResponseDelivery"
+          }
+        },
+        "additionalProperties": false
       },
       "ListAgentsResponse": {
         "required": [
@@ -3619,7 +3879,8 @@
           "id": {
             "pattern": "^[bB][lL][dD]-[0-9]{8}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
             "type": "string",
-            "description": "Unique build identifier, in the form \u0060bld-YYYYMMDD-\u003Cuuid\u003E\u0060."
+            "description": "Unique build identifier, in the form \u0060bld-YYYYMMDD-\u003Cuuid\u003E\u0060.",
+            "example": "bld-20260930-3c59dc04-8a1d-4b6e-9f2a-7e5d1c0b9a8f"
           },
           "environmentId": {
             "type": "string",
@@ -3713,7 +3974,8 @@
           "id": {
             "pattern": "^[bB][lL][dD]-[0-9]{8}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
             "type": "string",
-            "description": "Unique build identifier, in the form \u0060bld-YYYYMMDD-\u003Cuuid\u003E\u0060."
+            "description": "Unique build identifier, in the form \u0060bld-YYYYMMDD-\u003Cuuid\u003E\u0060.",
+            "example": "bld-20260930-3c59dc04-8a1d-4b6e-9f2a-7e5d1c0b9a8f"
           },
           "environmentId": {
             "type": "string",
@@ -3798,7 +4060,6 @@
         "required": [
           "type"
         ],
-        "type": "object",
         "oneOf": [
           {
             "$ref": "#/components/schemas/EnvironmentActiveBuildFromBuild"
@@ -3808,11 +4069,6 @@
           }
         ],
         "properties": {
-          "buildId": {
-            "pattern": "^[bB][lL][dD]-[0-9]{8}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-            "type": "string",
-            "description": "Unique build identifier, in the form \u0060bld-YYYYMMDD-\u003Cuuid\u003E\u0060."
-          },
           "type": {
             "type": "string"
           }
@@ -3822,9 +4078,7 @@
           "propertyName": "type",
           "mapping": {
             "build": "#/components/schemas/EnvironmentActiveBuildFromBuild",
-            "universal_image": "#/components/schemas/EnvironmentActiveBuildFromUniversalImage",
-            "EnvironmentActiveBuildFromBuild": "#/components/schemas/EnvironmentActiveBuildFromBuild",
-            "EnvironmentActiveBuildFromUniversalImage": "#/components/schemas/EnvironmentActiveBuildFromUniversalImage"
+            "universal_image": "#/components/schemas/EnvironmentActiveBuildFromUniversalImage"
           }
         }
       },
@@ -3841,7 +4095,8 @@
           "buildId": {
             "pattern": "^[bB][lL][dD]-[0-9]{8}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
             "type": "string",
-            "description": "Unique build identifier, in the form \u0060bld-YYYYMMDD-\u003Cuuid\u003E\u0060."
+            "description": "Unique build identifier, in the form \u0060bld-YYYYMMDD-\u003Cuuid\u003E\u0060.",
+            "example": "bld-20260930-3c59dc04-8a1d-4b6e-9f2a-7e5d1c0b9a8f"
           }
         },
         "additionalProperties": false,
@@ -4081,7 +4336,11 @@
               "minLength": 1,
               "type": "string"
             },
-            "description": "Alternate IDs that resolve to the same model."
+            "description": "Alternate IDs that resolve to the same model.",
+            "example": [
+              "composer-latest",
+              "composer"
+            ]
           },
           "parameters": {
             "type": "array",
@@ -4141,7 +4400,10 @@
             "items": {
               "type": "string"
             },
-            "description": "The only repositories that get this version, lowercase and\nsorted, with repository URLs reduced to \u0060host/owner/repo\u0060.\nEmpty when every repository gets it.\n"
+            "description": "The only repositories that get this version, lowercase and\nsorted, with repository URLs reduced to \u0060host/owner/repo\u0060.\nEmpty when every repository gets it.\n",
+            "example": [
+              "github.com/acme/api"
+            ]
           },
           "createdAt": {
             "type": "string",
@@ -4239,7 +4501,10 @@
             "items": {
               "type": "string"
             },
-            "description": "The only repositories that get this version, or empty when every\nrepository gets it. Every version has it, including other\nmembers\u0027 versions in a team admin\u0027s list.\n"
+            "description": "The only repositories that get this version, or empty when every\nrepository gets it. Every version has it, including other\nmembers\u0027 versions in a team admin\u0027s list.\n",
+            "example": [
+              "github.com/acme/api"
+            ]
           },
           "createdAt": {
             "type": "string",
@@ -4311,7 +4576,10 @@
               "minLength": 1,
               "type": "string"
             },
-            "description": "The only repositories that get this version, such as\n\u0060acme/api\u0060, \u0060https://github.com/acme/api.git\u0060, or\n\u0060gitlab.com/group/subgroup/project\u0060. An empty array, or\nomitting \u0060repos\u0060 on a new version, gives it every repository.\nA change without \u0060repos\u0060 keeps the version\u0027s repositories.\n"
+            "description": "The only repositories that get this version, such as\n\u0060acme/api\u0060, \u0060https://github.com/acme/api.git\u0060, or\n\u0060gitlab.com/group/subgroup/project\u0060. An empty array, or\nomitting \u0060repos\u0060 on a new version, gives it every repository.\nA change without \u0060repos\u0060 keeps the version\u0027s repositories.\n",
+            "example": [
+              "github.com/acme/api"
+            ]
           }
         },
         "additionalProperties": false
@@ -4333,7 +4601,10 @@
             "items": {
               "type": "string"
             },
-            "description": "The only repositories that get this version."
+            "description": "The only repositories that get this version.",
+            "example": [
+              "github.com/acme/api"
+            ]
           }
         }
       },
@@ -4355,7 +4626,6 @@
             "required": [
               "forUserEmail"
             ],
-            "type": "object",
             "not": {
               "required": [
                 "forUserId"
@@ -4366,7 +4636,6 @@
             "required": [
               "forUserId"
             ],
-            "type": "object",
             "not": {
               "required": [
                 "forUserEmail"
@@ -4469,7 +4738,6 @@
         }
       },
       "UnauthorizedResponse": {
-        "type": "object",
         "oneOf": [
           {
             "$ref": "#/components/schemas/AuthenticationError"
@@ -4477,22 +4745,7 @@
           {
             "$ref": "#/components/schemas/Error"
           }
-        ],
-        "properties": {
-          "code": {
-            "type": "string",
-            "description": "Error category, such as \u0060error\u0060.",
-            "example": "error"
-          },
-          "message": {
-            "type": "string",
-            "description": "Human-readable error message.",
-            "example": "Invalid User API Key"
-          },
-          "error": {
-            "$ref": "#/components/schemas/ErrorError"
-          }
-        }
+        ]
       },
       "AgentAllOf2": {
         "type": "object",
@@ -4545,11 +4798,6 @@
       },
       "RunStreamToolCallDataArgs": {
         "type": "object",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/JsonValue"
-          }
-        ],
         "description": "Tool-specific JSON arguments, when available.",
         "example": {
           "path": "README.md"
@@ -4557,11 +4805,6 @@
       },
       "RunStreamToolCallDataResult": {
         "type": "object",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/JsonValue"
-          }
-        ],
         "description": "Tool-specific JSON result, when available.",
         "example": {
           "success": {
@@ -4573,45 +4816,42 @@
         }
       },
       "CustomSubagentModel": {
-        "type": "object",
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CustomSubagentModelWrapper"
+            "$ref": "#/components/schemas/CustomSubagentModelOneOf1"
           },
           {
-            "$ref": "#/components/schemas/CustomSubagentModelBranch2"
+            "minLength": 1,
+            "type": "string",
+            "description": "An explicit model ID.",
+            "example": "claude-4.6-sonnet-thinking"
           },
           {
             "$ref": "#/components/schemas/ModelRef"
           }
-        ],
-        "properties": {
-          "id": {
-            "minLength": 1,
-            "type": "string",
-            "description": "Explicit model ID returned by GET /v1/models. Omit \u0060model\u0060 from the request to use the configured default.",
-            "example": "composer-2"
-          },
-          "params": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ModelRefParamsItem"
-            },
-            "description": "Per-model parameters such as reasoning effort or max mode. Use only parameters supported by the selected model."
-          }
-        }
+        ]
       },
       "CreateAgentRequestMode": {
-        "required": [
-          "value"
+        "enum": [
+          "agent",
+          "plan"
         ],
-        "type": "object",
-        "properties": {
-          "value": {
-            "$ref": "#/components/schemas/AgentMode"
-          }
-        },
-        "description": "Initial conversation mode for the agent\u0027s first run."
+        "type": "string",
+        "description": "Conversation mode. \u0060plan\u0060 explores and drafts a plan before coding; \u0060agent\u0060 implements changes directly. On follow-up runs, omit to keep the conversation\u0027s current mode; set explicitly to switch modes for that run.\n",
+        "x-ms-enum": {
+          "name": "CreateAgentRequestMode",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "agent",
+              "name": "Agent"
+            },
+            {
+              "value": "plan",
+              "name": "Plan"
+            }
+          ]
+        }
       },
       "RunUsageUsage": {
         "required": [
@@ -4800,7 +5040,10 @@
             "items": {
               "type": "string"
             },
-            "description": "The only repositories that get this version, lowercase and\nsorted, with repository URLs reduced to \u0060host/owner/repo\u0060.\nEmpty when every repository gets it.\n"
+            "description": "The only repositories that get this version, lowercase and\nsorted, with repository URLs reduced to \u0060host/owner/repo\u0060.\nEmpty when every repository gets it.\n",
+            "example": [
+              "github.com/acme/api"
+            ]
           },
           "createdAt": {
             "type": "string",
@@ -4889,27 +5132,15 @@
         },
         "description": "Session-scoped environment variables for the cloud agent.\nValues are encrypted at rest, injected into the agent\u0027s\nshell, and deleted with the agent. Names must be non-empty,\n255 bytes or less, and cannot start with \u0060CURSOR_\u0060. Values\nmust be non-empty and 4096 bytes or less. Cannot be\ncombined with a client-supplied \u0060agentId\u0060.\n\nBeta: \u0060envVars\u0060 is rolling out. If it isn\u0027t enabled for\nyour account yet, the field is silently ignored on create\nrather than failing the request \u2014 verify the values are\npresent on a first run before relying on them in\nproduction.\n"
       },
-      "CreateRunRequestPrompt": {
-        "required": [
-          "text"
-        ],
+      "FollowupRunRequestEnvVars": {
+        "maxProperties": 50,
         "type": "object",
-        "properties": {
-          "text": {
-            "minLength": 1,
-            "type": "string",
-            "description": "Follow-up instruction text.",
-            "example": "Also add troubleshooting steps"
-          },
-          "images": {
-            "maxItems": 5,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Image"
-            },
-            "description": "Image inputs for the follow-up. Each entry must provide either \u0060data\u0060 (with required \u0060mimeType\u0060) or \u0060url\u0060. Maximum 5 images, 15 MB each."
-          }
-        }
+        "additionalProperties": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "type": "string"
+        },
+        "description": "Environment variables for this follow-up run only, applied\nwhile it executes. Names and values follow the same rules as\n\u0060envVars\u0060 in \u0060CreateAgentRequest\u0060.\n"
       },
       "ModelVariantParamsItem": {
         "required": [
@@ -5004,7 +5235,6 @@
         "type": "string"
       },
       "SetEnvironmentSecret409Response": {
-        "type": "object",
         "oneOf": [
           {
             "$ref": "#/components/schemas/SecretNameAmbiguousError"
@@ -5015,7 +5245,6 @@
         ]
       },
       "SetTeamSecret409Response": {
-        "type": "object",
         "oneOf": [
           {
             "$ref": "#/components/schemas/SecretNameAmbiguousError"
@@ -5026,7 +5255,6 @@
         ]
       },
       "SetPersonalSecret409Response": {
-        "type": "object",
         "oneOf": [
           {
             "$ref": "#/components/schemas/SecretNameAmbiguousError"
@@ -5036,92 +5264,9 @@
           }
         ]
       },
-      "CustomSubagentModelWrapper": {
-        "required": [
-          "value"
-        ],
-        "type": "object",
-        "properties": {
-          "value": {
-            "$ref": "#/components/schemas/InheritValue"
-          }
-        }
-      },
-      "AgentModeWrapper": {
-        "required": [
-          "value"
-        ],
-        "type": "object",
-        "properties": {
-          "value": {
-            "$ref": "#/components/schemas/AgentMode"
-          }
-        }
-      },
       "ExamplePayload": {
         "type": "object",
         "description": "Placeholder schema for path example refs"
-      },
-      "JsonValueBranch1": {
-        "required": [
-          "value"
-        ],
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string"
-          }
-        }
-      },
-      "JsonValueBranch2": {
-        "required": [
-          "value"
-        ],
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "number"
-          }
-        }
-      },
-      "JsonValueBranch3": {
-        "required": [
-          "value"
-        ],
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "boolean"
-          }
-        }
-      },
-      "JsonValueBranch5": {
-        "required": [
-          "value"
-        ],
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/JsonValueBranch5ValueItem"
-            }
-          }
-        }
-      },
-      "CustomSubagentModelBranch2": {
-        "required": [
-          "value"
-        ],
-        "type": "object",
-        "properties": {
-          "value": {
-            "minLength": 1,
-            "type": "string",
-            "description": "An explicit model ID.",
-            "example": "claude-4.6-sonnet-thinking"
-          }
-        }
       },
       "StreamRun200EventStreamResponseSchema": {
         "type": "string"
@@ -5131,16 +5276,23 @@
         "additionalProperties": {
           "type": "string"
         },
-        "description": "Environment variables passed to the stdio MCP server inside the VM."
+        "description": "Environment variables passed to the stdio MCP server inside the VM.",
+        "example": {
+          "GITHUB_TOKEN": "ghp_..."
+        }
       },
       "RemoteMcpServerHeadersProperty": {
         "type": "object",
         "additionalProperties": {
           "type": "string"
         },
-        "description": "Headers Cursor sends with every request to the remote MCP server."
+        "description": "Headers Cursor sends with every request to the remote MCP server.",
+        "example": {
+          "Authorization": "Bearer lin_api_..."
+        }
       },
       "CreateAgentRequestEnvVarsProperty": {
+        "maxProperties": 50,
         "type": "object",
         "additionalProperties": {
           "maxLength": 4096,
@@ -5149,8 +5301,15 @@
         },
         "description": "Session-scoped environment variables for the cloud agent.\nValues are encrypted at rest, injected into the agent\u0027s\nshell, and deleted with the agent. Names must be non-empty,\n255 bytes or less, and cannot start with \u0060CURSOR_\u0060. Values\nmust be non-empty and 4096 bytes or less. Cannot be\ncombined with a client-supplied \u0060agentId\u0060.\n\nBeta: \u0060envVars\u0060 is rolling out. If it isn\u0027t enabled for\nyour account yet, the field is silently ignored on create\nrather than failing the request \u2014 verify the values are\npresent on a first run before relying on them in\nproduction.\n"
       },
-      "JsonValueBranch5ValueItem": {
-        "type": "object"
+      "FollowupRunRequestEnvVarsProperty": {
+        "maxProperties": 50,
+        "type": "object",
+        "additionalProperties": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "type": "string"
+        },
+        "description": "Environment variables for this follow-up run only, applied\nwhile it executes. Names and values follow the same rules as\n\u0060envVars\u0060 in \u0060CreateAgentRequest\u0060.\n"
       },
       "AgentEnvType": {
         "enum": [
@@ -5159,7 +5318,6 @@
           "machine"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "Execution environment type. \u0060cloud\u0060 uses Cursor-hosted VMs; \u0060pool\u0060 and \u0060machine\u0060 route to self-hosted workers.",
         "example": "cloud",
         "x-ms-enum": {
@@ -5186,7 +5344,6 @@
           "stdio"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "Stdio MCP server. Defaults to \u0060stdio\u0060 when \u0060command\u0060 is provided.",
         "example": "stdio",
         "x-ms-enum": {
@@ -5206,7 +5363,6 @@
           "sse"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "Remote MCP transport. Defaults to \u0060http\u0060 when \u0060url\u0060 is provided.",
         "example": "http",
         "x-ms-enum": {
@@ -5230,7 +5386,6 @@
           "ARCHIVED"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "Agent lifecycle state. Execution status lives on runs.",
         "x-ms-enum": {
           "name": "AgentSummaryStatus",
@@ -5257,7 +5412,6 @@
           "EXPIRED"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "Current run status.",
         "x-ms-enum": {
           "name": "RunStatus",
@@ -5296,7 +5450,6 @@
           "completed"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "Tool invocation lifecycle status.",
         "example": "completed",
         "x-ms-enum": {
@@ -5319,7 +5472,6 @@
           "tool_call"
         ],
         "type": "string",
-        "additionalProperties": false,
         "x-ms-enum": {
           "name": "ToolCallEvent",
           "modelAsString": false,
@@ -5331,6 +5483,45 @@
           ]
         }
       },
+      "SteerDelivery": {
+        "enum": [
+          "steer"
+        ],
+        "type": "string",
+        "x-ms-enum": {
+          "name": "SteerDelivery",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "steer",
+              "name": "Steer"
+            }
+          ]
+        }
+      },
+      "SteerRunResponseDelivery": {
+        "enum": [
+          "steered",
+          "queued"
+        ],
+        "type": "string",
+        "description": "\u0060steered\u0060: the agent\u0027s running turn accepted the prompt and\ntakes it at its next safe step. If that turn ends first, the\nprompt starts the agent\u0027s next run instead. \u0060queued\u0060: no\nrunning turn could take the prompt, so it becomes the agent\u0027s\nnext follow-up. Neither response includes a run ID or any\nother ID to match the prompt to a run.\n",
+        "example": "steered",
+        "x-ms-enum": {
+          "name": "SteerRunResponseDelivery",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "steered",
+              "name": "Steered"
+            },
+            {
+              "value": "queued",
+              "name": "Queued"
+            }
+          ]
+        }
+      },
       "EnvironmentBuildSettingsPullLatestCode": {
         "enum": [
           "when_stale",
@@ -5338,7 +5529,6 @@
           "always"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "Whether agents that start on the default branch pull its latest code. \u0060when_stale\u0060, the default, pulls when the active build is older than \u0060stalenessThresholdHours\u0060. \u0060never\u0060 uses the commit the build recorded. \u0060always\u0060 is a legacy value you can read but not set.",
         "x-ms-enum": {
           "name": "EnvironmentBuildSettingsPullLatestCode",
@@ -5366,7 +5556,6 @@
           null
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "\u0060when_stale\u0060 (the default) or \u0060never\u0060. Setting the legacy \u0060always\u0060 returns \u0060400 validation_error\u0060. To move an environment off \u0060always\u0060, send \u0060when_stale\u0060 with \u0060stalenessThresholdHours\u0060.",
         "nullable": true,
         "x-ms-enum": {
@@ -5390,7 +5579,6 @@
           "team"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "\u0060personal\u0060 for an environment that belongs to one user, or \u0060team\u0060 for an environment shared with the team.",
         "x-ms-enum": {
           "name": "EnvironmentOwner",
@@ -5413,7 +5601,6 @@
           "team"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "\u0060personal\u0060 creates an environment for the API key\u0027s user, and \u0060team\u0060 creates one for the team.",
         "x-ms-enum": {
           "name": "CreateEnvironmentRequestOwner",
@@ -5436,7 +5623,6 @@
           "TERMINAL_FAILURE"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "\u0060INSTALL_FAILED\u0060 when the \u0060install\u0060 command failed, or \u0060TERMINAL_FAILURE\u0060 for other failures.",
         "x-ms-enum": {
           "name": "EnvironmentBuildFailureType",
@@ -5462,7 +5648,6 @@
           "SKIPPED"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "Build status. A skipped build found nothing to rebuild.",
         "x-ms-enum": {
           "name": "EnvironmentBuildStatus",
@@ -5498,7 +5683,6 @@
           "MANUAL"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "What started the build. \u0060RECURRING\u0060 for a scheduled build, \u0060CONFIG_CHANGE\u0060 after a configuration or secrets change, or \u0060MANUAL\u0060 for one started on request.",
         "x-ms-enum": {
           "name": "EnvironmentBuildTrigger",
@@ -5527,7 +5711,6 @@
           "AGENT"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "Where the build was started from. \u0060SYSTEM\u0060 (Cursor on its own), \u0060WEBSITE\u0060 (the dashboard), \u0060API\u0060, or \u0060AGENT\u0060 (a cloud agent).",
         "x-ms-enum": {
           "name": "EnvironmentBuildSource",
@@ -5559,7 +5742,6 @@
           "DELETED"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "State of the build\u0027s snapshot. Omitted if the build didn\u0027t create a snapshot.",
         "x-ms-enum": {
           "name": "EnvironmentBuildSnapshotState",
@@ -5585,7 +5767,6 @@
           "build"
         ],
         "type": "string",
-        "additionalProperties": false,
         "x-ms-enum": {
           "name": "BuildType",
           "modelAsString": false,
@@ -5602,7 +5783,6 @@
           "universal_image"
         ],
         "type": "string",
-        "additionalProperties": false,
         "x-ms-enum": {
           "name": "UniversalImageType",
           "modelAsString": false,
@@ -5623,7 +5803,6 @@
           "changed"
         ],
         "type": "string",
-        "additionalProperties": false,
         "x-ms-enum": {
           "name": "EnvironmentHistoryEventKind",
           "modelAsString": false,
@@ -5662,7 +5841,6 @@
           "request_override"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "Where the change came from.",
         "x-ms-enum": {
           "name": "EnvironmentHistoryEventSource",
@@ -5706,7 +5884,6 @@
           "build_secret"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "\u0060runtime_secret\u0060 for a Runtime Secret, \u0060environment_variable\u0060\nfor an Environment Variable, or \u0060build_secret\u0060 for a Build\nSecret, which only the Docker build gets.\n",
         "example": "runtime_secret",
         "x-ms-enum": {
@@ -5735,7 +5912,6 @@
           "environment"
         ],
         "type": "string",
-        "additionalProperties": false,
         "example": "environment",
         "x-ms-enum": {
           "name": "SecretInventoryOwnerType",
@@ -5763,7 +5939,6 @@
           "build_secret"
         ],
         "type": "string",
-        "additionalProperties": false,
         "example": "runtime_secret",
         "x-ms-enum": {
           "name": "InventorySecretVersionType",
@@ -5790,7 +5965,6 @@
           "environment_variable"
         ],
         "type": "string",
-        "additionalProperties": false,
         "description": "A new version defaults to \u0060runtime_secret\u0060. A change without\n\u0060type\u0060 keeps the version\u0027s type. Build Secrets can\u0027t be set\nthrough the API yet.\n",
         "example": "runtime_secret",
         "x-ms-enum": {
@@ -5808,12 +5982,28 @@
           ]
         }
       },
+      "CustomSubagentModelOneOf1": {
+        "enum": [
+          "inherit"
+        ],
+        "type": "string",
+        "description": "Use the parent agent\u0027s model selection.",
+        "x-ms-enum": {
+          "name": "CustomSubagentModelOneOf1",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "inherit",
+              "name": "Inherit"
+            }
+          ]
+        }
+      },
       "SecretNameAmbiguousCode": {
         "enum": [
           "secret_name_ambiguous"
         ],
         "type": "string",
-        "additionalProperties": false,
         "x-ms-enum": {
           "name": "SecretNameAmbiguousCode",
           "modelAsString": false,
@@ -5825,31 +6015,12 @@
           ]
         }
       },
-      "InheritValue": {
-        "enum": [
-          "inherit"
-        ],
-        "type": "string",
-        "additionalProperties": false,
-        "description": "Use the parent agent\u0027s model selection.",
-        "x-ms-enum": {
-          "name": "InheritValue",
-          "modelAsString": false,
-          "values": [
-            {
-              "value": "inherit",
-              "name": "Inherit"
-            }
-          ]
-        }
-      },
       "ListEnvironmentsOwnerParameter": {
         "enum": [
           "personal",
           "team"
         ],
         "type": "string",
-        "additionalProperties": false,
         "x-ms-enum": {
           "name": "ListEnvironmentsOwnerParameter",
           "modelAsString": false,
@@ -5874,7 +6045,6 @@
           "SKIPPED"
         ],
         "type": "string",
-        "additionalProperties": false,
         "x-ms-enum": {
           "name": "ListEnvironmentBuildsStatusParameter",
           "modelAsString": false,
@@ -5910,7 +6080,6 @@
           "environment"
         ],
         "type": "string",
-        "additionalProperties": false,
         "x-ms-enum": {
           "name": "ListSecretsScopeParameter",
           "modelAsString": false,
@@ -6057,7 +6226,8 @@
         "schema": {
           "pattern": "^[bB][lL][dD]-[0-9]{8}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
           "type": "string",
-          "description": "Unique build identifier, in the form \u0060bld-YYYYMMDD-\u003Cuuid\u003E\u0060."
+          "description": "Unique build identifier, in the form \u0060bld-YYYYMMDD-\u003Cuuid\u003E\u0060.",
+          "example": "bld-20260930-3c59dc04-8a1d-4b6e-9f2a-7e5d1c0b9a8f"
         }
       }
     },
