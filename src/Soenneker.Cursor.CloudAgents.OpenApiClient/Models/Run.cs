@@ -50,7 +50,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public string Result { get; set; }
 #endif
-        /// <summary>Current run status.</summary>
+        /// <summary>Current run status. `CREATING`, `RUNNING`, and `WAITING_FOR_BACKGROUND_WORK` mean the run is active, and `FINISHED`, `ERROR`, `CANCELLED`, and `EXPIRED` mean it has ended.</summary>
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunStatus? Status { get; set; }
         /// <summary>The updatedAt property</summary>
         public DateTimeOffset? UpdatedAt { get; set; }

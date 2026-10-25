@@ -226,8 +226,8 @@
     },
     "/v1/agents/{id}/runs": {
       "post": {
-        "summary": "Create a run",
-        "description": "Send a follow-up prompt to an existing active agent. Without\n\u0060delivery\u0060, the prompt starts a new run that uses the agent\u0027s\ncurrent conversation and workspace state, and only one run can\nbe active per agent at a time. With \u0060delivery: steer\u0060, the\nagent\u0027s running turn takes the prompt when it can, and otherwise\nthe prompt becomes the agent\u0027s next follow-up. On success, a\nsteer returns \u0060202\u0060 without a run object or ID.\n",
+        "summary": "Send a follow-up or steer",
+        "description": "Send a follow-up prompt to an existing active agent. Without\n\u0060delivery\u0060, the prompt starts a new run that uses the agent\u0027s\ncurrent conversation and workspace state, and only one run can\nbe active per agent at a time. With \u0060delivery: steer\u0060, the\nagent\u0027s running turn takes the prompt when it can, and otherwise\nthe prompt becomes the agent\u0027s next follow-up. On success, a\nsteer returns \u0060202\u0060 with no run object. \u0060delivery\u0060 says what\nhappened, and a \u0060steered\u0060 response can include \u0060runId\u0060.\n",
         "operationId": "CreateRun",
         "parameters": [
           {
@@ -273,7 +273,8 @@
                   "steered": {
                     "summary": "The running turn accepted the prompt",
                     "value": {
-                      "delivery": "steered"
+                      "delivery": "steered",
+                      "runId": "run-00000000-0000-0000-0000-000000000002"
                     }
                   },
                   "queued": {
@@ -287,7 +288,7 @@
             }
           },
           "400": {
-            "description": "Validation error or malformed request body. Steering adds two \u0060validation_error\u0060 cases, a steer body with any top-level field besides \u0060prompt\u0060 and \u0060delivery\u0060 or a \u0060delivery\u0060 other than \u0060steer\u0060, and a steer that Cursor refuses. Cursor checks the body before it checks whether steering is available.",
+            "description": "Validation error or malformed request body. Steering adds two \u0060validation_error\u0060 cases, a steer body with any top-level field besides \u0060prompt\u0060 and \u0060delivery\u0060 or a \u0060delivery\u0060 other than \u0060steer\u0060, and a steer that Cursor refuses. For extra fields on a steer, the message names them, such as \u0060\u0022model\u0022 is not allowed with delivery \u0022steer\u0022\u0060 or \u0060\u0022model\u0022, \u0022mode\u0022 are not allowed with delivery \u0022steer\u0022\u0060. Cursor checks the body before it checks whether steering is available.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3123,7 +3124,7 @@
             "default": false
           },
           "envVars": {
-            "$ref": "#/components/schemas/CreateAgentRequestEnvVarsProperty"
+            "$ref": "#/components/schemas/CreateAgentRequestEnvVars"
           },
           "mcpServers": {
             "maxItems": 50,
@@ -3145,6 +3146,16 @@
             "$ref": "#/components/schemas/CreateAgentRequestMode"
           }
         }
+      },
+      "EnvVars": {
+        "maxProperties": 50,
+        "type": "object",
+        "additionalProperties": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "type": "string"
+        },
+        "description": "Environment variables, at most 50. Each name is 1 to 255\ncharacters of ASCII letters, digits, and underscores, doesn\u0027t\nstart with a digit, can\u0027t start with \u0060CURSOR_\u0060, and can\u0027t\ncontain \u0060CURSOR_SANDBOX\u0060 in any letter case. Each value is\nnon-empty and at most 4096 UTF-8 bytes. \u0060maxLength\u0060 counts\ncharacters, so it\u0027s only an upper bound on the byte limit.\n"
       },
       "CreateRunRequest": {
         "oneOf": [
@@ -3200,7 +3211,7 @@
             "description": "Inline MCP server definitions for this follow-up run. When provided, these definitions replace any create-time inline MCP servers for this run."
           },
           "envVars": {
-            "$ref": "#/components/schemas/FollowupRunRequestEnvVarsProperty"
+            "$ref": "#/components/schemas/FollowupRunRequestEnvVars"
           },
           "mode": {
             "$ref": "#/components/schemas/AgentMode"
@@ -3224,7 +3235,7 @@
           }
         },
         "additionalProperties": false,
-        "description": "A steer sends the prompt into the agent\u0027s running turn instead of\nstarting a new run, and returns \u0060202\u0060 with a \u0060SteerRunResponse\u0060.\nIt requires \u0060prompt\u0060 and \u0060delivery\u0060 and accepts no other top-level\nfields, so \u0060model\u0060, \u0060mcpServers\u0060, \u0060envVars\u0060, or \u0060mode\u0060 returns\n\u0060400 validation_error\u0060.\n"
+        "description": "A steer sends the prompt into the agent\u0027s running turn instead of\nstarting a new run, and returns \u0060202\u0060 with a \u0060SteerRunResponse\u0060.\nIt requires \u0060prompt\u0060 and \u0060delivery\u0060 and accepts no other top-level\nfields. Any other field, such as \u0060model\u0060, \u0060mcpServers\u0060, \u0060envVars\u0060,\nor \u0060mode\u0060, returns \u0060400 validation_error\u0060 with a message that\nnames the fields, such as\n\u0060\u0022model\u0022 is not allowed with delivery \u0022steer\u0022\u0060 or\n\u0060\u0022model\u0022, \u0022mode\u0022 are not allowed with delivery \u0022steer\u0022\u0060.\n"
       },
       "AgentMode": {
         "enum": [
@@ -3278,10 +3289,54 @@
         "required": [
           "delivery"
         ],
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/SteeredRunResponse"
+          },
+          {
+            "$ref": "#/components/schemas/QueuedRunResponse"
+          }
+        ],
+        "properties": {
+          "delivery": {
+            "type": "string"
+          }
+        },
+        "description": "What happened to a steered prompt. \u0060delivery\u0060 is \u0060steered\u0060 or\n\u0060queued\u0060, and only a \u0060steered\u0060 response can include \u0060runId\u0060.\n",
+        "discriminator": {
+          "propertyName": "delivery",
+          "mapping": {
+            "steered": "#/components/schemas/SteeredRunResponse",
+            "queued": "#/components/schemas/QueuedRunResponse"
+          }
+        }
+      },
+      "SteeredRunResponse": {
+        "required": [
+          "delivery"
+        ],
         "type": "object",
         "properties": {
           "delivery": {
-            "$ref": "#/components/schemas/SteerRunResponseDelivery"
+            "$ref": "#/components/schemas/SteeredDelivery"
+          },
+          "runId": {
+            "pattern": "^run-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            "type": "string",
+            "description": "The run that accepted the steer, which was running when the API\ngot it. The prompt reaches that run at its next safe step unless\nthe run ends first, in which case the prompt starts the agent\u0027s\nnext run. Omitted when the agent had no active run.\n",
+            "example": "run-00000000-0000-0000-0000-000000000002"
+          }
+        },
+        "additionalProperties": false
+      },
+      "QueuedRunResponse": {
+        "required": [
+          "delivery"
+        ],
+        "type": "object",
+        "properties": {
+          "delivery": {
+            "$ref": "#/components/schemas/QueuedDelivery"
           }
         },
         "additionalProperties": false
@@ -4831,6 +4886,16 @@
           }
         ]
       },
+      "CreateAgentRequestEnvVars": {
+        "maxProperties": 50,
+        "type": "object",
+        "additionalProperties": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "type": "string"
+        },
+        "description": "Session-scoped environment variables for the cloud agent.\nValues are encrypted at rest, injected into the agent\u0027s\nshell, and deleted with the agent. Names and values follow\nthe \u0060EnvVars\u0060 rules. Cannot be combined with a\nclient-supplied \u0060agentId\u0060.\n\nBeta: \u0060envVars\u0060 is rolling out. If it isn\u0027t enabled for\nyour account yet, the field is silently ignored on create\nrather than failing the request \u2014 verify the values are\npresent on a first run before relying on them in\nproduction.\n"
+      },
       "CreateAgentRequestMode": {
         "enum": [
           "agent",
@@ -4852,6 +4917,16 @@
             }
           ]
         }
+      },
+      "FollowupRunRequestEnvVars": {
+        "maxProperties": 50,
+        "type": "object",
+        "additionalProperties": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "type": "string"
+        },
+        "description": "Environment variables for this follow-up run only, applied\nwhile it executes. Names and values follow the \u0060EnvVars\u0060\nrules.\n"
       },
       "RunUsageUsage": {
         "required": [
@@ -5122,26 +5197,6 @@
           }
         }
       },
-      "CreateAgentRequestEnvVars": {
-        "maxProperties": 50,
-        "type": "object",
-        "additionalProperties": {
-          "maxLength": 4096,
-          "minLength": 1,
-          "type": "string"
-        },
-        "description": "Session-scoped environment variables for the cloud agent.\nValues are encrypted at rest, injected into the agent\u0027s\nshell, and deleted with the agent. Names must be non-empty,\n255 bytes or less, and cannot start with \u0060CURSOR_\u0060. Values\nmust be non-empty and 4096 bytes or less. Cannot be\ncombined with a client-supplied \u0060agentId\u0060.\n\nBeta: \u0060envVars\u0060 is rolling out. If it isn\u0027t enabled for\nyour account yet, the field is silently ignored on create\nrather than failing the request \u2014 verify the values are\npresent on a first run before relying on them in\nproduction.\n"
-      },
-      "FollowupRunRequestEnvVars": {
-        "maxProperties": 50,
-        "type": "object",
-        "additionalProperties": {
-          "maxLength": 4096,
-          "minLength": 1,
-          "type": "string"
-        },
-        "description": "Environment variables for this follow-up run only, applied\nwhile it executes. Names and values follow the same rules as\n\u0060envVars\u0060 in \u0060CreateAgentRequest\u0060.\n"
-      },
       "ModelVariantParamsItem": {
         "required": [
           "id",
@@ -5291,26 +5346,6 @@
           "Authorization": "Bearer lin_api_..."
         }
       },
-      "CreateAgentRequestEnvVarsProperty": {
-        "maxProperties": 50,
-        "type": "object",
-        "additionalProperties": {
-          "maxLength": 4096,
-          "minLength": 1,
-          "type": "string"
-        },
-        "description": "Session-scoped environment variables for the cloud agent.\nValues are encrypted at rest, injected into the agent\u0027s\nshell, and deleted with the agent. Names must be non-empty,\n255 bytes or less, and cannot start with \u0060CURSOR_\u0060. Values\nmust be non-empty and 4096 bytes or less. Cannot be\ncombined with a client-supplied \u0060agentId\u0060.\n\nBeta: \u0060envVars\u0060 is rolling out. If it isn\u0027t enabled for\nyour account yet, the field is silently ignored on create\nrather than failing the request \u2014 verify the values are\npresent on a first run before relying on them in\nproduction.\n"
-      },
-      "FollowupRunRequestEnvVarsProperty": {
-        "maxProperties": 50,
-        "type": "object",
-        "additionalProperties": {
-          "maxLength": 4096,
-          "minLength": 1,
-          "type": "string"
-        },
-        "description": "Environment variables for this follow-up run only, applied\nwhile it executes. Names and values follow the same rules as\n\u0060envVars\u0060 in \u0060CreateAgentRequest\u0060.\n"
-      },
       "AgentEnvType": {
         "enum": [
           "cloud",
@@ -5406,13 +5441,14 @@
         "enum": [
           "CREATING",
           "RUNNING",
+          "WAITING_FOR_BACKGROUND_WORK",
           "FINISHED",
           "ERROR",
           "CANCELLED",
           "EXPIRED"
         ],
         "type": "string",
-        "description": "Current run status.",
+        "description": "Current run status. \u0060CREATING\u0060, \u0060RUNNING\u0060, and \u0060WAITING_FOR_BACKGROUND_WORK\u0060 mean the run is active, and \u0060FINISHED\u0060, \u0060ERROR\u0060, \u0060CANCELLED\u0060, and \u0060EXPIRED\u0060 mean it has ended.",
         "x-ms-enum": {
           "name": "RunStatus",
           "modelAsString": false,
@@ -5424,6 +5460,10 @@
             {
               "value": "RUNNING",
               "name": "Running"
+            },
+            {
+              "value": "WAITING_FOR_BACKGROUND_WORK",
+              "name": "WaitingForBackgroundWork"
             },
             {
               "value": "FINISHED",
@@ -5499,22 +5539,33 @@
           ]
         }
       },
-      "SteerRunResponseDelivery": {
+      "SteeredDelivery": {
         "enum": [
-          "steered",
-          "queued"
+          "steered"
         ],
         "type": "string",
-        "description": "\u0060steered\u0060: the agent\u0027s running turn accepted the prompt and\ntakes it at its next safe step. If that turn ends first, the\nprompt starts the agent\u0027s next run instead. \u0060queued\u0060: no\nrunning turn could take the prompt, so it becomes the agent\u0027s\nnext follow-up. Neither response includes a run ID or any\nother ID to match the prompt to a run.\n",
-        "example": "steered",
+        "description": "The agent\u0027s running turn accepted the prompt.",
         "x-ms-enum": {
-          "name": "SteerRunResponseDelivery",
+          "name": "SteeredDelivery",
           "modelAsString": false,
           "values": [
             {
               "value": "steered",
               "name": "Steered"
-            },
+            }
+          ]
+        }
+      },
+      "QueuedDelivery": {
+        "enum": [
+          "queued"
+        ],
+        "type": "string",
+        "description": "No running turn could take the prompt, so it becomes the\nagent\u0027s next follow-up. That includes a steer that lands just\nafter the agent\u0027s run changed. A \u0060queued\u0060 response never\nincludes \u0060runId\u0060.\n",
+        "x-ms-enum": {
+          "name": "QueuedDelivery",
+          "modelAsString": false,
+          "values": [
             {
               "value": "queued",
               "name": "Queued"

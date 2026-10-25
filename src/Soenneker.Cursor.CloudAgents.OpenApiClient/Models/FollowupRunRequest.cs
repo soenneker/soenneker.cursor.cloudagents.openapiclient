@@ -13,13 +13,13 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class FollowupRunRequest : IParsable
     {
-        /// <summary>Environment variables for this follow-up run only, appliedwhile it executes. Names and values follow the same rules as`envVars` in `CreateAgentRequest`.</summary>
+        /// <summary>Environment variables for this follow-up run only, appliedwhile it executes. Names and values follow the `EnvVars`rules.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVarsProperty? EnvVars { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVars? EnvVars { get; set; }
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVarsProperty EnvVars { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVars EnvVars { get; set; }
 #endif
         /// <summary>Inline MCP server definitions for this follow-up run. When provided, these definitions replace any create-time inline MCP servers for this run.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -65,7 +65,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
-                { "envVars", n => { EnvVars = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVarsProperty>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVarsProperty.CreateFromDiscriminatorValue); } },
+                { "envVars", n => { EnvVars = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVars>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVars.CreateFromDiscriminatorValue); } },
                 { "mcpServers", n => { McpServers = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "mode", n => { Mode = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode>(); } },
                 { "model", n => { Model = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef.CreateFromDiscriminatorValue); } },
@@ -79,7 +79,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVarsProperty>("envVars", EnvVars);
+            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVars>("envVars", EnvVars);
             writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>("mcpServers", McpServers);
             writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode>("mode", Mode);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>("model", Model);

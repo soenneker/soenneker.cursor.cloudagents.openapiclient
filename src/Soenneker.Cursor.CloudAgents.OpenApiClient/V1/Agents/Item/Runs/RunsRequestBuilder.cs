@@ -76,7 +76,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Runs
             return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListRunsResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListRunsResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
-        /// Send a follow-up prompt to an existing active agent. Without`delivery`, the prompt starts a new run that uses the agent&apos;scurrent conversation and workspace state, and only one run canbe active per agent at a time. With `delivery: steer`, theagent&apos;s running turn takes the prompt when it can, and otherwisethe prompt becomes the agent&apos;s next follow-up. On success, asteer returns `202` without a run object or ID.
+        /// Send a follow-up prompt to an existing active agent. Without`delivery`, the prompt starts a new run that uses the agent&apos;scurrent conversation and workspace state, and only one run canbe active per agent at a time. With `delivery: steer`, theagent&apos;s running turn takes the prompt when it can, and otherwisethe prompt becomes the agent&apos;s next follow-up. On success, asteer returns `202` with no run object. `delivery` says whathappened, and a `steered` response can include `runId`.
         /// </summary>
         /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateRunResponse"/></returns>
         /// <param name="body">An ordinary follow-up, which omits `delivery`, or a steer, whichsets `delivery` to `steer`.</param>
@@ -130,7 +130,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Runs
             return requestInfo;
         }
         /// <summary>
-        /// Send a follow-up prompt to an existing active agent. Without`delivery`, the prompt starts a new run that uses the agent&apos;scurrent conversation and workspace state, and only one run canbe active per agent at a time. With `delivery: steer`, theagent&apos;s running turn takes the prompt when it can, and otherwisethe prompt becomes the agent&apos;s next follow-up. On success, asteer returns `202` without a run object or ID.
+        /// Send a follow-up prompt to an existing active agent. Without`delivery`, the prompt starts a new run that uses the agent&apos;scurrent conversation and workspace state, and only one run canbe active per agent at a time. With `delivery: steer`, theagent&apos;s running turn takes the prompt when it can, and otherwisethe prompt becomes the agent&apos;s next follow-up. On success, asteer returns `202` with no run object. `delivery` says whathappened, and a `steered` response can include `runId`.
         /// </summary>
         /// <returns>A <see cref="RequestInformation"/></returns>
         /// <param name="body">An ordinary follow-up, which omits `delivery`, or a steer, whichsets `delivery` to `steer`.</param>

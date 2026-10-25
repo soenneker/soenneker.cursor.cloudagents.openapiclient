@@ -8,7 +8,7 @@ using System;
 namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
     /// <summary>
-    /// A steer sends the prompt into the agent&apos;s running turn instead ofstarting a new run, and returns `202` with a `SteerRunResponse`.It requires `prompt` and `delivery` and accepts no other top-levelfields, so `model`, `mcpServers`, `envVars`, or `mode` returns`400 validation_error`.
+    /// A steer sends the prompt into the agent&apos;s running turn instead ofstarting a new run, and returns `202` with a `SteerRunResponse`.It requires `prompt` and `delivery` and accepts no other top-levelfields. Any other field, such as `model`, `mcpServers`, `envVars`,or `mode`, returns `400 validation_error` with a message thatnames the fields, such as`&quot;model&quot; is not allowed with delivery &quot;steer&quot;` or`&quot;model&quot;, &quot;mode&quot; are not allowed with delivery &quot;steer&quot;`.
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class SteerRunRequest : IParsable

@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 using System;
 namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 {
-    /// <summary>Current run status.</summary>
+    /// <summary>Current run status. `CREATING`, `RUNNING`, and `WAITING_FOR_BACKGROUND_WORK` mean the run is active, and `FINISHED`, `ERROR`, `CANCELLED`, and `EXPIRED` mean it has ended.</summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public enum RunStatus
     {
@@ -14,6 +14,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         [EnumMember(Value = "RUNNING")]
         #pragma warning disable CS1591
         Running,
+        #pragma warning restore CS1591
+        [EnumMember(Value = "WAITING_FOR_BACKGROUND_WORK")]
+        #pragma warning disable CS1591
+        WaitingForBackgroundWork,
         #pragma warning restore CS1591
         [EnumMember(Value = "FINISHED")]
         #pragma warning disable CS1591

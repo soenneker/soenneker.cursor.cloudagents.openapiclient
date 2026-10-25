@@ -40,13 +40,13 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 #else
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv Env { get; set; }
 #endif
-        /// <summary>Session-scoped environment variables for the cloud agent.Values are encrypted at rest, injected into the agent&apos;sshell, and deleted with the agent. Names must be non-empty,255 bytes or less, and cannot start with `CURSOR_`. Valuesmust be non-empty and 4096 bytes or less. Cannot becombined with a client-supplied `agentId`.Beta: `envVars` is rolling out. If it isn&apos;t enabled foryour account yet, the field is silently ignored on createrather than failing the request — verify the values arepresent on a first run before relying on them inproduction.</summary>
+        /// <summary>Session-scoped environment variables for the cloud agent.Values are encrypted at rest, injected into the agent&apos;sshell, and deleted with the agent. Names and values followthe `EnvVars` rules. Cannot be combined with aclient-supplied `agentId`.Beta: `envVars` is rolling out. If it isn&apos;t enabled foryour account yet, the field is silently ignored on createrather than failing the request — verify the values arepresent on a first run before relying on them inproduction.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVarsProperty? EnvVars { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVars? EnvVars { get; set; }
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVarsProperty EnvVars { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVars EnvVars { get; set; }
 #endif
         /// <summary>Inline MCP server definitions available to the initial run. Remote servers support `headers` or OAuth `auth`; stdio servers run inside the cloud agent VM and can receive `env`. Server names must be unique.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -126,7 +126,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
                 { "autoCreatePR", n => { AutoCreatePR = n.GetBoolValue(); } },
                 { "customSubagents", n => { CustomSubagents = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "env", n => { Env = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv.CreateFromDiscriminatorValue); } },
-                { "envVars", n => { EnvVars = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVarsProperty>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVarsProperty.CreateFromDiscriminatorValue); } },
+                { "envVars", n => { EnvVars = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVars>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVars.CreateFromDiscriminatorValue); } },
                 { "mcpServers", n => { McpServers = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "mode", n => { Mode = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestMode>(); } },
                 { "model", n => { Model = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef.CreateFromDiscriminatorValue); } },
@@ -148,7 +148,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteBoolValue("autoCreatePR", AutoCreatePR);
             writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent>("customSubagents", CustomSubagents);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv>("env", Env);
-            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVarsProperty>("envVars", EnvVars);
+            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVars>("envVars", EnvVars);
             writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>("mcpServers", McpServers);
             writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestMode>("mode", Mode);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>("model", Model);
