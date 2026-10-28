@@ -35,7 +35,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Team.Secrets
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public SecretsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/team/secrets", pathParameters)
+        public SecretsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/team/secrets{?cursor*,limit*}", pathParameters)
         {
         }
         /// <summary>
@@ -43,13 +43,13 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Team.Secrets
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public SecretsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/team/secrets", rawUrl)
+        public SecretsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/v1/team/secrets{?cursor*,limit*}", rawUrl)
         {
         }
         /// <summary>
-        /// List the Cloud Agents secrets of the team the API key works in, oneitem per version, sorted by name. No item includes a value. Thelist isn&apos;t paginated yet, so `nextCursor` is always `null`.Any team member can list, as can the team&apos;s service account APIkeys. An API key limited to certain repositories gets`403 repository_access`, because team secrets reach everyrepository.See https://cursor.com/docs/cloud-agent/api/endpoints#list-team-secrets.
+        /// List the Cloud Agents secrets of the team the API key works in, oneitem per version. No item includes a value.Without `limit` or `cursor`, the response holds every version,sorted by name, then repos, then creation time, and `nextCursor`is `null`. Send either parameter to page through the versions insecret-version creation order, and pass each page&apos;s `nextCursor`back as `cursor` until it&apos;s `null`. Cursors use the same format asGET /v1/secrets, so for the same team, a cursor from`GET /v1/secrets?scope=team` continues here, and the reverse. Pass`nextCursor` back only to the same team&apos;s list: cursors aren&apos;t tiedto a team, caller, scope, or filters, so another list&apos;s cursor cansilently skip versions or end the list early.Any team member can list, as can the team&apos;s service account APIkeys. An API key limited to certain repositories gets`403 repository_access`, because team secrets reach everyrepository.See https://cursor.com/docs/cloud-agent/api/endpoints#list-team-secrets.
         /// </summary>
-        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListSecretsResponse"/></returns>
+        /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListTeamSecretsResponse"/></returns>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 400 status code</exception>
@@ -58,11 +58,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Team.Secrets
         /// <exception cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error">When receiving a 500 status code</exception>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListSecretsResponse?> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListTeamSecretsResponse?> GetAsync(Action<RequestConfiguration<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Team.Secrets.SecretsRequestBuilder.SecretsRequestBuilderGetQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #nullable restore
 #else
-        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListSecretsResponse> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListTeamSecretsResponse> GetAsync(Action<RequestConfiguration<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Team.Secrets.SecretsRequestBuilder.SecretsRequestBuilderGetQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #endif
             var requestInfo = ToGetRequestInformation(requestConfiguration);
@@ -73,20 +73,20 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Team.Secrets
                 { "429", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
                 { "500", global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Error.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListSecretsResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListSecretsResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListTeamSecretsResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListTeamSecretsResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
-        /// List the Cloud Agents secrets of the team the API key works in, oneitem per version, sorted by name. No item includes a value. Thelist isn&apos;t paginated yet, so `nextCursor` is always `null`.Any team member can list, as can the team&apos;s service account APIkeys. An API key limited to certain repositories gets`403 repository_access`, because team secrets reach everyrepository.See https://cursor.com/docs/cloud-agent/api/endpoints#list-team-secrets.
+        /// List the Cloud Agents secrets of the team the API key works in, oneitem per version. No item includes a value.Without `limit` or `cursor`, the response holds every version,sorted by name, then repos, then creation time, and `nextCursor`is `null`. Send either parameter to page through the versions insecret-version creation order, and pass each page&apos;s `nextCursor`back as `cursor` until it&apos;s `null`. Cursors use the same format asGET /v1/secrets, so for the same team, a cursor from`GET /v1/secrets?scope=team` continues here, and the reverse. Pass`nextCursor` back only to the same team&apos;s list: cursors aren&apos;t tiedto a team, caller, scope, or filters, so another list&apos;s cursor cansilently skip versions or end the list early.Any team member can list, as can the team&apos;s service account APIkeys. An API key limited to certain repositories gets`403 repository_access`, because team secrets reach everyrepository.See https://cursor.com/docs/cloud-agent/api/endpoints#list-team-secrets.
         /// </summary>
         /// <returns>A <see cref="RequestInformation"/></returns>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public RequestInformation ToGetRequestInformation(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default)
+        public RequestInformation ToGetRequestInformation(Action<RequestConfiguration<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Team.Secrets.SecretsRequestBuilder.SecretsRequestBuilderGetQueryParameters>>? requestConfiguration = default)
         {
 #nullable restore
 #else
-        public RequestInformation ToGetRequestInformation(Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default)
+        public RequestInformation ToGetRequestInformation(Action<RequestConfiguration<global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Team.Secrets.SecretsRequestBuilder.SecretsRequestBuilderGetQueryParameters>> requestConfiguration = default)
         {
 #endif
             var requestInfo = new RequestInformation(Method.GET, UrlTemplate, PathParameters);
@@ -102,6 +102,26 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Team.Secrets
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Team.Secrets.SecretsRequestBuilder WithUrl(string rawUrl)
         {
             return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Team.Secrets.SecretsRequestBuilder(rawUrl, RequestAdapter);
+        }
+        /// <summary>
+        /// List the Cloud Agents secrets of the team the API key works in, oneitem per version. No item includes a value.Without `limit` or `cursor`, the response holds every version,sorted by name, then repos, then creation time, and `nextCursor`is `null`. Send either parameter to page through the versions insecret-version creation order, and pass each page&apos;s `nextCursor`back as `cursor` until it&apos;s `null`. Cursors use the same format asGET /v1/secrets, so for the same team, a cursor from`GET /v1/secrets?scope=team` continues here, and the reverse. Pass`nextCursor` back only to the same team&apos;s list: cursors aren&apos;t tiedto a team, caller, scope, or filters, so another list&apos;s cursor cansilently skip versions or end the list early.Any team member can list, as can the team&apos;s service account APIkeys. An API key limited to certain repositories gets`403 repository_access`, because team secrets reach everyrepository.See https://cursor.com/docs/cloud-agent/api/endpoints#list-team-secrets.
+        /// </summary>
+        [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
+        public partial class SecretsRequestBuilderGetQueryParameters 
+        {
+            /// <summary>`nextCursor` from the previous page.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+            [QueryParameter("cursor")]
+            public string? Cursor { get; set; }
+#nullable restore
+#else
+            [QueryParameter("cursor")]
+            public string Cursor { get; set; }
+#endif
+            /// <summary>Maximum items per page. Defaults to 100 when only `cursor` is sent.</summary>
+            [QueryParameter("limit")]
+            public int? Limit { get; set; }
         }
     }
 }

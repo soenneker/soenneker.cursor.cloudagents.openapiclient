@@ -288,7 +288,7 @@
             }
           },
           "400": {
-            "description": "Validation error or malformed request body. Steering adds two \u0060validation_error\u0060 cases, a steer body with any top-level field besides \u0060prompt\u0060 and \u0060delivery\u0060 or a \u0060delivery\u0060 other than \u0060steer\u0060, and a steer that Cursor refuses. For extra fields on a steer, the message names them, such as \u0060\u0022model\u0022 is not allowed with delivery \u0022steer\u0022\u0060 or \u0060\u0022model\u0022, \u0022mode\u0022 are not allowed with delivery \u0022steer\u0022\u0060. Cursor checks the body before it checks whether steering is available.",
+            "description": "Validation error or malformed request body. Steering adds two \u0060validation_error\u0060 cases, a steer body with any top-level field besides \u0060prompt\u0060 and \u0060delivery\u0060 or a \u0060delivery\u0060 other than \u0060steer\u0060, and a steer that Cursor refuses. For extra fields on a steer, the message names them, such as \u0060\u0022model\u0022 is not allowed with delivery \u0022steer\u0022\u0060 or \u0060\u0022model\u0022, \u0022mode\u0022 are not allowed with delivery \u0022steer\u0022\u0060. Cursor checks the body before it checks whether steering is available. A follow-up or steer to a subagent that only its parent agent can drive also returns \u0060validation_error\u0060, with the message \u0022Follow-ups and steers to subagents are not supported. Send them to the parent agent.\u0022",
             "content": {
               "application/json": {
                 "schema": {
@@ -1373,7 +1373,7 @@
       },
       "post": {
         "summary": "Start an environment build",
-        "description": "Start a build of the environment. Access follows PATCH /v1/environments/{id}, except that a draft build on a team environment needs only read access, and service account API keys and repository-limited tokens are refused. Service account API keys get \u0060403 key_not_supported\u0060. A user-scoped token minted by an API key limited to certain repositories gets \u0060404 environment_not_found\u0060 when the environment has no repositories or any repository outside the limit, and \u0060403 key_not_supported\u0060 otherwise. An environment that doesn\u0027t exist or isn\u0027t visible to the API key returns \u0060404 environment_not_found\u0060. Reading the new build right away can briefly return \u0060404\u0060.",
+        "description": "Start a build of the environment. Access follows PATCH /v1/environments/{id}, except that a draft build on a team environment needs only read access, and API keys limited to certain repositories are refused. Such a key, or a user-scoped token it minted, gets \u0060404 environment_not_found\u0060 when the environment has no repositories or any repository outside the limit, and \u0060403 key_not_supported\u0060 otherwise. A team service account API key with no repository limit can start builds of its own team\u0027s environments. It needs the \u0060agent\u0060 scope, and the team setting that limits environment edits to admins doesn\u0027t limit it. An environment that doesn\u0027t exist or isn\u0027t visible to the API key returns \u0060404 environment_not_found\u0060. Reading the new build right away can briefly return \u0060404\u0060.",
         "operationId": "StartEnvironmentBuild",
         "parameters": [
           {
@@ -1422,7 +1422,7 @@
             "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "description": "Plan or role not allowed, Cloud Agents API access isn\u0027t available for your account (\u0060feature_unavailable\u0060), a service account API key (\u0060key_not_supported\u0060), a user-scoped token minted by an API key limited to certain repositories on an environment whose repositories are all inside that limit (\u0060key_not_supported\u0060), or a non-draft build on a team environment when the team lets only admins edit environments (\u0060team_admin_required\u0060).",
+            "description": "Plan or role not allowed, Cloud Agents API access isn\u0027t available for your account (\u0060feature_unavailable\u0060), an API key limited to certain repositories, or a user-scoped token it minted, on an environment whose repositories are all inside that limit (\u0060key_not_supported\u0060), or a non-draft build on a team environment from a member who isn\u0027t an admin when the team lets only admins edit environments (\u0060team_admin_required\u0060).",
             "content": {
               "application/json": {
                 "schema": {
@@ -2323,21 +2323,49 @@
     "/v1/team/secrets": {
       "get": {
         "summary": "List team secrets",
-        "description": "List the Cloud Agents secrets of the team the API key works in, one\nitem per version, sorted by name. No item includes a value. The\nlist isn\u0027t paginated yet, so \u0060nextCursor\u0060 is always \u0060null\u0060.\n\nAny team member can list, as can the team\u0027s service account API\nkeys. An API key limited to certain repositories gets\n\u0060403 repository_access\u0060, because team secrets reach every\nrepository.\n\nSee https://cursor.com/docs/cloud-agent/api/endpoints#list-team-secrets.\n",
+        "description": "List the Cloud Agents secrets of the team the API key works in, one\nitem per version. No item includes a value.\n\nWithout \u0060limit\u0060 or \u0060cursor\u0060, the response holds every version,\nsorted by name, then repos, then creation time, and \u0060nextCursor\u0060\nis \u0060null\u0060. Send either parameter to page through the versions in\nsecret-version creation order, and pass each page\u0027s \u0060nextCursor\u0060\nback as \u0060cursor\u0060 until it\u0027s \u0060null\u0060. Cursors use the same format as\nGET /v1/secrets, so for the same team, a cursor from\n\u0060GET /v1/secrets?scope=team\u0060 continues here, and the reverse. Pass\n\u0060nextCursor\u0060 back only to the same team\u0027s list: cursors aren\u0027t tied\nto a team, caller, scope, or filters, so another list\u0027s cursor can\nsilently skip versions or end the list early.\n\nAny team member can list, as can the team\u0027s service account API\nkeys. An API key limited to certain repositories gets\n\u0060403 repository_access\u0060, because team secrets reach every\nrepository.\n\nSee https://cursor.com/docs/cloud-agent/api/endpoints#list-team-secrets.\n",
         "operationId": "ListTeamSecrets",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum items per page. Defaults to 100 when only \u0060cursor\u0060 is sent.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "\u0060nextCursor\u0060 from the previous page.",
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "The team\u0027s secret versions.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ListSecretsResponse"
+                  "$ref": "#/components/schemas/ListTeamSecretsResponse"
                 }
               }
             }
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "Invalid paging (\u0060validation_error\u0060): a \u0060limit\u0060 that isn\u0027t a\nwhole number from 1 to 100, a repeated \u0060limit\u0060 or \u0060cursor\u0060, a\ncursor the API didn\u0027t return or one from the part of a team\nadmin\u0027s GET /v1/secrets walk that lists other members\u0027 secrets,\nor any other query parameter.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
@@ -4505,6 +4533,28 @@
           }
         }
       },
+      "ListTeamSecretsResponse": {
+        "required": [
+          "items",
+          "nextCursor"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListTeamSecretsResponseItemsItem"
+            },
+            "description": "The team\u0027s secret versions on this page. Without \u0060limit\u0060 or\n\u0060cursor\u0060, every version, sorted by name, then repos, then\ncreation time. Paged requests return versions in secret-version\ncreation order. A name with versions for different repositories\nappears once per version.\n"
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Cursor for the next page, or \u0060null\u0060 after the last page. Always\n\u0060null\u0060 without \u0060limit\u0060 or \u0060cursor\u0060.\n",
+            "nullable": true,
+            "example": "Tg9xR2pLbW5vcFFyc3R1dnd4eXo0NTY3ODkwYWJjZGVmZ2hp"
+          }
+        }
+      },
       "SecretInventoryOwner": {
         "required": [
           "type"
@@ -5087,6 +5137,48 @@
         }
       },
       "ListSecretsResponseItemsItem": {
+        "required": [
+          "name",
+          "type",
+          "repos",
+          "id",
+          "createdAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^secv_[A-Za-z0-9_-]{22}$",
+            "type": "string",
+            "description": "Opaque version ID. A version keeps its \u0060id\u0060 through changes to\nits value, type, or repositories. Always present in lists; a\n\u0060201\u0060 from a \u0060PUT\u0060 leaves it out when the new version isn\u0027t\nreadable yet.\n",
+            "example": "secv_3qKx9mT2bV7nR1cW5yZ8aQ"
+          },
+          "name": {
+            "type": "string",
+            "description": "Environment variable name agents see.",
+            "example": "NPM_TOKEN"
+          },
+          "type": {
+            "$ref": "#/components/schemas/SecretVersionType"
+          },
+          "repos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The only repositories that get this version, lowercase and\nsorted, with repository URLs reduced to \u0060host/owner/repo\u0060.\nEmpty when every repository gets it.\n",
+            "example": [
+              "github.com/acme/api"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the version was created. Always present in lists; a\n\u0060201\u0060 from a \u0060PUT\u0060 leaves it out when the new version isn\u0027t\nreadable yet.\n",
+            "format": "date-time",
+            "example": "2026-10-01T09:15:42.000Z"
+          }
+        }
+      },
+      "ListTeamSecretsResponseItemsItem": {
         "required": [
           "name",
           "type",
