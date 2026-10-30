@@ -17,8 +17,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 
         public virtual void CaptureExplicitNulls(global::Microsoft.Kiota.Abstractions.Serialization.IParseNode parseNode)
         {
-            if (parseNode.GetChildNode("runs") is { } nullNodeRuns && nullNodeRuns.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Runs = null;
-            if (parseNode.GetChildNode("totalUsage") is { } nullNodeTotalUsage && nullNodeTotalUsage.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) TotalUsage = null;
+            if (parseNode.GetChildNode("runs") is null) { _explicitNullValueRuns = default!; _explicitNullProperties?.Remove("runs"); }
+            else if (parseNode.GetChildNode("runs") is { } nullNodeRuns && nullNodeRuns.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Runs = null;
+            if (parseNode.GetChildNode("totalUsage") is null) { _explicitNullValueTotalUsage = default!; _explicitNullProperties?.Remove("totalUsage"); }
+            else if (parseNode.GetChildNode("totalUsage") is { } nullNodeTotalUsage && nullNodeTotalUsage.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) TotalUsage = null;
         }
 
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
@@ -26,21 +28,21 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         /// <summary>Per-run usage, one entry per run (or a single entry when `runId` is set).</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunUsage>? Runs { get => _explicitNullValueRuns; set { _explicitNullValueRuns = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("runs"); else _explicitNullProperties?.Remove("runs"); } }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunUsage>? Runs { get => _explicitNullValueRuns; set { _explicitNullValueRuns = value; AdditionalData?.Remove("runs"); if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("runs"); else _explicitNullProperties?.Remove("runs"); } }
         private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunUsage>? _explicitNullValueRuns = default!;
 #nullable restore
 #else
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunUsage> Runs { get => _explicitNullValueRuns; set { _explicitNullValueRuns = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("runs"); else _explicitNullProperties?.Remove("runs"); } }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunUsage> Runs { get => _explicitNullValueRuns; set { _explicitNullValueRuns = value; AdditionalData?.Remove("runs"); if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("runs"); else _explicitNullProperties?.Remove("runs"); } }
         private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunUsage> _explicitNullValueRuns = default!;
 #endif
         /// <summary>Token usage summed across the returned runs.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponseTotalUsage? TotalUsage { get => _explicitNullValueTotalUsage; set { _explicitNullValueTotalUsage = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("totalUsage"); else _explicitNullProperties?.Remove("totalUsage"); } }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponseTotalUsage? TotalUsage { get => _explicitNullValueTotalUsage; set { _explicitNullValueTotalUsage = value; AdditionalData?.Remove("totalUsage"); if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("totalUsage"); else _explicitNullProperties?.Remove("totalUsage"); } }
         private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponseTotalUsage? _explicitNullValueTotalUsage = default!;
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponseTotalUsage TotalUsage { get => _explicitNullValueTotalUsage; set { _explicitNullValueTotalUsage = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("totalUsage"); else _explicitNullProperties?.Remove("totalUsage"); } }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponseTotalUsage TotalUsage { get => _explicitNullValueTotalUsage; set { _explicitNullValueTotalUsage = value; AdditionalData?.Remove("totalUsage"); if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("totalUsage"); else _explicitNullProperties?.Remove("totalUsage"); } }
         private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponseTotalUsage _explicitNullValueTotalUsage = default!;
 #endif
         /// <summary>

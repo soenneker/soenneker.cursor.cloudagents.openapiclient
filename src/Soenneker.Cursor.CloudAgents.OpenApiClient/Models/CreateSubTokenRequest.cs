@@ -18,8 +18,10 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 
         public virtual void CaptureExplicitNulls(global::Microsoft.Kiota.Abstractions.Serialization.IParseNode parseNode)
         {
-            if (parseNode.GetChildNode("forUserEmail") is { } nullNodeForUserEmail && nullNodeForUserEmail.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) ForUserEmail = null;
-            if (parseNode.GetChildNode("forUserId") is { } nullNodeForUserId && nullNodeForUserId.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) ForUserId = null;
+            if (parseNode.GetChildNode("forUserEmail") is null) { _explicitNullValueForUserEmail = default!; _explicitNullProperties?.Remove("forUserEmail"); }
+            else if (parseNode.GetChildNode("forUserEmail") is { } nullNodeForUserEmail && nullNodeForUserEmail.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) ForUserEmail = null;
+            if (parseNode.GetChildNode("forUserId") is null) { _explicitNullValueForUserId = default!; _explicitNullProperties?.Remove("forUserId"); }
+            else if (parseNode.GetChildNode("forUserId") is { } nullNodeForUserId && nullNodeForUserId.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) ForUserId = null;
         }
 
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
@@ -27,15 +29,15 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         /// <summary>Active team member email. Case-insensitive. Mutually exclusive with `forUserId`.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? ForUserEmail { get => _explicitNullValueForUserEmail; set { _explicitNullValueForUserEmail = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("forUserEmail"); else _explicitNullProperties?.Remove("forUserEmail"); } }
+        public string? ForUserEmail { get => _explicitNullValueForUserEmail; set { _explicitNullValueForUserEmail = value; AdditionalData?.Remove("forUserEmail"); if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("forUserEmail"); else _explicitNullProperties?.Remove("forUserEmail"); } }
         private string? _explicitNullValueForUserEmail = default!;
 #nullable restore
 #else
-        public string ForUserEmail { get => _explicitNullValueForUserEmail; set { _explicitNullValueForUserEmail = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("forUserEmail"); else _explicitNullProperties?.Remove("forUserEmail"); } }
+        public string ForUserEmail { get => _explicitNullValueForUserEmail; set { _explicitNullValueForUserEmail = value; AdditionalData?.Remove("forUserEmail"); if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("forUserEmail"); else _explicitNullProperties?.Remove("forUserEmail"); } }
         private string _explicitNullValueForUserEmail = default!;
 #endif
         /// <summary>Active team member&apos;s numeric Cursor user ID. Mutually exclusive with `forUserEmail`.</summary>
-        public int? ForUserId { get => _explicitNullValueForUserId; set { _explicitNullValueForUserId = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("forUserId"); else _explicitNullProperties?.Remove("forUserId"); } }
+        public int? ForUserId { get => _explicitNullValueForUserId; set { _explicitNullValueForUserId = value; AdditionalData?.Remove("forUserId"); if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("forUserId"); else _explicitNullProperties?.Remove("forUserId"); } }
         private int? _explicitNullValueForUserId = default!;
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateSubTokenRequest"/> and sets the default values.

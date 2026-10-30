@@ -1972,7 +1972,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SetEnvironmentSecret409Response"
+                  "$ref": "#/components/schemas/SetEnvironmentSecret409ResponseError"
                 }
               }
             }
@@ -2206,7 +2206,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SetTeamSecret409Response"
+                  "$ref": "#/components/schemas/SetTeamSecret409ResponseError"
                 }
               }
             }
@@ -2394,7 +2394,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SetPersonalSecret409Response"
+                  "$ref": "#/components/schemas/SetPersonalSecret409ResponseError"
                 }
               }
             }
@@ -6514,6 +6514,72 @@
         },
         "x-client-original-error-schema": {
           "$ref": "#/components/schemas/UnauthorizedResponse"
+        }
+      },
+      "SetEnvironmentSecret409ResponseError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "x-client-untyped-value": true,
+            "x-client-original-field-schemas": [
+              {
+                "$ref": "#/components/schemas/SecretNameAmbiguousErrorError"
+              },
+              {
+                "$ref": "#/components/schemas/ErrorError"
+              }
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "x-client-original-error-schema": {
+          "$ref": "#/components/schemas/SetEnvironmentSecret409Response"
+        }
+      },
+      "SetTeamSecret409ResponseError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "x-client-untyped-value": true,
+            "x-client-original-field-schemas": [
+              {
+                "$ref": "#/components/schemas/SecretNameAmbiguousErrorError"
+              },
+              {
+                "$ref": "#/components/schemas/ErrorError"
+              }
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "x-client-original-error-schema": {
+          "$ref": "#/components/schemas/SetTeamSecret409Response"
+        }
+      },
+      "SetPersonalSecret409ResponseError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "x-client-untyped-value": true,
+            "x-client-original-field-schemas": [
+              {
+                "$ref": "#/components/schemas/SecretNameAmbiguousErrorError"
+              },
+              {
+                "$ref": "#/components/schemas/ErrorError"
+              }
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "x-client-original-error-schema": {
+          "$ref": "#/components/schemas/SetPersonalSecret409Response"
         }
       },
       "CreateRunSuccessResponse": {
