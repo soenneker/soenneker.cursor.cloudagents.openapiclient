@@ -11,89 +11,131 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     #pragma warning disable CS1591
     public partial class CreateAgentRequest : IAdditionalDataHolder, IParsable
     #pragma warning restore CS1591
-    {
+    , global::Soenneker.OpenApi.Generated.IOpenApiExplicitNulls {
+        // Track explicitly assigned nulls separately from absent properties.
+        private global::System.Collections.Generic.HashSet<string> _explicitNullProperties = null!;
+
+        public virtual void CaptureExplicitNulls(global::Microsoft.Kiota.Abstractions.Serialization.IParseNode parseNode)
+        {
+            if (parseNode.GetChildNode("agentId") is { } nullNodeAgentId && nullNodeAgentId.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) AgentId = null;
+            if (parseNode.GetChildNode("autoCreatePR") is { } nullNodeAutoCreatePR && nullNodeAutoCreatePR.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) AutoCreatePR = null;
+            if (parseNode.GetChildNode("customSubagents") is { } nullNodeCustomSubagents && nullNodeCustomSubagents.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) CustomSubagents = null;
+            if (parseNode.GetChildNode("env") is { } nullNodeEnv && nullNodeEnv.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Env = null;
+            if (parseNode.GetChildNode("envVars") is { } nullNodeEnvVars && nullNodeEnvVars.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) EnvVars = null;
+            if (parseNode.GetChildNode("mcpServers") is { } nullNodeMcpServers && nullNodeMcpServers.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) McpServers = null;
+            if (parseNode.GetChildNode("mode") is { } nullNodeMode && nullNodeMode.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Mode = null;
+            if (parseNode.GetChildNode("model") is { } nullNodeModel && nullNodeModel.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Model = null;
+            if (parseNode.GetChildNode("name") is { } nullNodeName && nullNodeName.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Name = null;
+            if (parseNode.GetChildNode("prompt") is { } nullNodePrompt && nullNodePrompt.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Prompt = null;
+            if (parseNode.GetChildNode("repos") is { } nullNodeRepos && nullNodeRepos.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Repos = null;
+            if (parseNode.GetChildNode("skipReviewerRequest") is { } nullNodeSkipReviewerRequest && nullNodeSkipReviewerRequest.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) SkipReviewerRequest = null;
+            if (parseNode.GetChildNode("workOnCurrentBranch") is { } nullNodeWorkOnCurrentBranch && nullNodeWorkOnCurrentBranch.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) WorkOnCurrentBranch = null;
+        }
+
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
         /// <summary>Optional client-supplied agent identifier in `bc-&lt;uuid&gt;` form. Re-POSTing the same `agentId` returns `409 agent_id_conflict` instead of creating a duplicate. Cannot be combined with `envVars`; omit `agentId` so the server mints one when you need session secrets.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? AgentId { get; set; }
+        public string? AgentId { get => _explicitNullValueAgentId; set { _explicitNullValueAgentId = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("agentId"); else _explicitNullProperties?.Remove("agentId"); } }
+        private string? _explicitNullValueAgentId = default!;
 #nullable restore
 #else
-        public string AgentId { get; set; }
+        public string AgentId { get => _explicitNullValueAgentId; set { _explicitNullValueAgentId = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("agentId"); else _explicitNullProperties?.Remove("agentId"); } }
+        private string _explicitNullValueAgentId = default!;
 #endif
         /// <summary>Whether Cursor should open a pull request when the run completes.</summary>
-        public bool? AutoCreatePR { get; set; }
+        public bool? AutoCreatePR { get => _explicitNullValueAutoCreatePR; set { _explicitNullValueAutoCreatePR = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("autoCreatePR"); else _explicitNullProperties?.Remove("autoCreatePR"); } }
+        private bool? _explicitNullValueAutoCreatePR = default!;
         /// <summary>Custom subagents the main agent can delegate to. Names must be unique and not collide with built-ins.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent>? CustomSubagents { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent>? CustomSubagents { get => _explicitNullValueCustomSubagents; set { _explicitNullValueCustomSubagents = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("customSubagents"); else _explicitNullProperties?.Remove("customSubagents"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent>? _explicitNullValueCustomSubagents = default!;
 #nullable restore
 #else
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent> CustomSubagents { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent> CustomSubagents { get => _explicitNullValueCustomSubagents; set { _explicitNullValueCustomSubagents = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("customSubagents"); else _explicitNullProperties?.Remove("customSubagents"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CustomSubagent> _explicitNullValueCustomSubagents = default!;
 #endif
         /// <summary>The env property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv? Env { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv? Env { get => _explicitNullValueEnv; set { _explicitNullValueEnv = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("env"); else _explicitNullProperties?.Remove("env"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv? _explicitNullValueEnv = default!;
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv Env { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv Env { get => _explicitNullValueEnv; set { _explicitNullValueEnv = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("env"); else _explicitNullProperties?.Remove("env"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentEnv _explicitNullValueEnv = default!;
 #endif
         /// <summary>Session-scoped environment variables for the cloud agent.Values are encrypted at rest, injected into the agent&apos;sshell, and deleted with the agent. Names and values followthe `EnvVars` rules. Cannot be combined with aclient-supplied `agentId`.Beta: `envVars` is rolling out. If it isn&apos;t enabled foryour account yet, the field is silently ignored on createrather than failing the request — verify the values arepresent on a first run before relying on them inproduction.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVars? EnvVars { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVars? EnvVars { get => _explicitNullValueEnvVars; set { _explicitNullValueEnvVars = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("envVars"); else _explicitNullProperties?.Remove("envVars"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVars? _explicitNullValueEnvVars = default!;
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVars EnvVars { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVars EnvVars { get => _explicitNullValueEnvVars; set { _explicitNullValueEnvVars = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("envVars"); else _explicitNullProperties?.Remove("envVars"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestEnvVars _explicitNullValueEnvVars = default!;
 #endif
         /// <summary>Inline MCP server definitions available to the initial run. Remote servers support `headers` or OAuth `auth`; stdio servers run inside the cloud agent VM and can receive `env`. Server names must be unique.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>? McpServers { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>? McpServers { get => _explicitNullValueMcpServers; set { _explicitNullValueMcpServers = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("mcpServers"); else _explicitNullProperties?.Remove("mcpServers"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>? _explicitNullValueMcpServers = default!;
 #nullable restore
 #else
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer> McpServers { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer> McpServers { get => _explicitNullValueMcpServers; set { _explicitNullValueMcpServers = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("mcpServers"); else _explicitNullProperties?.Remove("mcpServers"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer> _explicitNullValueMcpServers = default!;
 #endif
         /// <summary>Conversation mode. `plan` explores and drafts a plan before coding; `agent` implements changes directly. On follow-up runs, omit to keep the conversation&apos;s current mode; set explicitly to switch modes for that run.</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestMode? Mode { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestMode? Mode { get => _explicitNullValueMode; set { _explicitNullValueMode = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("mode"); else _explicitNullProperties?.Remove("mode"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestMode? _explicitNullValueMode = default!;
         /// <summary>The model property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef? Model { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef? Model { get => _explicitNullValueModel; set { _explicitNullValueModel = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("model"); else _explicitNullProperties?.Remove("model"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef? _explicitNullValueModel = default!;
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef Model { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef Model { get => _explicitNullValueModel; set { _explicitNullValueModel = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("model"); else _explicitNullProperties?.Remove("model"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef _explicitNullValueModel = default!;
 #endif
         /// <summary>Display name for the agent. Auto-derived from the prompt when omitted.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? Name { get; set; }
+        public string? Name { get => _explicitNullValueName; set { _explicitNullValueName = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("name"); else _explicitNullProperties?.Remove("name"); } }
+        private string? _explicitNullValueName = default!;
 #nullable restore
 #else
-        public string Name { get; set; }
+        public string Name { get => _explicitNullValueName; set { _explicitNullValueName = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("name"); else _explicitNullProperties?.Remove("name"); } }
+        private string _explicitNullValueName = default!;
 #endif
         /// <summary>The prompt property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestPrompt? Prompt { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestPrompt? Prompt { get => _explicitNullValuePrompt; set { _explicitNullValuePrompt = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("prompt"); else _explicitNullProperties?.Remove("prompt"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestPrompt? _explicitNullValuePrompt = default!;
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestPrompt Prompt { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestPrompt Prompt { get => _explicitNullValuePrompt; set { _explicitNullValuePrompt = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("prompt"); else _explicitNullProperties?.Remove("prompt"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequestPrompt _explicitNullValuePrompt = default!;
 #endif
         /// <summary>Repository configuration. Mutually exclusive with a named cloud environment. Omit both `repos` and `env` (or pass `repos: []`) to start a no-repo agent. On self-hosted targets, only a named any-repo pool takes more than one entry. `machine`, the `default` pool, and repo-backed pools take one and return `400` for more.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>? Repos { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>? Repos { get => _explicitNullValueRepos; set { _explicitNullValueRepos = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("repos"); else _explicitNullProperties?.Remove("repos"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>? _explicitNullValueRepos = default!;
 #nullable restore
 #else
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig> Repos { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig> Repos { get => _explicitNullValueRepos; set { _explicitNullValueRepos = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("repos"); else _explicitNullProperties?.Remove("repos"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig> _explicitNullValueRepos = default!;
 #endif
         /// <summary>Whether to skip requesting the user as a reviewer when Cursor opens a PR. Only applies when `autoCreatePR` is true.</summary>
-        public bool? SkipReviewerRequest { get; set; }
+        public bool? SkipReviewerRequest { get => _explicitNullValueSkipReviewerRequest; set { _explicitNullValueSkipReviewerRequest = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("skipReviewerRequest"); else _explicitNullProperties?.Remove("skipReviewerRequest"); } }
+        private bool? _explicitNullValueSkipReviewerRequest = default!;
         /// <summary>When `false` (the default), Cursor pushes commits to a newauto-generated branch (`cursor/...`) based on`repos[0].startingRef` (or the PR base ref when `prUrl`is set). When `true`, Cursor pushes directly to thatstarting ref — for a non-PR create, that&apos;s the branch youpassed in `startingRef`; for a `prUrl` create, that&apos;s thePR&apos;s head branch.</summary>
-        public bool? WorkOnCurrentBranch { get; set; }
+        public bool? WorkOnCurrentBranch { get => _explicitNullValueWorkOnCurrentBranch; set { _explicitNullValueWorkOnCurrentBranch = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("workOnCurrentBranch"); else _explicitNullProperties?.Remove("workOnCurrentBranch"); } }
+        private bool? _explicitNullValueWorkOnCurrentBranch = default!;
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest"/> and sets the default values.
         /// </summary>
@@ -112,7 +154,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest();
+            return global::Soenneker.OpenApi.Generated.OpenApiNullTracking.Capture(new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateAgentRequest(), parseNode);
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -157,6 +199,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RepoConfig>("repos", Repos);
             writer.WriteBoolValue("skipReviewerRequest", SkipReviewerRequest);
             writer.WriteBoolValue("workOnCurrentBranch", WorkOnCurrentBranch);
+            if (_explicitNullProperties != null) foreach (string name in _explicitNullProperties) writer.WriteNullValue(name);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

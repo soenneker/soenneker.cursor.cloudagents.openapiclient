@@ -11,57 +11,94 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     #pragma warning disable CS1591
     public partial class EnvironmentBuild : IParsable
     #pragma warning restore CS1591
-    {
+    , global::Soenneker.OpenApi.Generated.IOpenApiExplicitNulls {
+        // Track explicitly assigned nulls separately from absent properties.
+        private global::System.Collections.Generic.HashSet<string> _explicitNullProperties = null!;
+
+        public virtual void CaptureExplicitNulls(global::Microsoft.Kiota.Abstractions.Serialization.IParseNode parseNode)
+        {
+            if (parseNode.GetChildNode("completedAt") is { } nullNodeCompletedAt && nullNodeCompletedAt.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) CompletedAt = null;
+            if (parseNode.GetChildNode("createdAt") is { } nullNodeCreatedAt && nullNodeCreatedAt.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) CreatedAt = null;
+            if (parseNode.GetChildNode("draft") is { } nullNodeDraft && nullNodeDraft.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Draft = null;
+            if (parseNode.GetChildNode("environmentId") is { } nullNodeEnvironmentId && nullNodeEnvironmentId.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) EnvironmentId = null;
+            if (parseNode.GetChildNode("failure") is { } nullNodeFailure && nullNodeFailure.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Failure = null;
+            if (parseNode.GetChildNode("id") is { } nullNodeId && nullNodeId.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Id = null;
+            if (parseNode.GetChildNode("repoCommits") is { } nullNodeRepoCommits && nullNodeRepoCommits.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) RepoCommits = null;
+            if (parseNode.GetChildNode("requestedRefs") is { } nullNodeRequestedRefs && nullNodeRequestedRefs.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) RequestedRefs = null;
+            if (parseNode.GetChildNode("snapshotState") is { } nullNodeSnapshotState && nullNodeSnapshotState.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) SnapshotState = null;
+            if (parseNode.GetChildNode("source") is { } nullNodeSource && nullNodeSource.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Source = null;
+            if (parseNode.GetChildNode("status") is { } nullNodeStatus && nullNodeStatus.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Status = null;
+            if (parseNode.GetChildNode("trigger") is { } nullNodeTrigger && nullNodeTrigger.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Trigger = null;
+            if (parseNode.GetChildNode("updatedAt") is { } nullNodeUpdatedAt && nullNodeUpdatedAt.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) UpdatedAt = null;
+        }
+
         /// <summary>When the build finished. Omitted while it&apos;s in progress.</summary>
-        public DateTimeOffset? CompletedAt { get; set; }
+        public DateTimeOffset? CompletedAt { get => _explicitNullValueCompletedAt; set { _explicitNullValueCompletedAt = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("completedAt"); else _explicitNullProperties?.Remove("completedAt"); } }
+        private DateTimeOffset? _explicitNullValueCompletedAt = default!;
         /// <summary>When the build was created.</summary>
-        public DateTimeOffset? CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get => _explicitNullValueCreatedAt; set { _explicitNullValueCreatedAt = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("createdAt"); else _explicitNullProperties?.Remove("createdAt"); } }
+        private DateTimeOffset? _explicitNullValueCreatedAt = default!;
         /// <summary>`true` for a draft build. Agents don&apos;t start from a draft build until it&apos;s activated.</summary>
-        public bool? Draft { get; set; }
+        public bool? Draft { get => _explicitNullValueDraft; set { _explicitNullValueDraft = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("draft"); else _explicitNullProperties?.Remove("draft"); } }
+        private bool? _explicitNullValueDraft = default!;
         /// <summary>ID of the environment the build belongs to.</summary>
-        public Guid? EnvironmentId { get; set; }
+        public Guid? EnvironmentId { get => _explicitNullValueEnvironmentId; set { _explicitNullValueEnvironmentId = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("environmentId"); else _explicitNullProperties?.Remove("environmentId"); } }
+        private Guid? _explicitNullValueEnvironmentId = default!;
         /// <summary>Why a failed build failed.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildFailure? Failure { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildFailure? Failure { get => _explicitNullValueFailure; set { _explicitNullValueFailure = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("failure"); else _explicitNullProperties?.Remove("failure"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildFailure? _explicitNullValueFailure = default!;
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildFailure Failure { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildFailure Failure { get => _explicitNullValueFailure; set { _explicitNullValueFailure = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("failure"); else _explicitNullProperties?.Remove("failure"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildFailure _explicitNullValueFailure = default!;
 #endif
         /// <summary>Unique build identifier, in the form `bld-YYYYMMDD-&lt;uuid&gt;`.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? Id { get; set; }
+        public string? Id { get => _explicitNullValueId; set { _explicitNullValueId = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("id"); else _explicitNullProperties?.Remove("id"); } }
+        private string? _explicitNullValueId = default!;
 #nullable restore
 #else
-        public string Id { get; set; }
+        public string Id { get => _explicitNullValueId; set { _explicitNullValueId = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("id"); else _explicitNullProperties?.Remove("id"); } }
+        private string _explicitNullValueId = default!;
 #endif
         /// <summary>Repository commits returned for the build, when available. An API key limited to certain repositories sees only entries inside its limit.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRepoCommit>? RepoCommits { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRepoCommit>? RepoCommits { get => _explicitNullValueRepoCommits; set { _explicitNullValueRepoCommits = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("repoCommits"); else _explicitNullProperties?.Remove("repoCommits"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRepoCommit>? _explicitNullValueRepoCommits = default!;
 #nullable restore
 #else
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRepoCommit> RepoCommits { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRepoCommit> RepoCommits { get => _explicitNullValueRepoCommits; set { _explicitNullValueRepoCommits = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("repoCommits"); else _explicitNullProperties?.Remove("repoCommits"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRepoCommit> _explicitNullValueRepoCommits = default!;
 #endif
         /// <summary>Branches, tags, or commits the build was asked to use instead of a repository&apos;s default branch. Repositories without an entry use their default branch. An API key limited to certain repositories sees only entries for repositories inside its limit.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRequestedRef>? RequestedRefs { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRequestedRef>? RequestedRefs { get => _explicitNullValueRequestedRefs; set { _explicitNullValueRequestedRefs = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("requestedRefs"); else _explicitNullProperties?.Remove("requestedRefs"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRequestedRef>? _explicitNullValueRequestedRefs = default!;
 #nullable restore
 #else
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRequestedRef> RequestedRefs { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRequestedRef> RequestedRefs { get => _explicitNullValueRequestedRefs; set { _explicitNullValueRequestedRefs = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("requestedRefs"); else _explicitNullProperties?.Remove("requestedRefs"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildRequestedRef> _explicitNullValueRequestedRefs = default!;
 #endif
         /// <summary>State of the build&apos;s snapshot. Omitted if the build didn&apos;t create a snapshot.</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSnapshotState? SnapshotState { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSnapshotState? SnapshotState { get => _explicitNullValueSnapshotState; set { _explicitNullValueSnapshotState = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("snapshotState"); else _explicitNullProperties?.Remove("snapshotState"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSnapshotState? _explicitNullValueSnapshotState = default!;
         /// <summary>Where the build was started from. `SYSTEM` (Cursor on its own), `WEBSITE` (the dashboard), `API`, or `AGENT` (a cloud agent).</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSource? Source { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSource? Source { get => _explicitNullValueSource; set { _explicitNullValueSource = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("source"); else _explicitNullProperties?.Remove("source"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSource? _explicitNullValueSource = default!;
         /// <summary>Build status. A skipped build found nothing to rebuild.</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildStatus? Status { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildStatus? Status { get => _explicitNullValueStatus; set { _explicitNullValueStatus = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("status"); else _explicitNullProperties?.Remove("status"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildStatus? _explicitNullValueStatus = default!;
         /// <summary>What started the build. `RECURRING` for a scheduled build, `CONFIG_CHANGE` after a configuration or secrets change, or `MANUAL` for one started on request.</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildTrigger? Trigger { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildTrigger? Trigger { get => _explicitNullValueTrigger; set { _explicitNullValueTrigger = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("trigger"); else _explicitNullProperties?.Remove("trigger"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildTrigger? _explicitNullValueTrigger = default!;
         /// <summary>When the build was last updated.</summary>
-        public DateTimeOffset? UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get => _explicitNullValueUpdatedAt; set { _explicitNullValueUpdatedAt = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("updatedAt"); else _explicitNullProperties?.Remove("updatedAt"); } }
+        private DateTimeOffset? _explicitNullValueUpdatedAt = default!;
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
@@ -70,7 +107,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuild CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuild();
+            return global::Soenneker.OpenApi.Generated.OpenApiNullTracking.Capture(new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuild(), parseNode);
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -114,7 +151,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSource>("source", Source);
             writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildStatus>("status", Status);
             writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildTrigger>("trigger", Trigger);
-            writer.WriteDateTimeOffsetValue("updatedAt", UpdatedAt);
+            writer.WriteDateTimeOffsetValue("updatedAt", UpdatedAt);if (_explicitNullProperties != null) foreach (string name in _explicitNullProperties) writer.WriteNullValue(name);
+            
         }
     }
 }

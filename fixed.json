@@ -45,7 +45,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -120,7 +127,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -163,7 +177,14 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -207,7 +228,14 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -257,6 +285,9 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "$ref": "#/components/schemas/CreateRunSuccessResponse"
+                },
+                "x-client-original-success-schema": {
                   "$ref": "#/components/schemas/CreateRunResponse"
                 }
               }
@@ -267,7 +298,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SteerRunResponse"
+                  "$ref": "#/components/schemas/CreateRunSuccessResponse"
                 },
                 "examples": {
                   "steered": {
@@ -283,6 +314,9 @@
                       "delivery": "queued"
                     }
                   }
+                },
+                "x-client-original-success-schema": {
+                  "$ref": "#/components/schemas/SteerRunResponse"
                 }
               }
             }
@@ -298,7 +332,14 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "description": "Authenticated but insufficient permissions, plan required, or feature unavailable (\u0060feature_unavailable\u0060), including a steer when steering isn\u0027t available for your account.",
@@ -378,7 +419,14 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -434,7 +482,14 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -515,7 +570,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -574,7 +636,14 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -635,7 +704,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -681,7 +757,14 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -727,7 +810,14 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -773,7 +863,14 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -833,7 +930,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -942,7 +1046,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -984,7 +1095,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -1052,7 +1170,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -1110,7 +1235,14 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -1186,7 +1318,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -1256,7 +1395,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -1355,7 +1501,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -1419,7 +1572,14 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "description": "Plan or role not allowed, Cloud Agents API access isn\u0027t available for your account (\u0060feature_unavailable\u0060), an API key limited to certain repositories, or a user-scoped token it minted, on an environment whose repositories are all inside that limit (\u0060key_not_supported\u0060), or a non-draft build on a team environment from a member who isn\u0027t an admin when the team lets only admins edit environments (\u0060team_admin_required\u0060).",
@@ -1493,7 +1653,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -1555,7 +1722,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -1589,7 +1763,14 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"
@@ -1633,7 +1814,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "description": "Plan or role not allowed, the environments API isn\u0027t enabled for\nyour account (\u0060feature_unavailable\u0060), or a \u0060grok_\u0060 API key\n(\u0060key_not_supported\u0060).\n",
@@ -1681,7 +1869,14 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"
@@ -1743,7 +1938,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "description": "Plan or role not allowed, the environments API isn\u0027t enabled for your account (\u0060feature_unavailable\u0060), a \u0060grok_\u0060 API key (\u0060key_not_supported\u0060), or a team that lets only admins change secrets (\u0060team_admin_required\u0060).",
@@ -1813,7 +2015,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "description": "Plan or role not allowed, the environments API isn\u0027t enabled for your account (\u0060feature_unavailable\u0060), a \u0060grok_\u0060 API key (\u0060key_not_supported\u0060), or a team that lets only admins change secrets (\u0060team_admin_required\u0060).",
@@ -1894,7 +2103,14 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"
@@ -1956,7 +2172,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "description": "Plan or role not allowed, the environments API isn\u0027t enabled for your account (\u0060feature_unavailable\u0060), a \u0060grok_\u0060 API key (\u0060key_not_supported\u0060), an API key limited to certain repositories (\u0060repository_access\u0060), a team that lets only admins change secrets (\u0060team_admin_required\u0060), or an API key that isn\u0027t working in a team or whose user isn\u0027t a team member (\u0060team_membership_required\u0060).",
@@ -2026,7 +2249,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "description": "Plan or role not allowed, the environments API isn\u0027t enabled for your account (\u0060feature_unavailable\u0060), a \u0060grok_\u0060 API key (\u0060key_not_supported\u0060), an API key limited to certain repositories (\u0060repository_access\u0060), a team that lets only admins change secrets (\u0060team_admin_required\u0060), or an API key that isn\u0027t working in a team or whose user isn\u0027t a team member (\u0060team_membership_required\u0060).",
@@ -2130,7 +2360,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "description": "Plan or role not allowed, Cloud Agents API access isn\u0027t available for your account (\u0060feature_unavailable\u0060), a \u0060grok_\u0060 API key (\u0060key_not_supported\u0060), an API key that doesn\u0027t act for a user, such as a service account API key (\u0060user_required\u0060), a user-scoped token minted by an API key limited to certain repositories (\u0060repository_access\u0060), or a team that has turned off personal secrets (\u0060personal_secrets_disabled\u0060).",
@@ -2200,7 +2437,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "description": "Plan or role not allowed, Cloud Agents API access isn\u0027t available for your account (\u0060feature_unavailable\u0060), a \u0060grok_\u0060 API key (\u0060key_not_supported\u0060), an API key that doesn\u0027t act for a user, such as a service account API key (\u0060user_required\u0060), or a user-scoped token minted by an API key limited to certain repositories (\u0060repository_access\u0060).",
@@ -2303,7 +2547,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
@@ -2368,7 +2619,14 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "description": "Plan or role not allowed, the environments API isn\u0027t enabled for\nyour account (\u0060feature_unavailable\u0060), a \u0060grok_\u0060 API key\n(\u0060key_not_supported\u0060), an API key limited to certain\nrepositories (\u0060repository_access\u0060), or an API key that isn\u0027t\nworking in a team or whose user isn\u0027t a team member\n(\u0060team_membership_required\u0060).\n",
@@ -2468,7 +2726,14 @@
             "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
           },
           "403": {
             "description": "Plan or role not allowed, the environments API isn\u0027t enabled for\nyour account (\u0060feature_unavailable\u0060), or a \u0060grok_\u0060 API key\n(\u0060key_not_supported\u0060). With \u0060scope=team\u0060, an API key limited to\ncertain repositories (\u0060repository_access\u0060) or one that isn\u0027t\nworking in a team or whose user isn\u0027t a team member\n(\u0060team_membership_required\u0060). With \u0060scope=user\u0060 or\n\u0060scope=members\u0060, an API key limited to certain repositories\n(\u0060repository_access\u0060) or one that doesn\u0027t act for a user\n(\u0060user_required\u0060).\n",
@@ -3314,9 +3579,6 @@
         }
       },
       "SteerRunResponse": {
-        "required": [
-          "delivery"
-        ],
         "oneOf": [
           {
             "$ref": "#/components/schemas/SteeredRunResponse"
@@ -3325,13 +3587,8 @@
             "$ref": "#/components/schemas/QueuedRunResponse"
           }
         ],
-        "properties": {
-          "delivery": {
-            "type": "string"
-          }
-        },
         "description": "What happened to a steered prompt. \u0060delivery\u0060 is \u0060steered\u0060 or\n\u0060queued\u0060, and only a \u0060steered\u0060 response can include \u0060runId\u0060.\n",
-        "discriminator": {
+        "x-client-original-discriminator": {
           "propertyName": "delivery",
           "mapping": {
             "steered": "#/components/schemas/SteeredRunResponse",
@@ -4140,9 +4397,6 @@
         "additionalProperties": false
       },
       "EnvironmentActiveBuild": {
-        "required": [
-          "type"
-        ],
         "oneOf": [
           {
             "$ref": "#/components/schemas/EnvironmentActiveBuildFromBuild"
@@ -4151,13 +4405,8 @@
             "$ref": "#/components/schemas/EnvironmentActiveBuildFromUniversalImage"
           }
         ],
-        "properties": {
-          "type": {
-            "type": "string"
-          }
-        },
         "description": "What an agent you start on this environment boots from, one of its builds or Cursor\u0027s default image.",
-        "discriminator": {
+        "x-client-original-discriminator": {
           "propertyName": "type",
           "mapping": {
             "build": "#/components/schemas/EnvironmentActiveBuildFromBuild",
@@ -6245,6 +6494,37 @@
             }
           ]
         }
+      },
+      "UnauthorizedResponseError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error category, such as \u0060error\u0060.",
+            "example": "error"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message.",
+            "example": "Invalid User API Key"
+          },
+          "error": {
+            "$ref": "#/components/schemas/ErrorError"
+          }
+        },
+        "x-client-original-error-schema": {
+          "$ref": "#/components/schemas/UnauthorizedResponse"
+        }
+      },
+      "CreateRunSuccessResponse": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/CreateRunResponse"
+          },
+          {
+            "$ref": "#/components/schemas/SteerRunResponse"
+          }
+        ]
       }
     },
     "responses": {

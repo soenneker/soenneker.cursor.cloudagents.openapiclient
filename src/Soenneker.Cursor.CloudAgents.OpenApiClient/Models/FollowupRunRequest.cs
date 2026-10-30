@@ -12,40 +12,61 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class FollowupRunRequest : IParsable
-    {
+    , global::Soenneker.OpenApi.Generated.IOpenApiExplicitNulls {
+        // Track explicitly assigned nulls separately from absent properties.
+        private global::System.Collections.Generic.HashSet<string> _explicitNullProperties = null!;
+
+        public virtual void CaptureExplicitNulls(global::Microsoft.Kiota.Abstractions.Serialization.IParseNode parseNode)
+        {
+            if (parseNode.GetChildNode("envVars") is { } nullNodeEnvVars && nullNodeEnvVars.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) EnvVars = null;
+            if (parseNode.GetChildNode("mcpServers") is { } nullNodeMcpServers && nullNodeMcpServers.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) McpServers = null;
+            if (parseNode.GetChildNode("mode") is { } nullNodeMode && nullNodeMode.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Mode = null;
+            if (parseNode.GetChildNode("model") is { } nullNodeModel && nullNodeModel.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Model = null;
+            if (parseNode.GetChildNode("prompt") is { } nullNodePrompt && nullNodePrompt.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Prompt = null;
+        }
+
         /// <summary>Environment variables for this follow-up run only, appliedwhile it executes. Names and values follow the `EnvVars`rules.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVars? EnvVars { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVars? EnvVars { get => _explicitNullValueEnvVars; set { _explicitNullValueEnvVars = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("envVars"); else _explicitNullProperties?.Remove("envVars"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVars? _explicitNullValueEnvVars = default!;
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVars EnvVars { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVars EnvVars { get => _explicitNullValueEnvVars; set { _explicitNullValueEnvVars = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("envVars"); else _explicitNullProperties?.Remove("envVars"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequestEnvVars _explicitNullValueEnvVars = default!;
 #endif
         /// <summary>Inline MCP server definitions for this follow-up run. When provided, these definitions replace any create-time inline MCP servers for this run.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>? McpServers { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>? McpServers { get => _explicitNullValueMcpServers; set { _explicitNullValueMcpServers = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("mcpServers"); else _explicitNullProperties?.Remove("mcpServers"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>? _explicitNullValueMcpServers = default!;
 #nullable restore
 #else
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer> McpServers { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer> McpServers { get => _explicitNullValueMcpServers; set { _explicitNullValueMcpServers = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("mcpServers"); else _explicitNullProperties?.Remove("mcpServers"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer> _explicitNullValueMcpServers = default!;
 #endif
         /// <summary>Conversation mode. `plan` explores and drafts a plan before coding; `agent` implements changes directly. On follow-up runs, omit to keep the conversation&apos;s current mode; set explicitly to switch modes for that run.</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode? Mode { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode? Mode { get => _explicitNullValueMode; set { _explicitNullValueMode = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("mode"); else _explicitNullProperties?.Remove("mode"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode? _explicitNullValueMode = default!;
         /// <summary>The model property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef? Model { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef? Model { get => _explicitNullValueModel; set { _explicitNullValueModel = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("model"); else _explicitNullProperties?.Remove("model"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef? _explicitNullValueModel = default!;
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef Model { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef Model { get => _explicitNullValueModel; set { _explicitNullValueModel = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("model"); else _explicitNullProperties?.Remove("model"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef _explicitNullValueModel = default!;
 #endif
         /// <summary>The prompt property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunPrompt? Prompt { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunPrompt? Prompt { get => _explicitNullValuePrompt; set { _explicitNullValuePrompt = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("prompt"); else _explicitNullProperties?.Remove("prompt"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunPrompt? _explicitNullValuePrompt = default!;
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunPrompt Prompt { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunPrompt Prompt { get => _explicitNullValuePrompt; set { _explicitNullValuePrompt = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("prompt"); else _explicitNullProperties?.Remove("prompt"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunPrompt _explicitNullValuePrompt = default!;
 #endif
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
@@ -55,7 +76,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequest CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequest();
+            return global::Soenneker.OpenApi.Generated.OpenApiNullTracking.Capture(new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.FollowupRunRequest(), parseNode);
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -83,7 +104,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer>("mcpServers", McpServers);
             writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentMode>("mode", Mode);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ModelRef>("model", Model);
-            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunPrompt>("prompt", Prompt);
+            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunPrompt>("prompt", Prompt);if (_explicitNullProperties != null) foreach (string name in _explicitNullProperties) writer.WriteNullValue(name);
+            
         }
     }
 }

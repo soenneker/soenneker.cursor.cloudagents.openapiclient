@@ -12,19 +12,31 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class CreateSubTokenRequest : IAdditionalDataHolder, IParsable
-    {
+    , global::Soenneker.OpenApi.Generated.IOpenApiExplicitNulls {
+        // Track explicitly assigned nulls separately from absent properties.
+        private global::System.Collections.Generic.HashSet<string> _explicitNullProperties = null!;
+
+        public virtual void CaptureExplicitNulls(global::Microsoft.Kiota.Abstractions.Serialization.IParseNode parseNode)
+        {
+            if (parseNode.GetChildNode("forUserEmail") is { } nullNodeForUserEmail && nullNodeForUserEmail.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) ForUserEmail = null;
+            if (parseNode.GetChildNode("forUserId") is { } nullNodeForUserId && nullNodeForUserId.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) ForUserId = null;
+        }
+
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
         /// <summary>Active team member email. Case-insensitive. Mutually exclusive with `forUserId`.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? ForUserEmail { get; set; }
+        public string? ForUserEmail { get => _explicitNullValueForUserEmail; set { _explicitNullValueForUserEmail = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("forUserEmail"); else _explicitNullProperties?.Remove("forUserEmail"); } }
+        private string? _explicitNullValueForUserEmail = default!;
 #nullable restore
 #else
-        public string ForUserEmail { get; set; }
+        public string ForUserEmail { get => _explicitNullValueForUserEmail; set { _explicitNullValueForUserEmail = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("forUserEmail"); else _explicitNullProperties?.Remove("forUserEmail"); } }
+        private string _explicitNullValueForUserEmail = default!;
 #endif
         /// <summary>Active team member&apos;s numeric Cursor user ID. Mutually exclusive with `forUserEmail`.</summary>
-        public int? ForUserId { get; set; }
+        public int? ForUserId { get => _explicitNullValueForUserId; set { _explicitNullValueForUserId = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("forUserId"); else _explicitNullProperties?.Remove("forUserId"); } }
+        private int? _explicitNullValueForUserId = default!;
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateSubTokenRequest"/> and sets the default values.
         /// </summary>
@@ -40,7 +52,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateSubTokenRequest CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateSubTokenRequest();
+            return global::Soenneker.OpenApi.Generated.OpenApiNullTracking.Capture(new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateSubTokenRequest(), parseNode);
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -63,6 +75,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteStringValue("forUserEmail", ForUserEmail);
             writer.WriteIntValue("forUserId", ForUserId);
+            if (_explicitNullProperties != null) foreach (string name in _explicitNullProperties) writer.WriteNullValue(name);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

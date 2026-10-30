@@ -12,38 +12,57 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class UpdateEnvironmentRequest : IParsable
-    {
+    , global::Soenneker.OpenApi.Generated.IOpenApiExplicitNulls {
+        // Track explicitly assigned nulls separately from absent properties.
+        private global::System.Collections.Generic.HashSet<string> _explicitNullProperties = null!;
+
+        public virtual void CaptureExplicitNulls(global::Microsoft.Kiota.Abstractions.Serialization.IParseNode parseNode)
+        {
+            if (parseNode.GetChildNode("buildSettings") is { } nullNodeBuildSettings && nullNodeBuildSettings.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) BuildSettings = null;
+            if (parseNode.GetChildNode("environmentJson") is { } nullNodeEnvironmentJson && nullNodeEnvironmentJson.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) EnvironmentJson = null;
+            if (parseNode.GetChildNode("name") is { } nullNodeName && nullNodeName.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Name = null;
+            if (parseNode.GetChildNode("repos") is { } nullNodeRepos && nullNodeRepos.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Repos = null;
+        }
+
         /// <summary>New values for any of the build settings GET /v1/environments/{id} returns. Fields you leave out stay unchanged, and `null` resets a field to its default.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettings? BuildSettings { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettings? BuildSettings { get => _explicitNullValueBuildSettings; set { _explicitNullValueBuildSettings = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("buildSettings"); else _explicitNullProperties?.Remove("buildSettings"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettings? _explicitNullValueBuildSettings = default!;
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettings BuildSettings { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettings BuildSettings { get => _explicitNullValueBuildSettings; set { _explicitNullValueBuildSettings = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("buildSettings"); else _explicitNullProperties?.Remove("buildSettings"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettings _explicitNullValueBuildSettings = default!;
 #endif
         /// <summary>Replacement `environment.json`, as a JSON-encoded string, using the same schema as a `.cursor/environment.json` file. It replaces the whole configuration. An invalid configuration returns `400 validation_error`. If the environment reads its configuration from a file in its only repository, the request returns `409 repo_file_environment_locked`.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? EnvironmentJson { get; set; }
+        public string? EnvironmentJson { get => _explicitNullValueEnvironmentJson; set { _explicitNullValueEnvironmentJson = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("environmentJson"); else _explicitNullProperties?.Remove("environmentJson"); } }
+        private string? _explicitNullValueEnvironmentJson = default!;
 #nullable restore
 #else
-        public string EnvironmentJson { get; set; }
+        public string EnvironmentJson { get => _explicitNullValueEnvironmentJson; set { _explicitNullValueEnvironmentJson = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("environmentJson"); else _explicitNullProperties?.Remove("environmentJson"); } }
+        private string _explicitNullValueEnvironmentJson = default!;
 #endif
         /// <summary>New display name. It must differ from the names of the owner&apos;s other environments; a name the owner already uses returns `409 environment_name_conflict`.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? Name { get; set; }
+        public string? Name { get => _explicitNullValueName; set { _explicitNullValueName = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("name"); else _explicitNullProperties?.Remove("name"); } }
+        private string? _explicitNullValueName = default!;
 #nullable restore
 #else
-        public string Name { get; set; }
+        public string Name { get => _explicitNullValueName; set { _explicitNullValueName = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("name"); else _explicitNullProperties?.Remove("name"); } }
+        private string _explicitNullValueName = default!;
 #endif
         /// <summary>The environment&apos;s full list of repositories, replacing thecurrent list. It follows the same rules as `repos` onPOST /v1/environments. Send `environmentJson` with it, because arepository change saves the whole configuration; `repos` without`environmentJson` returns `400 validation_error`. To keep thecurrent configuration, send the `environmentJson` fromGET /v1/environments/{id}.Only environments with two or more repositories can change them,and they must keep at least two. Sending the current listunchanged doesn&apos;t count as a change. Otherwise an environmentwithout repositories, a single-repository environment, or a listwith fewer than two returns `409 environment_repo_edit_blocked`.When the environment reads its configuration from a repositoryfile (`repoFile` on GET /v1/environments/{id}), the file stays theconfiguration source. The list must keep the `repoFile.url`repository, or the request returns `409 repo_file_repo_removed`.Repositories are compared by identity, so a trailing `.git` orslash, a missing scheme, a leading `www.`, or GitHub letter casestill match. When the list names that repository in several forms,the first entry is kept and the others dropped. For BitbucketServer, send the URL GET returns. An environment whoseonly repository holds its configuration file returns`409 repo_file_environment_locked` for any `repos`. Storedrepositories Cursor can&apos;t read return`400 stored_repos_unreadable`.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo>? Repos { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo>? Repos { get => _explicitNullValueRepos; set { _explicitNullValueRepos = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("repos"); else _explicitNullProperties?.Remove("repos"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo>? _explicitNullValueRepos = default!;
 #nullable restore
 #else
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo> Repos { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo> Repos { get => _explicitNullValueRepos; set { _explicitNullValueRepos = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("repos"); else _explicitNullProperties?.Remove("repos"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo> _explicitNullValueRepos = default!;
 #endif
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
@@ -53,7 +72,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentRequest CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentRequest();
+            return global::Soenneker.OpenApi.Generated.OpenApiNullTracking.Capture(new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentRequest(), parseNode);
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -79,7 +98,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettings>("buildSettings", BuildSettings);
             writer.WriteStringValue("environmentJson", EnvironmentJson);
             writer.WriteStringValue("name", Name);
-            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo>("repos", Repos);
+            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentRepo>("repos", Repos);if (_explicitNullProperties != null) foreach (string name in _explicitNullProperties) writer.WriteNullValue(name);
+            
         }
     }
 }

@@ -11,24 +11,37 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     #pragma warning disable CS1591
     public partial class AgentUsageResponse : IAdditionalDataHolder, IParsable
     #pragma warning restore CS1591
-    {
+    , global::Soenneker.OpenApi.Generated.IOpenApiExplicitNulls {
+        // Track explicitly assigned nulls separately from absent properties.
+        private global::System.Collections.Generic.HashSet<string> _explicitNullProperties = null!;
+
+        public virtual void CaptureExplicitNulls(global::Microsoft.Kiota.Abstractions.Serialization.IParseNode parseNode)
+        {
+            if (parseNode.GetChildNode("runs") is { } nullNodeRuns && nullNodeRuns.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Runs = null;
+            if (parseNode.GetChildNode("totalUsage") is { } nullNodeTotalUsage && nullNodeTotalUsage.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) TotalUsage = null;
+        }
+
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
         /// <summary>Per-run usage, one entry per run (or a single entry when `runId` is set).</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunUsage>? Runs { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunUsage>? Runs { get => _explicitNullValueRuns; set { _explicitNullValueRuns = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("runs"); else _explicitNullProperties?.Remove("runs"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunUsage>? _explicitNullValueRuns = default!;
 #nullable restore
 #else
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunUsage> Runs { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunUsage> Runs { get => _explicitNullValueRuns; set { _explicitNullValueRuns = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("runs"); else _explicitNullProperties?.Remove("runs"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunUsage> _explicitNullValueRuns = default!;
 #endif
         /// <summary>Token usage summed across the returned runs.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponseTotalUsage? TotalUsage { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponseTotalUsage? TotalUsage { get => _explicitNullValueTotalUsage; set { _explicitNullValueTotalUsage = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("totalUsage"); else _explicitNullProperties?.Remove("totalUsage"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponseTotalUsage? _explicitNullValueTotalUsage = default!;
 #nullable restore
 #else
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponseTotalUsage TotalUsage { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponseTotalUsage TotalUsage { get => _explicitNullValueTotalUsage; set { _explicitNullValueTotalUsage = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("totalUsage"); else _explicitNullProperties?.Remove("totalUsage"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponseTotalUsage _explicitNullValueTotalUsage = default!;
 #endif
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponse"/> and sets the default values.
@@ -45,7 +58,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponse CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponse();
+            return global::Soenneker.OpenApi.Generated.OpenApiNullTracking.Capture(new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponse(), parseNode);
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -68,6 +81,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RunUsage>("runs", Runs);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.AgentUsageResponseTotalUsage>("totalUsage", TotalUsage);
+            if (_explicitNullProperties != null) foreach (string name in _explicitNullProperties) writer.WriteNullValue(name);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

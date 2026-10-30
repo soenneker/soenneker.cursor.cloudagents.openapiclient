@@ -12,13 +12,26 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class EnvironmentBuildSettings : IParsable
-    {
+    , global::Soenneker.OpenApi.Generated.IOpenApiExplicitNulls {
+        // Track explicitly assigned nulls separately from absent properties.
+        private global::System.Collections.Generic.HashSet<string> _explicitNullProperties = null!;
+
+        public virtual void CaptureExplicitNulls(global::Microsoft.Kiota.Abstractions.Serialization.IParseNode parseNode)
+        {
+            if (parseNode.GetChildNode("installTimeoutMinutes") is { } nullNodeInstallTimeoutMinutes && nullNodeInstallTimeoutMinutes.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) InstallTimeoutMinutes = null;
+            if (parseNode.GetChildNode("pullLatestCode") is { } nullNodePullLatestCode && nullNodePullLatestCode.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) PullLatestCode = null;
+            if (parseNode.GetChildNode("stalenessThresholdHours") is { } nullNodeStalenessThresholdHours && nullNodeStalenessThresholdHours.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) StalenessThresholdHours = null;
+        }
+
         /// <summary>Minutes a build&apos;s install step can run. `null` means the default, 90.</summary>
-        public int? InstallTimeoutMinutes { get; set; }
+        public int? InstallTimeoutMinutes { get => _explicitNullValueInstallTimeoutMinutes; set { _explicitNullValueInstallTimeoutMinutes = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("installTimeoutMinutes"); else _explicitNullProperties?.Remove("installTimeoutMinutes"); } }
+        private int? _explicitNullValueInstallTimeoutMinutes = default!;
         /// <summary>Whether agents that start on the default branch pull its latest code. `when_stale`, the default, pulls when the active build is older than `stalenessThresholdHours`. `never` uses the commit the build recorded. `always` is a legacy value you can read but not set.</summary>
-        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSettingsPullLatestCode? PullLatestCode { get; set; }
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSettingsPullLatestCode? PullLatestCode { get => _explicitNullValuePullLatestCode; set { _explicitNullValuePullLatestCode = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("pullLatestCode"); else _explicitNullProperties?.Remove("pullLatestCode"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSettingsPullLatestCode? _explicitNullValuePullLatestCode = default!;
         /// <summary>Hours before the active build counts as stale. `0` pulls on every start. `null` means the default, 24.</summary>
-        public int? StalenessThresholdHours { get; set; }
+        public int? StalenessThresholdHours { get => _explicitNullValueStalenessThresholdHours; set { _explicitNullValueStalenessThresholdHours = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("stalenessThresholdHours"); else _explicitNullProperties?.Remove("stalenessThresholdHours"); } }
+        private int? _explicitNullValueStalenessThresholdHours = default!;
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
@@ -27,7 +40,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSettings CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSettings();
+            return global::Soenneker.OpenApi.Generated.OpenApiNullTracking.Capture(new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSettings(), parseNode);
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -51,7 +64,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteIntValue("installTimeoutMinutes", InstallTimeoutMinutes);
             writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSettingsPullLatestCode>("pullLatestCode", PullLatestCode);
-            writer.WriteIntValue("stalenessThresholdHours", StalenessThresholdHours);
+            writer.WriteIntValue("stalenessThresholdHours", StalenessThresholdHours);if (_explicitNullProperties != null) foreach (string name in _explicitNullProperties) writer.WriteNullValue(name);
+            
         }
     }
 }

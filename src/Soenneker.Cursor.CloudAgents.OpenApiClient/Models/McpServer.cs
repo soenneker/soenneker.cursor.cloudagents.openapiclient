@@ -12,7 +12,12 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class McpServer : IComposedTypeWrapper, IParsable
-    {
+    , global::Microsoft.Kiota.Abstractions.Serialization.IAdditionalDataHolder {
+        // Preserve ambiguous union payloads without inventing a discriminator.
+        /// <summary>The complete payload when no unique typed union branch can be selected.</summary>
+        public global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode UnrecognizedValue { get; set; } = null!;
+        public global::System.Collections.Generic.IDictionary<string, object> AdditionalData { get; set; } = new global::System.Collections.Generic.Dictionary<string, object>();
+
         /// <summary>Composed type representation for type <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServer"/></summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -41,13 +46,20 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             var result = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.McpServer();
             if("RemoteMcpServer".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
             {
-                result.RemoteMcpServer = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServer();
+                
             }
             else if("StdioMcpServer".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
             {
-                result.StdioMcpServer = new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServer();
+                
             }
-            return result;
+            
+            var unionPayload = parseNode.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue);
+            bool matchesUnionBranch0 = unionPayload is global::Microsoft.Kiota.Abstractions.Serialization.UntypedObject && ((global::System.Func<bool>)(() => parseNode.GetChildNode("name") != null && parseNode.GetChildNode("command") != null && (parseNode.GetChildNode("type") == null || (parseNode.GetChildNode("type")?.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is global::Microsoft.Kiota.Abstractions.Serialization.UntypedString optionalTag2 && ("stdio".Equals(optionalTag2.GetValue(), global::System.StringComparison.Ordinal))))))();
+            bool matchesUnionBranch1 = unionPayload is global::Microsoft.Kiota.Abstractions.Serialization.UntypedObject && ((global::System.Func<bool>)(() => parseNode.GetChildNode("name") != null && parseNode.GetChildNode("url") != null && (parseNode.GetChildNode("type") == null || (parseNode.GetChildNode("type")?.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is global::Microsoft.Kiota.Abstractions.Serialization.UntypedString optionalTag2 && ("http".Equals(optionalTag2.GetValue(), global::System.StringComparison.Ordinal) || "sse".Equals(optionalTag2.GetValue(), global::System.StringComparison.Ordinal))))))();
+            if (result.RemoteMcpServer == null && result.StdioMcpServer == null && matchesUnionBranch0 && !matchesUnionBranch1) result.StdioMcpServer = global::Soenneker.OpenApi.Generated.OpenApiNullTracking.Capture(new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServer(), parseNode);
+            if (result.RemoteMcpServer == null && result.StdioMcpServer == null && matchesUnionBranch1 && !matchesUnionBranch0) result.RemoteMcpServer = global::Soenneker.OpenApi.Generated.OpenApiNullTracking.Capture(new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServer(), parseNode);
+            if (result.RemoteMcpServer == null && result.StdioMcpServer == null) result.UnrecognizedValue = unionPayload;
+return result;
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -71,13 +83,20 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         /// <param name="writer">Serialization writer to use to serialize this model</param>
         public virtual void Serialize(ISerializationWriter writer)
         {
+            if (global::System.Object.ReferenceEquals(writer, null)) throw new global::System.ArgumentNullException(nameof(writer));
+            if (RemoteMcpServer == null && StdioMcpServer == null) { if (UnrecognizedValue is global::Microsoft.Kiota.Abstractions.Serialization.UntypedObject rawObject) writer.WriteObjectValue(null, new global::Soenneker.OpenApi.Generated.OpenApiUnionAdditionalData(AdditionalData, rawObject)); else if (UnrecognizedValue != null) writer.WriteObjectValue(null, UnrecognizedValue); else if (AdditionalData.Count > 0) writer.WriteObjectValue(null, new global::Soenneker.OpenApi.Generated.OpenApiUnionAdditionalData(AdditionalData)); else writer.WriteNullValue(null); return; }
+            if (RemoteMcpServer != null && StdioMcpServer == null) { if (RemoteMcpServer is global::Microsoft.Kiota.Abstractions.Serialization.IAdditionalDataHolder selectedData) foreach (var entry in AdditionalData) selectedData.AdditionalData[entry.Key] = entry.Value; writer.WriteObjectValue(null, RemoteMcpServer); return; }
+            if (StdioMcpServer != null && RemoteMcpServer == null) { if (StdioMcpServer is global::Microsoft.Kiota.Abstractions.Serialization.IAdditionalDataHolder selectedData) foreach (var entry in AdditionalData) selectedData.AdditionalData[entry.Key] = entry.Value; writer.WriteObjectValue(null, StdioMcpServer); return; }
+
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             if(RemoteMcpServer != null)
             {
+                if (RemoteMcpServer is global::Microsoft.Kiota.Abstractions.Serialization.IAdditionalDataHolder unionData) foreach (var entry in AdditionalData) unionData.AdditionalData[entry.Key] = entry.Value;
                 writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.RemoteMcpServer>(null, RemoteMcpServer);
             }
             else if(StdioMcpServer != null)
             {
+                if (StdioMcpServer is global::Microsoft.Kiota.Abstractions.Serialization.IAdditionalDataHolder unionData) foreach (var entry in AdditionalData) unionData.AdditionalData[entry.Key] = entry.Value;
                 writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StdioMcpServer>(null, StdioMcpServer);
             }
         }

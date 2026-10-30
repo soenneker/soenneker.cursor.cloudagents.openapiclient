@@ -12,16 +12,28 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class StartEnvironmentBuildRequest : IParsable
-    {
+    , global::Soenneker.OpenApi.Generated.IOpenApiExplicitNulls {
+        // Track explicitly assigned nulls separately from absent properties.
+        private global::System.Collections.Generic.HashSet<string> _explicitNullProperties = null!;
+
+        public virtual void CaptureExplicitNulls(global::Microsoft.Kiota.Abstractions.Serialization.IParseNode parseNode)
+        {
+            if (parseNode.GetChildNode("draft") is { } nullNodeDraft && nullNodeDraft.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Draft = null;
+            if (parseNode.GetChildNode("refs") is { } nullNodeRefs && nullNodeRefs.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Refs = null;
+        }
+
         /// <summary>`true` for a draft build, which agents don&apos;t start from until it&apos;s activated. A non-draft build is what agents start from once it succeeds.</summary>
-        public bool? Draft { get; set; }
+        public bool? Draft { get => _explicitNullValueDraft; set { _explicitNullValueDraft = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("draft"); else _explicitNullProperties?.Remove("draft"); } }
+        private bool? _explicitNullValueDraft = default!;
         /// <summary>Branches to build instead of the default branches. Repositories without an entry build their default branch, and a ref that names the default branch counts as no entry. Any other branch requires `draft` set to `true`; without it, and for a repository that isn&apos;t in the environment or a second ref for the same repository, the request returns `400 validation_error`. Cursor doesn&apos;t check that the branch exists, so a missing branch fails the build, not the request.</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRef>? Refs { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRef>? Refs { get => _explicitNullValueRefs; set { _explicitNullValueRefs = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("refs"); else _explicitNullProperties?.Remove("refs"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRef>? _explicitNullValueRefs = default!;
 #nullable restore
 #else
-        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRef> Refs { get; set; }
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRef> Refs { get => _explicitNullValueRefs; set { _explicitNullValueRefs = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("refs"); else _explicitNullProperties?.Remove("refs"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRef> _explicitNullValueRefs = default!;
 #endif
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRequest"/> and sets the default values.
@@ -38,7 +50,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public static global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRequest CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRequest();
+            return global::Soenneker.OpenApi.Generated.OpenApiNullTracking.Capture(new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRequest(), parseNode);
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -60,7 +72,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteBoolValue("draft", Draft);
-            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRef>("refs", Refs);
+            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.StartEnvironmentBuildRef>("refs", Refs);if (_explicitNullProperties != null) foreach (string name in _explicitNullProperties) writer.WriteNullValue(name);
+            
         }
     }
 }
