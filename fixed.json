@@ -65,6 +65,17 @@
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
+          },
+          "200": {
+            "description": "Agent created and initial run enqueued.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAgentResponse"
+                }
+              }
+            },
+            "x-client-success-response-status": "201"
           }
         }
       },
@@ -369,6 +380,20 @@
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
+          },
+          "200": {
+            "description": "Run created and enqueued. Returned for a request without \u0060delivery\u0060.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateRunSuccessResponse"
+                },
+                "x-client-original-success-schema": {
+                  "$ref": "#/components/schemas/CreateRunResponse"
+                }
+              }
+            },
+            "x-client-success-response-status": "201"
           }
         }
       },
@@ -1133,6 +1158,17 @@
                 }
               }
             }
+          },
+          "200": {
+            "description": "Environment created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateEnvironmentResponse"
+                }
+              }
+            },
+            "x-client-success-response-status": "201"
           }
         }
       }
@@ -1616,6 +1652,17 @@
                 }
               }
             }
+          },
+          "200": {
+            "description": "Build started.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartEnvironmentBuildResponse"
+                }
+              }
+            },
+            "x-client-success-response-status": "202"
           }
         }
       }
