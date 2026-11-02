@@ -3320,7 +3320,8 @@
             "items": {}
           }
         ],
-        "description": "Any JSON value."
+        "description": "Any JSON value.",
+        "nullable": true
       },
       "RunStreamToolCallData": {
         "required": [
