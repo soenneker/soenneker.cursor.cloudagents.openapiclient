@@ -30,8 +30,15 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public int? InstallTimeoutMinutes { get => _explicitNullValueInstallTimeoutMinutes; set { _explicitNullValueInstallTimeoutMinutes = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("installTimeoutMinutes"); else _explicitNullProperties?.Remove("installTimeoutMinutes"); } }
         private int? _explicitNullValueInstallTimeoutMinutes = default!;
         /// <summary>`when_stale` (the default) or `never`. Setting the legacy `always` returns `400 validation_error`. To move an environment off `always`, send `when_stale` with `stalenessThresholdHours`.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettingsPullLatestCode? PullLatestCode { get => _explicitNullValuePullLatestCode; set { _explicitNullValuePullLatestCode = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("pullLatestCode"); else _explicitNullProperties?.Remove("pullLatestCode"); } }
         private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettingsPullLatestCode? _explicitNullValuePullLatestCode = default!;
+#nullable restore
+#else
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettingsPullLatestCode PullLatestCode { get => _explicitNullValuePullLatestCode; set { _explicitNullValuePullLatestCode = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("pullLatestCode"); else _explicitNullProperties?.Remove("pullLatestCode"); } }
+        private global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettingsPullLatestCode _explicitNullValuePullLatestCode = default!;
+#endif
         /// <summary>Hours before the active build counts as stale. Default 24.</summary>
         public int? StalenessThresholdHours { get => _explicitNullValueStalenessThresholdHours; set { _explicitNullValueStalenessThresholdHours = value; if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("stalenessThresholdHours"); else _explicitNullProperties?.Remove("stalenessThresholdHours"); } }
         private int? _explicitNullValueStalenessThresholdHours = default!;
@@ -54,7 +61,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             return new Dictionary<string, Action<IParseNode>>
             {
                 { "installTimeoutMinutes", n => { InstallTimeoutMinutes = n.GetIntValue(); } },
-                { "pullLatestCode", n => { PullLatestCode = n.GetEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettingsPullLatestCode>(); } },
+                { "pullLatestCode", n => { PullLatestCode = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettingsPullLatestCode>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettingsPullLatestCode.CreateFromDiscriminatorValue); } },
                 { "stalenessThresholdHours", n => { StalenessThresholdHours = n.GetIntValue(); } },
             };
         }
@@ -66,7 +73,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteIntValue("installTimeoutMinutes", InstallTimeoutMinutes);
-            writer.WriteEnumValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettingsPullLatestCode>("pullLatestCode", PullLatestCode);
+            writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.UpdateEnvironmentBuildSettingsPullLatestCode>("pullLatestCode", PullLatestCode);
             writer.WriteIntValue("stalenessThresholdHours", StalenessThresholdHours);if (_explicitNullProperties != null) foreach (string name in _explicitNullProperties) writer.WriteNullValue(name);
             
         }
