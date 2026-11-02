@@ -52,8 +52,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
             var mappingValue = parseNode.GetChildNode("type")?.GetStringValue();
             return mappingValue switch
             {
-                "build" => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentActiveBuildEnvironmentActiveBuildFromBuild(),
-                "universal_image" => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentActiveBuildEnvironmentActiveBuildFromUniversalImage(),
+                "build" => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentActiveBuildFromBuildVariant(),
+                "universal_image" => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentActiveBuildFromUniversalImageVariant(),
                 _ => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentActiveBuild(),
             };
         }

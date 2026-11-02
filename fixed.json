@@ -4255,8 +4255,8 @@
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "build": "#/components/schemas/EnvironmentActiveBuildEnvironmentActiveBuildFromBuild",
-            "universal_image": "#/components/schemas/EnvironmentActiveBuildEnvironmentActiveBuildFromUniversalImage"
+            "build": "#/components/schemas/EnvironmentActiveBuildFromBuildVariant",
+            "universal_image": "#/components/schemas/EnvironmentActiveBuildFromUniversalImageVariant"
           }
         },
         "x-client-original-tagged-union": {
@@ -6316,7 +6316,7 @@
           }
         ]
       },
-      "EnvironmentActiveBuildEnvironmentActiveBuildFromBuild": {
+      "EnvironmentActiveBuildFromBuildVariant": {
         "allOf": [
           {
             "$ref": "#/components/schemas/EnvironmentActiveBuild"
@@ -6343,7 +6343,7 @@
           }
         ]
       },
-      "EnvironmentActiveBuildEnvironmentActiveBuildFromUniversalImage": {
+      "EnvironmentActiveBuildFromUniversalImageVariant": {
         "allOf": [
           {
             "$ref": "#/components/schemas/EnvironmentActiveBuild"
