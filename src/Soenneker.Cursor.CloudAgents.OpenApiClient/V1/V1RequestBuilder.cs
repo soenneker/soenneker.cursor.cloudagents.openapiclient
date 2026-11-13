@@ -6,6 +6,7 @@ using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Environments;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Me;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.ModelsRequests;
+using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Projects;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Repositories;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Secrets;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.SubTokens;
@@ -41,6 +42,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.ModelsRequests.ModelsRequestBuilder Models
         {
             get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.ModelsRequests.ModelsRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The projects property</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Projects.ProjectsRequestBuilder Projects
+        {
+            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Projects.ProjectsRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>The repositories property</summary>
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Repositories.RepositoriesRequestBuilder Repositories

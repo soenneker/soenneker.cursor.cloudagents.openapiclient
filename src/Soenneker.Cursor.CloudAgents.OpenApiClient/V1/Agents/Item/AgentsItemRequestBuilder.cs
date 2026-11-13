@@ -7,6 +7,7 @@ using Soenneker.Cursor.CloudAgents.OpenApiClient.Models;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Archive;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Artifacts;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Runs;
+using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.StreamNamespace;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Unarchive;
 using Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Usage;
 using System.Collections.Generic;
@@ -36,6 +37,11 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Runs.RunsRequestBuilder Runs
         {
             get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Runs.RunsRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The stream property</summary>
+        public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.StreamNamespace.StreamRequestBuilder Stream
+        {
+            get => new global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.StreamNamespace.StreamRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>The unarchive property</summary>
         public global::Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Agents.Item.Unarchive.UnarchiveRequestBuilder Unarchive

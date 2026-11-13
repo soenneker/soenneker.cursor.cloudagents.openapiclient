@@ -534,7 +534,7 @@
     "/v1/agents/{id}/runs/{runId}/stream": {
       "get": {
         "summary": "Stream a run",
-        "description": "Stream Server-Sent Events for one run. Event types are\n\u0060status\u0060, \u0060assistant\u0060, \u0060thinking\u0060, \u0060tool_call\u0060,\n\u0060interaction_update\u0060, \u0060heartbeat\u0060, \u0060result\u0060, \u0060error\u0060, and\n\u0060done\u0060.\n\n- \u0060status\u0060 carries \u0060{ runId, status }\u0060. It has no \u0060id\u0060 line\n  and is replayed at the top of every reconnect.\n- \u0060result\u0060 carries \u0060{ runId, status, text?, durationMs?,\n  git? }\u0060; \u0060text\u0060 is the final assistant reply, \u0060durationMs\u0060\n  the wall-clock duration, and \u0060git\u0060 mirrors \u0060Run.git\u0060.\n- \u0060interaction_update\u0060 carries the richer SDK-shape update\n  used by the TypeScript SDK and is emitted alongside the\n  simplified events that share the same event id. Use this if\n  you want the full SDK stream; otherwise handle the simplified\n  events and ignore it.\n\nReconnect with the \u0060Last-Event-ID\u0060 header to resume after a\ndisconnect; the event ID must belong to the requested run\notherwise the endpoint returns \u0060400 invalid_last_event_id\u0060.\nResponses include the \u0060X-Cursor-Stream-Retention-Seconds\u0060\nheader; after the retention window the endpoint may return\n\u0060410 stream_expired\u0060. \u0060tool_call\u0060 event data uses the\n\u0060RunStreamToolCallData\u0060 schema.\n",
+        "description": "Stream Server-Sent Events for one run. Event types are\n\u0060status\u0060, \u0060assistant\u0060, \u0060thinking\u0060, \u0060tool_call\u0060,\n\u0060interaction_update\u0060, \u0060heartbeat\u0060, \u0060result\u0060, \u0060error\u0060, and\n\u0060done\u0060.\n\n- \u0060status\u0060 carries \u0060{ runId, status }\u0060. It has no \u0060id\u0060 line\n  and is replayed at the top of every reconnect.\n- \u0060result\u0060 carries \u0060{ runId, status, text?, durationMs?,\n  git? }\u0060; \u0060text\u0060 is the final assistant reply, \u0060durationMs\u0060\n  the wall-clock duration, and \u0060git\u0060 mirrors \u0060Run.git\u0060.\n- \u0060interaction_update\u0060 carries the richer SDK-shape update\n  used by the TypeScript SDK and is emitted alongside the\n  simplified events that share the same event id. Use this if\n  you want the full SDK stream; otherwise handle the simplified\n  events and ignore it.\n\nFor a Project coordinator, each message it sends is one\n\u0060assistant\u0060 event with the whole message, its working notes and\n\u0060send_message\u0060 tool calls are left out, and \u0060result.text\u0060 is the\nlast message it sent in the run.\n\nReconnect with the \u0060Last-Event-ID\u0060 header to resume after a\ndisconnect; the event ID must belong to the requested run\notherwise the endpoint returns \u0060400 invalid_last_event_id\u0060.\nResponses include the \u0060X-Cursor-Stream-Retention-Seconds\u0060\nheader; after the retention window the endpoint may return\n\u0060410 stream_expired\u0060. \u0060tool_call\u0060 event data uses the\n\u0060RunStreamToolCallData\u0060 schema.\n",
         "operationId": "StreamRun",
         "parameters": [
           {
@@ -615,6 +615,106 @@
           },
           "429": {
             "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/agents/{id}/stream": {
+      "get": {
+        "summary": "Stream an agent",
+        "description": "Stream Server-Sent Events for an agent across all of its runs.\nUnlike the run stream, the stream stays open when a run ends and\ncarries runs the caller didn\u0027t start. It closes when the client\ndisconnects or the agent is archived. Event types are the run\nstream\u0027s, except:\n\n- \u0060status\u0060 carries \u0060{ agentId, status }\u0060: the status of the\n  agent\u0027s current run. A status change, including \u0060FINISHED\u0060,\n  doesn\u0027t close the stream.\n- There is no \u0060result\u0060 event.\n\nFor a Project coordinator, each message it sends is one\n\u0060assistant\u0060 event with the whole message, and its working notes\nand \u0060send_message\u0060 tool calls are left out.\n\nWithout a cursor, the stream starts where the agent\u0027s newest run\nstarted. Resume with the \u0060Last-Event-ID\u0060 header, or the\n\u0060lastEventId\u0060 query parameter for clients that can\u0027t set headers;\nan ID this agent\u0027s stream didn\u0027t send returns\n\u0060400 invalid_last_event_id\u0060. Cursor closes open streams when it\ndeploys, with no final event; reconnect with \u0060Last-Event-ID\u0060.\nWhen the agent is archived, the stream sends \u0060status\u0060 with\n\u0060CANCELLED\u0060, then \u0060done\u0060. Responses include the\n\u0060X-Cursor-Stream-Retention-Seconds\u0060 header; a \u0060Last-Event-ID\u0060\nolder than the retention window returns \u0060410 stream_expired\u0060.\n",
+        "operationId": "StreamAgent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the agent.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
+          },
+          {
+            "name": "lastEventId",
+            "in": "query",
+            "description": "The same value as the \u0060Last-Event-ID\u0060 header, for clients that can\u0027t set headers. The header wins when both are sent.",
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          {
+            "name": "Last-Event-ID",
+            "in": "header",
+            "description": "Resume after a previously received event ID from this agent\u0027s stream.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SSE stream of agent events.",
+            "headers": {
+              "X-Cursor-Stream-Retention-Seconds": {
+                "description": "Server-side stream retention window in seconds.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreamAgent200EventStreamResponseSchema"
+                },
+                "examples": {
+                  "runEnds": {
+                    "summary": "A run ends and the next one starts on the same stream",
+                    "value": "id: 1713033010000-0\nevent: status\ndata: {\u0022agentId\u0022:\u0022bc-00000000-0000-0000-0000-000000000001\u0022,\u0022status\u0022:\u0022FINISHED\u0022}\n\nid: 1713033300000-0\nevent: status\ndata: {\u0022agentId\u0022:\u0022bc-00000000-0000-0000-0000-000000000001\u0022,\u0022status\u0022:\u0022RUNNING\u0022}\n"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "429": {
+            "description": "Rate limit exceeded (\u0060rate_limit_exceeded\u0060), or the caller already holds the most agent streams one caller can keep open, 50 by default (\u0060too_many_open_streams\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -947,6 +1047,457 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DownloadArtifactResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/projects": {
+      "post": {
+        "summary": "Create a Project",
+        "description": "Create a Project and immediately enqueue its initial run, which\nstarts the Project\u0027s coordinator agent. The response contains\nboth the durable \u0060project\u0060 and the initial \u0060run\u0060. Requires a\nuser API key; a service account API key returns\n\u0060403 user_required\u0060. To message the coordinator, send a\nfollow-up to \u0060project.coordinatorAgentId\u0060 with\nPOST /v1/agents/{id}/runs, and read its replies with\nGET /v1/agents/{id}/stream.\n",
+        "operationId": "CreateProject",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Project created and initial run enqueued.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but insufficient permissions, plan required, or feature unavailable. Also a service account API key (\u0060user_required\u0060) or a team that turned Projects off (\u0060projects_disabled\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "200": {
+            "description": "Project created and initial run enqueued.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateProjectResponse"
+                }
+              }
+            },
+            "x-client-success-response-status": "201"
+          }
+        }
+      },
+      "get": {
+        "summary": "List Projects",
+        "description": "List the Projects you own or have joined, newest first. A service account API key gets an empty list.",
+        "operationId": "ListProjects",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of Projects to return.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pagination cursor from the previous response.",
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeArchived",
+            "in": "query",
+            "description": "Whether to include archived Projects.",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projects retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListProjectsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/projects/{id}": {
+      "get": {
+        "summary": "Get a Project",
+        "description": "Retrieve durable metadata for a Project. The ID of your own coordinator in a Project you joined also works as \u0060id\u0060. A Project you can\u0027t see returns \u0060404 project_not_found\u0060.",
+        "operationId": "GetProject",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the Project.",
+            "required": true,
+            "schema": {
+              "pattern": "^bc-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a Project",
+        "description": "Rename a Project, change its appearance, or both. Only the Project\u0027s owner can update it; anyone else gets \u0060403 owner_required\u0060. An archived Project returns \u0060409 project_archived\u0060.",
+        "operationId": "UpdateProject",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the Project.",
+            "required": true,
+            "schema": {
+              "pattern": "^bc-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProjectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Project updated. The response has no body."
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/projects/{id}/agents": {
+      "get": {
+        "summary": "List Project agents",
+        "description": "List the agents your coordinator in a Project started, newest first. The list is empty when you joined the Project and your coordinator there was archived or stopped.",
+        "operationId": "ListProjectAgents",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the Project.",
+            "required": true,
+            "schema": {
+              "pattern": "^bc-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of agents to return.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pagination cursor from the previous response.",
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agents retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListProjectAgentsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/projects/{id}/archive": {
+      "post": {
+        "summary": "Archive a Project",
+        "description": "Archive a Project. Archived Projects remain readable but cannot be updated until unarchived. Only the Project\u0027s owner can archive it; anyone else gets \u0060403 owner_required\u0060.",
+        "operationId": "ArchiveProject",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the Project.",
+            "required": true,
+            "schema": {
+              "pattern": "^bc-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project archived successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponseError"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/v1/projects/{id}/unarchive": {
+      "post": {
+        "summary": "Unarchive a Project",
+        "description": "Unarchive a Project so it can be updated again. Only the Project\u0027s owner can unarchive it; anyone else gets \u0060403 owner_required\u0060.",
+        "operationId": "UnarchiveProject",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier for the Project.",
+            "required": true,
+            "schema": {
+              "pattern": "^bc-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+              "type": "string",
+              "example": "bc-00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project unarchived successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResponse"
                 }
               }
             }
@@ -3269,7 +3820,7 @@
           "result": {
             "minLength": 1,
             "type": "string",
-            "description": "Final assistant reply text. Populated once the run terminates.",
+            "description": "Final assistant reply text. Populated once the run terminates. For a Project coordinator, the last message the coordinator sent in the run.",
             "example": "Added README.md with installation instructions."
           },
           "git": {
@@ -3720,6 +4271,165 @@
               "$ref": "#/components/schemas/RunUsage"
             },
             "description": "Per-run usage, one entry per run (or a single entry when \u0060runId\u0060 is set)."
+          }
+        }
+      },
+      "Project": {
+        "required": [
+          "id",
+          "status",
+          "createdAt",
+          "updatedAt",
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique Project identifier. It\u0027s also the ID of the owner\u0027s coordinator agent.",
+            "example": "bc-00000000-0000-0000-0000-000000000001"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name. Omitted when no name has been set.",
+            "example": "Payments migration"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProjectStatus"
+          },
+          "appearance": {
+            "$ref": "#/components/schemas/ProjectAppearanceComposed"
+          },
+          "coordinatorAgentId": {
+            "type": "string",
+            "description": "Your own coordinator agent in the Project. The Project\u0027s \u0060id\u0060 when you own it, or the coordinator Cursor started when you joined. Omitted when you joined the Project and your coordinator there was archived or stopped.",
+            "example": "bc-00000000-0000-0000-0000-000000000001"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the Project was created.",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "When the Project was last updated.",
+            "format": "date-time"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL to view the Project in Cursor Web.",
+            "example": "https://cursor.com/agents/bc-00000000-0000-0000-0000-000000000001",
+            "x-client-original-format": "uri"
+          }
+        }
+      },
+      "CreateProjectRequest": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "$ref": "#/components/schemas/ModelRef"
+          },
+          "name": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "description": "Display name for the Project.",
+            "example": "Payments migration"
+          },
+          "projectId": {
+            "minLength": 1,
+            "pattern": "^bc-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            "type": "string",
+            "description": "Optional client-supplied Project identifier in \u0060bc-\u003Cuuid\u003E\u0060 form. Re-POSTing the same \u0060projectId\u0060 returns \u0060409 project_id_conflict\u0060 instead of creating a duplicate. A Project\u0027s ID is also its coordinator agent\u0027s ID, so an ID that any agent already uses returns the same error.",
+            "example": "bc-00000000-0000-0000-0000-000000000001"
+          },
+          "env": {
+            "$ref": "#/components/schemas/AgentEnv"
+          },
+          "repos": {
+            "maxItems": 500,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RepoConfig"
+            },
+            "description": "Repository configuration, with the same rules as in \u0060CreateAgentRequest\u0060. Mutually exclusive with a named cloud environment. Omit both \u0060repos\u0060 and \u0060env\u0060 (or pass \u0060repos: []\u0060) to start a no-repo Project."
+          },
+          "appearance": {
+            "$ref": "#/components/schemas/CreateProjectRequestAppearance"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateProjectResponse": {
+        "required": [
+          "project",
+          "run"
+        ],
+        "type": "object",
+        "properties": {
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "run": {
+            "$ref": "#/components/schemas/Run"
+          }
+        }
+      },
+      "UpdateProjectRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string",
+            "description": "New display name.",
+            "example": "Payments migration, phase 2"
+          },
+          "appearance": {
+            "$ref": "#/components/schemas/UpdateProjectRequestAppearance"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Send at least one of \u0060name\u0060 or \u0060appearance\u0060."
+      },
+      "ListProjectsResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Project"
+            },
+            "description": "Projects you own or have joined, newest first by when your own coordinator in each one started. A page can hold fewer than \u0060limit\u0060 Projects, or none, while \u0060nextCursor\u0060 is still set."
+          },
+          "nextCursor": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Cursor for fetching the next page of results. Omitted (not \u0060null\u0060) when there are no more pages."
+          }
+        }
+      },
+      "ListProjectAgentsResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Agent"
+            },
+            "description": "Agents your coordinator in the Project started, newest first, up to its 1,000 newest. Agents you can\u0027t read are left out."
+          },
+          "nextCursor": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Cursor for fetching the next page of results. Omitted (not \u0060null\u0060) when there are no more pages.",
+            "example": "bc-00000000-0000-0000-0000-000000000002"
           }
         }
       },
@@ -5108,6 +5818,60 @@
         },
         "description": "Token usage summed across the returned runs."
       },
+      "ProjectAppearanceComposed": {
+        "type": "object",
+        "properties": {
+          "icon": {
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9-]\u002B$",
+            "type": "string",
+            "description": "Icon name of 1 to 64 letters, numbers, or hyphens.",
+            "example": "rocket"
+          },
+          "color": {
+            "$ref": "#/components/schemas/ProjectAppearanceColor"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The Project\u0027s icon and color. Omitted when the Project has none."
+      },
+      "CreateProjectRequestAppearance": {
+        "type": "object",
+        "properties": {
+          "icon": {
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9-]\u002B$",
+            "type": "string",
+            "description": "Icon name of 1 to 64 letters, numbers, or hyphens.",
+            "example": "rocket"
+          },
+          "color": {
+            "$ref": "#/components/schemas/ProjectAppearanceColor"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The Project\u0027s icon and color. Send both \u0060icon\u0060 and \u0060color\u0060, or leave \u0060appearance\u0060 out."
+      },
+      "UpdateProjectRequestAppearance": {
+        "type": "object",
+        "properties": {
+          "icon": {
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9-]\u002B$",
+            "type": "string",
+            "description": "Icon name of 1 to 64 letters, numbers, or hyphens.",
+            "example": "rocket"
+          },
+          "color": {
+            "$ref": "#/components/schemas/ProjectAppearanceColor"
+          }
+        },
+        "additionalProperties": false,
+        "description": "New \u0060icon\u0060, \u0060color\u0060, or both. Send one field to change it and keep the other. A Project without an appearance needs both."
+      },
       "ListEnvironmentsResponseItemsItem": {
         "required": [
           "id",
@@ -5345,7 +6109,7 @@
         "properties": {
           "code": {
             "type": "string",
-            "description": "Machine-readable error code. Possible values include\n\u0060unauthorized\u0060, \u0060api_key_not_found\u0060, \u0060plan_required\u0060,\n\u0060role_forbidden\u0060, \u0060feature_unavailable\u0060, \u0060key_not_supported\u0060,\n\u0060integration_not_connected\u0060, \u0060validation_error\u0060,\n\u0060missing_body\u0060, \u0060invalid_model\u0060, \u0060invalid_branch_name\u0060,\n\u0060repository_required\u0060, \u0060repository_access\u0060,\n\u0060pr_resolution_failed\u0060, \u0060artifact_not_found\u0060,\n\u0060service_account_required\u0060, \u0060agent_not_found\u0060,\n\u0060run_not_found\u0060, \u0060environment_not_found\u0060, \u0060build_not_found\u0060,\n\u0060team_admin_required\u0060, \u0060environment_name_conflict\u0060,\n\u0060environment_repo_edit_blocked\u0060, \u0060repo_file_repo_removed\u0060,\n\u0060repo_file_environment_locked\u0060, \u0060stored_repos_unreadable\u0060,\n\u0060duplicate_json_key\u0060, \u0060agent_busy\u0060, \u0060agent_archived\u0060,\n\u0060agent_id_conflict\u0060, \u0060run_not_cancellable\u0060,\n\u0060rate_limit_exceeded\u0060, \u0060usage_limit_exceeded\u0060,\n\u0060stream_expired\u0060, \u0060stream_unavailable\u0060,\n\u0060invalid_last_event_id\u0060, \u0060client_cancelled\u0060,\n\u0060not_implemented\u0060, \u0060upstream_error\u0060, and\n\u0060internal_error\u0060.\n"
+            "description": "Machine-readable error code. Possible values include\n\u0060unauthorized\u0060, \u0060api_key_not_found\u0060, \u0060plan_required\u0060,\n\u0060role_forbidden\u0060, \u0060feature_unavailable\u0060, \u0060key_not_supported\u0060,\n\u0060user_required\u0060, \u0060owner_required\u0060, \u0060projects_disabled\u0060,\n\u0060integration_not_connected\u0060, \u0060validation_error\u0060,\n\u0060missing_body\u0060, \u0060invalid_model\u0060, \u0060invalid_branch_name\u0060,\n\u0060repository_required\u0060, \u0060repository_access\u0060,\n\u0060pr_resolution_failed\u0060, \u0060artifact_not_found\u0060,\n\u0060service_account_required\u0060, \u0060agent_not_found\u0060,\n\u0060project_not_found\u0060,\n\u0060run_not_found\u0060, \u0060environment_not_found\u0060, \u0060build_not_found\u0060,\n\u0060team_admin_required\u0060, \u0060environment_name_conflict\u0060,\n\u0060environment_repo_edit_blocked\u0060, \u0060repo_file_repo_removed\u0060,\n\u0060repo_file_environment_locked\u0060, \u0060stored_repos_unreadable\u0060,\n\u0060duplicate_json_key\u0060, \u0060agent_busy\u0060, \u0060agent_archived\u0060,\n\u0060agent_id_conflict\u0060, \u0060project_id_conflict\u0060,\n\u0060project_archived\u0060, \u0060run_not_cancellable\u0060,\n\u0060rate_limit_exceeded\u0060, \u0060too_many_open_streams\u0060,\n\u0060usage_limit_exceeded\u0060,\n\u0060stream_expired\u0060, \u0060stream_unavailable\u0060,\n\u0060invalid_last_event_id\u0060, \u0060client_cancelled\u0060,\n\u0060not_implemented\u0060, \u0060upstream_error\u0060, and\n\u0060internal_error\u0060.\n"
           },
           "message": {
             "type": "string",
@@ -5370,6 +6134,9 @@
         }
       },
       "StreamRun200EventStreamResponseSchema": {
+        "type": "string"
+      },
+      "StreamAgent200EventStreamResponseSchema": {
         "type": "string"
       },
       "StdioMcpServerEnvProperty": {
@@ -5576,6 +6343,91 @@
             {
               "value": "queued",
               "name": "Queued"
+            }
+          ]
+        }
+      },
+      "ProjectAppearanceColor": {
+        "enum": [
+          "default",
+          "green",
+          "cyan",
+          "blue",
+          "purple",
+          "magenta",
+          "orange",
+          "yellow",
+          "red",
+          "brand"
+        ],
+        "type": "string",
+        "description": "Icon color.",
+        "example": "blue",
+        "x-ms-enum": {
+          "name": "ProjectAppearanceColor",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "default",
+              "name": "DefaultValue"
+            },
+            {
+              "value": "green",
+              "name": "Green"
+            },
+            {
+              "value": "cyan",
+              "name": "Cyan"
+            },
+            {
+              "value": "blue",
+              "name": "Blue"
+            },
+            {
+              "value": "purple",
+              "name": "Purple"
+            },
+            {
+              "value": "magenta",
+              "name": "Magenta"
+            },
+            {
+              "value": "orange",
+              "name": "Orange"
+            },
+            {
+              "value": "yellow",
+              "name": "Yellow"
+            },
+            {
+              "value": "red",
+              "name": "Red"
+            },
+            {
+              "value": "brand",
+              "name": "Brand"
+            }
+          ]
+        }
+      },
+      "ProjectStatus": {
+        "enum": [
+          "ACTIVE",
+          "ARCHIVED"
+        ],
+        "type": "string",
+        "description": "Project lifecycle state. \u0060ARCHIVED\u0060 when the Project was archived or its owner\u0027s coordinator was stopped.",
+        "x-ms-enum": {
+          "name": "ProjectStatus",
+          "modelAsString": false,
+          "values": [
+            {
+              "value": "ACTIVE",
+              "name": "Active"
+            },
+            {
+              "value": "ARCHIVED",
+              "name": "Archived"
             }
           ]
         }
@@ -6406,7 +7258,7 @@
         }
       },
       "Conflict": {
-        "description": "Resource state conflict (\u0060agent_busy\u0060, \u0060agent_archived\u0060, \u0060agent_id_conflict\u0060, \u0060run_not_cancellable\u0060, or \u0060environment_name_conflict\u0060).",
+        "description": "Resource state conflict (\u0060agent_busy\u0060, \u0060agent_archived\u0060, \u0060agent_id_conflict\u0060, \u0060project_id_conflict\u0060, \u0060project_archived\u0060, \u0060run_not_cancellable\u0060, or \u0060environment_name_conflict\u0060).",
         "content": {
           "application/json": {
             "schema": {
@@ -6465,6 +7317,17 @@
         "schema": {
           "type": "string",
           "example": "run-00000000-0000-0000-0000-000000000001"
+        }
+      },
+      "ProjectId": {
+        "name": "id",
+        "in": "path",
+        "description": "Unique identifier for the Project.",
+        "required": true,
+        "schema": {
+          "pattern": "^bc-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+          "type": "string",
+          "example": "bc-00000000-0000-0000-0000-000000000001"
         }
       },
       "EnvironmentId": {
@@ -6705,6 +7568,23 @@
         }
       }
     },
+    "ProjectAppearance": {
+      "type": "object",
+      "properties": {
+        "icon": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9-]\u002B$",
+          "type": "string",
+          "description": "Icon name of 1 to 64 letters, numbers, or hyphens.",
+          "example": "rocket"
+        },
+        "color": {
+          "$ref": "#/components/schemas/ProjectAppearanceColor"
+        }
+      },
+      "additionalProperties": false
+    },
     "Environment": {
       "required": [
         "id",
@@ -6894,6 +7774,9 @@
       }
     },
     "StreamRun200EventStreamResponse": {
+      "type": "string"
+    },
+    "StreamAgent200EventStreamResponse": {
       "type": "string"
     },
     "SetEnvironmentSecret409Response": {
