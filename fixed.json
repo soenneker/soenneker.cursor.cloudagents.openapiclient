@@ -1082,7 +1082,7 @@
     "/v1/projects": {
       "post": {
         "summary": "Create a Project",
-        "description": "Create a Project and immediately enqueue its initial run, which\nstarts the Project\u0027s coordinator agent. The response contains\nboth the durable \u0060project\u0060 and the initial \u0060run\u0060. Requires a\nuser API key; a service account API key returns\n\u0060403 user_required\u0060. To message the coordinator, send a\nfollow-up to \u0060project.coordinatorAgentId\u0060 with\nPOST /v1/agents/{id}/runs, and read its replies with\nGET /v1/agents/{id}/stream.\n",
+        "description": "Create a Project and immediately enqueue its initial run, which\nstarts the Project\u0027s coordinator agent. With a \u0060prompt\u0060, that run\nworks on your prompt. The response contains\nboth the durable \u0060project\u0060 and the initial \u0060run\u0060. Requires a\nuser API key; a service account API key returns\n\u0060403 user_required\u0060. To message the coordinator, send a\nfollow-up to \u0060project.coordinatorAgentId\u0060 with\nPOST /v1/agents/{id}/runs, and read its replies with\nGET /v1/agents/{id}/stream.\n",
         "operationId": "CreateProject",
         "requestBody": {
           "content": {
@@ -4326,6 +4326,9 @@
       "CreateProjectRequest": {
         "type": "object",
         "properties": {
+          "prompt": {
+            "$ref": "#/components/schemas/CreateProjectRequestPrompt"
+          },
           "model": {
             "$ref": "#/components/schemas/ModelRef"
           },
@@ -6043,6 +6046,29 @@
             "description": "Image inputs. Each entry must provide either \u0060data\u0060 (with required \u0060mimeType\u0060) or \u0060url\u0060. Maximum 5 images, 15 MB each."
           }
         }
+      },
+      "CreateProjectRequestPrompt": {
+        "required": [
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "text": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Task instruction for the coordinator.",
+            "example": "Move checkout from the legacy payments client to the new one"
+          },
+          "images": {
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Image"
+            },
+            "description": "Image inputs. Each entry must provide either \u0060data\u0060 (with required \u0060mimeType\u0060) or \u0060url\u0060. Maximum 5 images, 15 MB each."
+          }
+        },
+        "description": "The coordinator\u0027s first message. When omitted, the coordinator opens the Project with a greeting and waits for your first message."
       },
       "ModelVariantParamsItem": {
         "required": [

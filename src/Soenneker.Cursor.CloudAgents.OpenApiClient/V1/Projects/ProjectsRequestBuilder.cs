@@ -80,7 +80,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Projects
             return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListProjectsResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListProjectsResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
-        /// Create a Project and immediately enqueue its initial run, whichstarts the Project&apos;s coordinator agent. The response containsboth the durable `project` and the initial `run`. Requires auser API key; a service account API key returns`403 user_required`. To message the coordinator, send afollow-up to `project.coordinatorAgentId` withPOST /v1/agents/{id}/runs, and read its replies withGET /v1/agents/{id}/stream.
+        /// Create a Project and immediately enqueue its initial run, whichstarts the Project&apos;s coordinator agent. With a `prompt`, that runworks on your prompt. The response containsboth the durable `project` and the initial `run`. Requires auser API key; a service account API key returns`403 user_required`. To message the coordinator, send afollow-up to `project.coordinatorAgentId` withPOST /v1/agents/{id}/runs, and read its replies withGET /v1/agents/{id}/stream.
         /// </summary>
         /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateProjectResponse"/></returns>
         /// <param name="body">The request body</param>
@@ -136,7 +136,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Projects
             return requestInfo;
         }
         /// <summary>
-        /// Create a Project and immediately enqueue its initial run, whichstarts the Project&apos;s coordinator agent. The response containsboth the durable `project` and the initial `run`. Requires auser API key; a service account API key returns`403 user_required`. To message the coordinator, send afollow-up to `project.coordinatorAgentId` withPOST /v1/agents/{id}/runs, and read its replies withGET /v1/agents/{id}/stream.
+        /// Create a Project and immediately enqueue its initial run, whichstarts the Project&apos;s coordinator agent. With a `prompt`, that runworks on your prompt. The response containsboth the durable `project` and the initial `run`. Requires auser API key; a service account API key returns`403 user_required`. To message the coordinator, send afollow-up to `project.coordinatorAgentId` withPOST /v1/agents/{id}/runs, and read its replies withGET /v1/agents/{id}/stream.
         /// </summary>
         /// <returns>A <see cref="RequestInformation"/></returns>
         /// <param name="body">The request body</param>
