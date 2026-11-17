@@ -17,6 +17,8 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 
         public virtual void CaptureExplicitNulls(global::Microsoft.Kiota.Abstractions.Serialization.IParseNode parseNode)
         {
+            if (parseNode.GetChildNode("files") is null) { _explicitNullValueFiles = default!; _explicitNullProperties?.Remove("files"); }
+            else if (parseNode.GetChildNode("files") is { } nullNodeFiles && nullNodeFiles.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Files = null;
             if (parseNode.GetChildNode("project") is null) { _explicitNullValueProject = default!; _explicitNullProperties?.Remove("project"); }
             else if (parseNode.GetChildNode("project") is { } nullNodeProject && nullNodeProject.GetObjectValue<global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode>(global::Microsoft.Kiota.Abstractions.Serialization.UntypedNode.CreateFromDiscriminatorValue) is null or global::Microsoft.Kiota.Abstractions.Serialization.UntypedNull) Project = null;
             if (parseNode.GetChildNode("run") is null) { _explicitNullValueRun = default!; _explicitNullProperties?.Remove("run"); }
@@ -25,6 +27,16 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
 
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
+        /// <summary>The files written to the Project&apos;s shared context. Present when the request sent `files`.</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateProjectResponseFilesItem>? Files { get => _explicitNullValueFiles; set { _explicitNullValueFiles = value; AdditionalData?.Remove("files"); if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("files"); else _explicitNullProperties?.Remove("files"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateProjectResponseFilesItem>? _explicitNullValueFiles = default!;
+#nullable restore
+#else
+        public List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateProjectResponseFilesItem> Files { get => _explicitNullValueFiles; set { _explicitNullValueFiles = value; AdditionalData?.Remove("files"); if (value is null) (_explicitNullProperties ??= new global::System.Collections.Generic.HashSet<string>()).Add("files"); else _explicitNullProperties?.Remove("files"); } }
+        private List<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateProjectResponseFilesItem> _explicitNullValueFiles = default!;
+#endif
         /// <summary>The project property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -70,6 +82,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
+                { "files", n => { Files = n.GetCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateProjectResponseFilesItem>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateProjectResponseFilesItem.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "project", n => { Project = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Project>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Project.CreateFromDiscriminatorValue); } },
                 { "run", n => { Run = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run.CreateFromDiscriminatorValue); } },
             };
@@ -81,6 +94,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
+            writer.WriteCollectionOfObjectValues<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.CreateProjectResponseFilesItem>("files", Files);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Project>("project", Project);
             writer.WriteObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.Run>("run", Run);
             if (_explicitNullProperties != null) foreach (string name in _explicitNullProperties) writer.WriteNullValue(name);

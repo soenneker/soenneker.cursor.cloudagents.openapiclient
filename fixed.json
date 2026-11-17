@@ -1106,7 +1106,14 @@
             }
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "Validation error or malformed request body (\u0060validation_error\u0060), including \u0060files\u0060 sent with a \u0060projectId\u0060, or \u0060files\u0060 on an account where it isn\u0027t enabled yet (\u0060files_not_supported\u0060).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "401": {
             "description": "Invalid, missing, or unsupported API key. When the API key fails authentication, the body has a top-level \u0060code\u0060 and \u0060message\u0060 instead of an \u0060error\u0060 object.",
@@ -1119,7 +1126,7 @@
             }
           },
           "403": {
-            "description": "Authenticated but insufficient permissions, plan required, or feature unavailable. Also a service account API key (\u0060user_required\u0060) or a team that turned Projects off (\u0060projects_disabled\u0060).",
+            "description": "Authenticated but insufficient permissions, plan required, or feature unavailable. Also a service account API key (\u0060user_required\u0060), a team that turned Projects off (\u0060projects_disabled\u0060), or a request with \u0060files\u0060 when your privacy settings don\u0027t let Cursor store data (\u0060storage_not_allowed\u0060).",
             "content": {
               "application/json": {
                 "schema": {
@@ -4343,7 +4350,7 @@
             "minLength": 1,
             "pattern": "^bc-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
             "type": "string",
-            "description": "Optional client-supplied Project identifier in \u0060bc-\u003Cuuid\u003E\u0060 form. Re-POSTing the same \u0060projectId\u0060 returns \u0060409 project_id_conflict\u0060 instead of creating a duplicate. A Project\u0027s ID is also its coordinator agent\u0027s ID, so an ID that any agent already uses returns the same error.",
+            "description": "Optional client-supplied Project identifier in \u0060bc-\u003Cuuid\u003E\u0060 form. Re-POSTing the same \u0060projectId\u0060 returns \u0060409 project_id_conflict\u0060 instead of creating a duplicate. A Project\u0027s ID is also its coordinator agent\u0027s ID, so an ID that any agent already uses returns the same error. Cannot be combined with \u0060files\u0060; omit \u0060projectId\u0060 so the server mints one when you send files.",
             "example": "bc-00000000-0000-0000-0000-000000000001"
           },
           "env": {
@@ -4359,6 +4366,14 @@
           },
           "appearance": {
             "$ref": "#/components/schemas/CreateProjectRequestAppearance"
+          },
+          "files": {
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateProjectRequestFilesItem"
+            },
+            "description": "Files to write into the Project\u0027s shared context before the\ncoordinator\u0027s first run. The coordinator and every other agent\nin the Project can read them. At most 256 KiB each and 2 MiB in\ntotal. Cannot be combined with a client-supplied \u0060projectId\u0060;\nomit \u0060projectId\u0060 so the server mints one when you send files.\n\nBeta: \u0060files\u0060 is rolling out. If it isn\u0027t enabled for your\naccount yet, a request with \u0060files\u0060 returns\n\u0060400 files_not_supported\u0060.\n"
           }
         },
         "additionalProperties": false
@@ -4375,6 +4390,13 @@
           },
           "run": {
             "$ref": "#/components/schemas/Run"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateProjectResponseFilesItem"
+            },
+            "description": "The files written to the Project\u0027s shared context. Present when the request sent \u0060files\u0060."
           }
         }
       },
@@ -6069,6 +6091,59 @@
           }
         },
         "description": "The coordinator\u0027s first message. When omitted, the coordinator opens the Project with a greeting and waits for your first message."
+      },
+      "CreateProjectRequestFilesItem": {
+        "required": [
+          "path"
+        ],
+        "type": "object",
+        "properties": {
+          "path": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Where the file goes in the store. At most 512 UTF-8 bytes, and unique within the request. Blank paths (empty or only whitespace) are refused, as are paths that start or end with \u0060/\u0060, have an empty, \u0060.\u0060, or \u0060..\u0060 segment, or contain a backslash or control character. Cursor reserves the top-level \u0060inbox/\u0060 and \u0060artifacts/\u0060 folders and any folder or file name starting with \u0060.cursor\u0060, so paths there are refused too.",
+            "example": "docs/brief.md"
+          },
+          "content": {
+            "type": "string",
+            "description": "The file\u0027s text, stored as UTF-8."
+          },
+          "contentBase64": {
+            "type": "string",
+            "description": "The file\u0027s bytes, base64-encoded.",
+            "format": "byte"
+          },
+          "mimeType": {
+            "maxLength": 255,
+            "type": "string",
+            "description": "The file\u0027s media type. Defaults to \u0060text/plain; charset=utf-8\u0060 for \u0060content\u0060 and \u0060application/octet-stream\u0060 for \u0060contentBase64\u0060.",
+            "example": "text/markdown"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Send exactly one of \u0060content\u0060 and \u0060contentBase64\u0060."
+      },
+      "CreateProjectResponseFilesItem": {
+        "required": [
+          "path",
+          "sizeBytes",
+          "etag"
+        ],
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "example": "docs/brief.md"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "description": "The file\u0027s size in bytes."
+          },
+          "etag": {
+            "type": "string",
+            "description": "The stored file\u0027s ETag."
+          }
+        }
       },
       "ModelVariantParamsItem": {
         "required": [
