@@ -136,7 +136,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.Models
         /// <returns>A IDictionary&lt;string, Action&lt;IParseNode&gt;&gt;</returns>
         public virtual IDictionary<string, Action<IParseNode>> GetFieldDeserializers()
         {
-            return new Dictionary<string, Action<IParseNode>>
+            return new Dictionary<string, Action<IParseNode>>(10)
             {
                 { "buildSettings", n => { BuildSettings = n.GetObjectValue<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSettings>(global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.EnvironmentBuildSettings.CreateFromDiscriminatorValue); } },
                 { "createdAt", n => { CreatedAt = n.GetDateTimeOffsetValue(); } },
