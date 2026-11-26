@@ -34,7 +34,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Repositories
         {
         }
         /// <summary>
-        /// List GitHub repositories accessible to the authenticated userthrough Cursor&apos;s GitHub App installation. This endpoint hasvery strict rate limits (1 request per user per minute, 30per user per hour) and can take tens of seconds to respondfor users with access to many repositories. Cache responsesaggressively and handle this information not being availablegracefully.
+        /// List GitHub repositories accessible to the authenticated userthrough Cursor&apos;s GitHub App installation. This endpoint hasvery strict rate limits (5 requests per minute and 30 per hourfor each caller; service account API keys count against theservice account) and can take tens of seconds to respondfor users with access to many repositories. Cache responsesaggressively and handle this information not being availablegracefully.
         /// </summary>
         /// <returns>A <see cref="global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListRepositoriesResponse"/></returns>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
@@ -63,7 +63,7 @@ namespace Soenneker.Cursor.CloudAgents.OpenApiClient.V1.Repositories
             return await RequestAdapter.SendAsync<global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListRepositoriesResponse>(requestInfo, global::Soenneker.Cursor.CloudAgents.OpenApiClient.Models.ListRepositoriesResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <summary>
-        /// List GitHub repositories accessible to the authenticated userthrough Cursor&apos;s GitHub App installation. This endpoint hasvery strict rate limits (1 request per user per minute, 30per user per hour) and can take tens of seconds to respondfor users with access to many repositories. Cache responsesaggressively and handle this information not being availablegracefully.
+        /// List GitHub repositories accessible to the authenticated userthrough Cursor&apos;s GitHub App installation. This endpoint hasvery strict rate limits (5 requests per minute and 30 per hourfor each caller; service account API keys count against theservice account) and can take tens of seconds to respondfor users with access to many repositories. Cache responsesaggressively and handle this information not being availablegracefully.
         /// </summary>
         /// <returns>A <see cref="RequestInformation"/></returns>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
